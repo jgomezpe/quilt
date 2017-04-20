@@ -1,18 +1,15 @@
-package quilt.gui;
+package quilt.operation;
 
-import java.awt.Color;
+import quilt.QuiltMachine;
+import quilt.Remnant;
 
-//
-//Quilt Sewer Machine 1.0 by Jonatan Gomez-Perdomo
-//https://github.com/jgomezpe/quilt/tree/master/quilt/
-//
 /**
 *
-* Drawer
-* <P>GUI for drawing quilts.
+* Command
+* <P>A command that can be executed by the quilt machine
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/gui/Drawer.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/operation/Command.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -50,20 +47,21 @@ import java.awt.Color;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public abstract class Drawer {
-	protected int scale=100; // A value of 100 means 1 to 1 scale
-	
-	public int setScale( int scale ){
-		int t = this.scale;
-		this.scale = scale;
-		return t;
+public abstract class Command {
+	protected String name;
+	protected String[] args=null;
+
+	public Command( String name ){
+		this.name = name;
 	}
 	
-	public int scale( int value ){
-		return value*scale/100;
-	}
-	
-	public abstract Color setColor( Color color );
-	public abstract void drawLine( int start_x, int start_y, int end_x, int end_y );	
-	public abstract void drawString( int x, int y, String str );
+	public Command( String name, String[] args ){
+		this(name);
+		this.args = args;
+	}	
+
+	public String name(){ return name; }
+	public String[] args(){ return args; }
+
+	public abstract Remnant execute( QuiltMachine machine, Remnant[] value ) throws Exception;
 }

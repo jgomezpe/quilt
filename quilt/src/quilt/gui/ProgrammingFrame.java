@@ -6,13 +6,14 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+import quilt.Language;
 import quilt.Remnant;
 import quilt.basic.BasicQuiltMachine;
 
 
 //
-//Unalcol Service structure Pack 1.0 by Jonatan Gomez-Perdomo
-//https://github.com/jgomezpe/unalcol/tree/master/services/
+//Quilt Sewer Machine 1.0 by Jonatan Gomez-Perdomo
+//https://github.com/jgomezpe/quilt/tree/master/quilt/
 //
 /**
 *
@@ -20,7 +21,7 @@ import quilt.basic.BasicQuiltMachine;
 * <P>GUI for the sewer machine.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/services/src/unalcol/clone/Clone.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/gui/ProgrammingFrame.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -64,7 +65,7 @@ public class ProgrammingFrame extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 7085997916395110108L;
-	String title = "Ambiente para Maquina de Coser";
+	String title;
 	String fileName = null;
 	String fileDir = ".";
 	FlowLayout flowLayout1 = new FlowLayout();
@@ -88,17 +89,19 @@ public class ProgrammingFrame extends JFrame {
 	
 	// The command panel
 	JToolBar jPanel3 = new JToolBar();
-	JLabel jCommandLabel = new JLabel("Comando:");
+	JLabel jCommandLabel = new JLabel();
 	FlowLayout flowLayout3 = new FlowLayout();
 	JTextField jCommand = new JTextField();
 	JButton jCommandButton = new JButton();
 
 	
-	protected BasicQuiltMachine machine=new BasicQuiltMachine();
+	protected BasicQuiltMachine machine;;
 	
 	public LogPanel getLogPanel(){ return theLogPanel; }
 
-	public ProgrammingFrame(){
+	public ProgrammingFrame(String language){
+		machine = new BasicQuiltMachine(new Language(language));
+		title = machine.message(Language.TITLE);
 		try {
 			jbInit();
 		}catch(Exception e){ e.printStackTrace();  }
@@ -116,16 +119,16 @@ public class ProgrammingFrame extends JFrame {
 		jScrollPane1.setMaximumSize(new Dimension(261, 261));
 		jScrollPane1.setMinimumSize(new Dimension(261, 261));
 		jPanel2.setLayout(borderLayout2);
-		jOpenButton.setToolTipText("Abrir");
+		jOpenButton.setToolTipText(machine.message(Language.OPEN));
 		jOpenButton.setSelectedIcon(null);
-		jOpenButton.setText("Abrir");
+		jOpenButton.setText(machine.message(Language.OPEN));
 		jOpenButton.addActionListener(new
 				QuiltMachineProgrammingFrame_jOpenButton_actionAdapter(this));
-		jSaveButton.setText("Guardar");
+		jSaveButton.setText(machine.message(Language.SAVE));
 		jSaveButton.addActionListener(new
 				QuiltMachineProgrammingFrame_jSaveButton_actionAdapter(this));
-		jCompileButton.setToolTipText("Compilar");
-		jCompileButton.setText("Compilar");
+		jCompileButton.setToolTipText(machine.message(Language.COMPILE));
+		jCompileButton.setText(machine.message(Language.COMPILE));
 		jCompileButton.addActionListener(new
 				QuiltMachineProgrammingFrame_jCompileButton_actionAdapter(this));
 		jLogPanel.setLayout(borderLayout3);
@@ -138,13 +141,15 @@ public class ProgrammingFrame extends JFrame {
 		jPanel2.add(jLogPanel, java.awt.BorderLayout.SOUTH);
 		this.getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
 		jLogPanel.add(this.theLogPanel, java.awt.BorderLayout.CENTER);
+		jCommandLabel.setText(machine.message(Language.COMMAND));
 		jPanel3.add(jCommandLabel);
 		jPanel3.add(jCommand);
-		jCommandButton.setText("Ejecutar");
+		jCommandButton.setText(machine.message(Language.EXECUTE));
 		jCommandButton.addActionListener(new
 				QuiltMachineProgrammingFrame_jCommandButton_actionAdapter(this));
 		jPanel3.add(jCommandButton);
 		jLogPanel.add(jPanel3, java.awt.BorderLayout.NORTH);
+		this.theLogPanel.getOutArea().setText(machine.message(Language.AUTHOR));
 		// Closing the window
 		this.addWindowListener( new WindowAdapter(){
 			public void windowClosing( WindowEvent e ){
@@ -174,7 +179,7 @@ public class ProgrammingFrame extends JFrame {
 	}
 
 	public void jOpenButton_actionPerformed(ActionEvent actionEvent) {
-		FileFilter filter = new FileFilter( "Archivos Maquina Coser (*.quilt)" );
+		FileFilter filter = new FileFilter( machine.message(Language.FILE)+" (*.quilt)" );
 		filter.add("quilt");
 		JFileChooser file = new JFileChooser( fileDir );
 		file.setFileFilter(filter);
@@ -224,11 +229,11 @@ public class ProgrammingFrame extends JFrame {
 		String program = jTextArea1.getText();
 		try{
 			machine.setProgram(program);
-			this.theLogPanel.getOutArea().setText("Sin errores de compilación...!!!!");
+			this.theLogPanel.getOutArea().setText(machine.message(Language.NO_ERRORS));
 			this.theLogPanel.getErrorArea().setText("");
 		}catch(Exception e){
-			JOptionPane.showMessageDialog(this, "Problemas!!! Se presentaron problemas al compilar.\nLa descripción de los errores esta en el Tab error");
-			this.theLogPanel.getOutArea().setText("Problemas!!! Se presentaron problemas al compilar.\nLa descripción de los errores esta en el Tab error");
+			JOptionPane.showMessageDialog(this, machine.message(Language.ERRORS));
+			this.theLogPanel.getOutArea().setText(machine.message(Language.ERRORS));
 			this.theLogPanel.getErrorArea().setText(e.getMessage());
 		}
 	}
@@ -242,13 +247,13 @@ public class ProgrammingFrame extends JFrame {
 		    if( frame == null ) frame = new DrawFrame();
 			frame.setVisible(true);
 			frame.setRemnant(r);
-	   	    this.theLogPanel.getOutArea().setText("Sin errores de ejecución...!!!!");
-	        this.theLogPanel.getErrorArea().setText("");
+			this.theLogPanel.getOutArea().setText(machine.message(Language.NO_ERRORS));
+			this.theLogPanel.getErrorArea().setText("");
 		}catch(Exception e){
-		      JOptionPane.showMessageDialog(this, "Problemas!!! Se presentaron problemas al ejecutar.\nLa descripción de los errores esta en el Tab error");
-		      this.theLogPanel.getOutArea().setText("Problemas!!! Se presentaron problemas al ejecutar.\nLa descripción de los errores esta en el Tab error");
-		      this.theLogPanel.getErrorArea().setText(e.getMessage());
-	    }
+			JOptionPane.showMessageDialog(this, machine.message(Language.ERRORS));
+			this.theLogPanel.getOutArea().setText(machine.message(Language.ERRORS));
+			this.theLogPanel.getErrorArea().setText(e.getMessage());
+		}
 	}
 }
 
