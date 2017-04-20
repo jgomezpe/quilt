@@ -60,8 +60,9 @@ public class Rotate extends Command{
 	public Remnant execute(Remnant value){
 		if( value instanceof StripsRemnant ){
 			StripsRemnant r = (StripsRemnant)value;
-			int[][] strips = r.strips().clone();
+			int[][] strips = new int[r.strips().length][];
 			for( int i=0; i<strips.length; i++ ){
+			    	strips[i] = r.strips()[i].clone();
 				int x = strips[i][0];
 				int y = strips[i][1];
 				strips[i][0] = y;
