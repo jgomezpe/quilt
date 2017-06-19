@@ -1,0 +1,5 @@
+false=diag
+true=rot(diag)
+and(true,true)=true
+and(false,prim)=false
+and(prim,false)=false

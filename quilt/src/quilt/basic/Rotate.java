@@ -5,8 +5,8 @@ import quilt.MinRemnant;
 import quilt.Quilt;
 import quilt.QuiltMachine;
 import quilt.Remnant;
-import quilt.StripsRemnant;
 import quilt.operation.Command;
+import quilt.strips.StripsRemnant;
 
 /**
 *
@@ -62,7 +62,7 @@ public class Rotate extends Command{
 			StripsRemnant r = (StripsRemnant)value;
 			int[][] strips = new int[r.strips().length][];
 			for( int i=0; i<strips.length; i++ ){
-			    	strips[i] = r.strips()[i].clone();
+			    strips[i] = r.strips()[i].clone();
 				int x = strips[i][0];
 				int y = strips[i][1];
 				strips[i][0] = y;
@@ -80,7 +80,7 @@ public class Rotate extends Command{
 				MinRemnant[][] r = new MinRemnant[value.columns()][value.rows()];
 				for( int i=0; i<r.length; i++ ){
 					for( int j=0; j<r[0].length; j++ ){
-						r[i][j] = (MinRemnant)execute(value.get(j, i));
+						r[i][j] = (MinRemnant)execute(value.get(j, value.columns()-i-1));
 					}
 				}
 				return new Quilt(r);
@@ -94,5 +94,11 @@ public class Rotate extends Command{
 			return execute(value[0]);
 		}
 		throw new Exception(machine.message(Language.ARGS)+" "+name());
+	}
+	
+	public String comment( String language ){
+		if( language.equals(Language.SPANISH) ) return "% Rota un retazo 90 grados en dirección contraria al reloj.\n";
+		else if( language.equals(Language.ENGLISH) ) return "% Rotates a remnant 90 degrees counter clock wise.\n";
+		return "";
 	}
 }

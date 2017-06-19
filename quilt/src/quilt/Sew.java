@@ -1,17 +1,14 @@
-package quilt.operation;
+package quilt;
 
-import quilt.Language;
-import quilt.QuiltMachine;
-import quilt.QuiltMachineParser;
-import quilt.Remnant;
+import quilt.operation.Command;
 
 /**
 *
-* Command
-* <P>A command that can be executed by the quilt machine
+* Sew
+* <P>Sews two quilts (vertical direction) if the quilts have the same number of rows (high).
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/operation/Command.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/Sew.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -49,41 +46,29 @@ import quilt.Remnant;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public abstract class Command{
-	protected String name;
-	protected String[] args=null;
-
-	public Command( String name ){
-		this.name = name;
+public class Sew extends Command{
+	public Sew() {
+		super(QuiltMachine.SEW, new String[]{"X", "Y"});
 	}
-	
-	public Command(String name, String[] args ){
-		this(name);
-		this.args = args;
-	}	
 
-	public String name(){ return name; }
-	public String[] args(){ return args; }
-
-	public abstract Remnant execute( QuiltMachine machine, Remnant[] value ) throws Exception;
-	
-	public abstract String comment( String language );
-	
-	public String toString(String language){
-		StringBuilder sb = new StringBuilder();
-		sb.append(comment(language));
-		sb.append(name);
-		if( args!=null && args.length>0 ){
-			sb.append(QuiltMachineParser.LEFT);
-			sb.append(args[0]);
-			for( int i=1; i<args.length; i++ ){
-				sb.append(QuiltMachineParser.COMMA);
-				sb.append(args[i]);
-			}
-			sb.append(QuiltMachineParser.RIGHT);
+	public Remnant execute( Remnant left, Remnant right ){
+		if( left.rows() == right.rows() ){
+			return new Quilt( left, right );
 		}
-		return sb.toString();
+		return null;
 	}
 	
-	public String toString(){ return toString(Language.SPANISH); }
+	@Override
+	public Remnant execute(QuiltMachine machine, Remnant[] value)  throws Exception{
+		if( value.length == args.length ){
+			return execute( value[0], value[1] );
+		}
+		throw new Exception(machine.message(Language.ARGS)+" "+name());
+	}
+	
+	public String comment( String language ){
+		if( language.equals(Language.SPANISH) ) return "% Cose dos retazos que tengan el mismo alto.\n";
+		else if( language.equals(Language.ENGLISH) ) return "% Sews two remnants with same high.\n";
+		return "";
+	}	
 }

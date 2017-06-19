@@ -5,10 +5,14 @@ import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 
 import quilt.Language;
+import quilt.Position;
 import quilt.Remnant;
 import quilt.basic.BasicQuiltMachine;
+import quilt.operation.Command;
+import quilt.operation.CommandCall;
 
 
 //
@@ -77,13 +81,15 @@ public class ProgrammingFrame extends JFrame {
 	BorderLayout borderLayout1 = new BorderLayout();
 	JPanel jLogPanel = new JPanel();
 	JScrollPane jScrollPane1 = new JScrollPane();
-	JTextArea jTextArea1 = new JTextArea();
+	JTextArea jProgram = new JTextArea();
 	JToolBar jToolBar1 = new JToolBar();
 	JPanel jPanel2 = new JPanel();
 	BorderLayout borderLayout2 = new BorderLayout();
 	JButton jOpenButton = new JButton();
 	JButton jSaveButton = new JButton();
 	JButton jCompileButton = new JButton();
+	JButton jRemnantButton = new JButton();
+	JButton jPrimitiveButton = new JButton();
 	LogPanel theLogPanel = new LogPanel();
 	BorderLayout borderLayout3 = new BorderLayout();
 	
@@ -108,9 +114,9 @@ public class ProgrammingFrame extends JFrame {
 	}
 	private void jbInit() throws Exception {
 		this.setSize(new Dimension(600, 400));
-		jTextArea1.setToolTipText("");
-		jTextArea1.setVerifyInputWhenFocusTarget(true);
-		jTextArea1.setText("");
+		jProgram.setToolTipText("");
+		jProgram.setVerifyInputWhenFocusTarget(true);
+		jProgram.setText("");
 		this.setTitle(title);
 		this.getContentPane().setLayout(borderLayout1);
 		jScrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -131,12 +137,22 @@ public class ProgrammingFrame extends JFrame {
 		jCompileButton.setText(machine.message(Language.COMPILE));
 		jCompileButton.addActionListener(new
 				QuiltMachineProgrammingFrame_jCompileButton_actionAdapter(this));
+		jRemnantButton.setToolTipText(machine.message(Language.REMNANT));
+		jRemnantButton.setText(machine.message(Language.REMNANT));
+		jRemnantButton.addActionListener(new
+				QuiltMachineProgrammingFrame_jRemnantButton_actionAdapter(this));
+		jPrimitiveButton.setToolTipText(machine.message(Language.PRIMITIVE));
+		jPrimitiveButton.setText(machine.message(Language.PRIMITIVE));
+		jPrimitiveButton.addActionListener(new
+				QuiltMachineProgrammingFrame_jPrimitiveButton_actionAdapter(this));
 		jLogPanel.setLayout(borderLayout3);
 		jToolBar1.add(jOpenButton);
 		jToolBar1.add(jSaveButton);
 		jToolBar1.add(jCompileButton);
+		jToolBar1.add(jRemnantButton);
+		jToolBar1.add(jPrimitiveButton);
 		jPanel2.add(jScrollPane1, java.awt.BorderLayout.CENTER);
-		jScrollPane1.getViewport().add(jTextArea1, null);
+		jScrollPane1.getViewport().add(jProgram, null);
 		jPanel2.add(jToolBar1, java.awt.BorderLayout.NORTH);
 		jPanel2.add(jLogPanel, java.awt.BorderLayout.SOUTH);
 		this.getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
@@ -161,15 +177,15 @@ public class ProgrammingFrame extends JFrame {
 	void jButton1_actionPerformed(ActionEvent e) {
 		try{
 			StringBuffer sb = new StringBuffer();
-			int n = jTextArea1.getLineCount();
+			int n = jProgram.getLineCount();
 			for (int i = 0; i < n; i++) {
-				int start = jTextArea1.getLineStartOffset(i);
-				int end = jTextArea1.getLineEndOffset(i);
+				int start = jProgram.getLineStartOffset(i);
+				int end = jProgram.getLineEndOffset(i);
 				String line;
 				if( i == n - 1 ){
-					line = jTextArea1.getText(start, end - start);
+					line = jProgram.getText(start, end - start);
 				}else{
-					line = jTextArea1.getText(start, end - start - 1);
+					line = jProgram.getText(start, end - start - 1);
 				}
 
 				sb.append(line);
@@ -195,7 +211,7 @@ public class ProgrammingFrame extends JFrame {
 					sb.append('\n');
 					s = reader.readLine();
 				}
-				jTextArea1.setText(sb.toString());
+				jProgram.setText(sb.toString());
 				reader.close();
 				this.setTitle(title + " [" + fileName + "]");
 			}catch (Exception e){ e.printStackTrace(); }
@@ -203,7 +219,7 @@ public class ProgrammingFrame extends JFrame {
 	}
 
 	public void jSaveButton_actionPerformed(ActionEvent actionEvent) {
-		FileFilter filter = new FileFilter(  "Archivos Maquina Coser (*.quilt)"  );
+		FileFilter filter = new FileFilter(  machine.message(Language.FILE)+" (*.quilt)"  );
 		filter.add("quilt");
 		JFileChooser file = new JFileChooser( fileDir );
 		file.setFileFilter(filter);
@@ -218,42 +234,97 @@ public class ProgrammingFrame extends JFrame {
 					fileName += fileExt;
 				}
 				FileWriter writer = new FileWriter(fileDir);
-				writer.write(jTextArea1.getText());
+				writer.write(jProgram.getText());
 				writer.close();
 				this.setTitle(title + " [" + fileName + "]");
 			}catch( Exception e ){ e.printStackTrace(); }
 		}
 	}
 
+	public void jPrimitiveButton_actionPerformed(ActionEvent actionEvent) {
+		Command[] commands = machine.primitives();
+		StringBuilder sb = new StringBuilder();
+		for( Command c:commands ){
+			sb.append(c.toString(machine.language().current()));
+			sb.append('\n');
+		}
+		this.theLogPanel.getOutArea().setText(sb.toString());
+		this.theLogPanel.getErrorArea().setText("");
+	}
+
+	public void jRemnantButton_actionPerformed(ActionEvent actionEvent) {
+		String[] remnants = machine.remnants();
+		StringBuilder sb = new StringBuilder();
+		for( String r:remnants ){
+			sb.append(r);
+			sb.append('\n');
+		}
+		this.theLogPanel.getOutArea().setText(sb.toString());
+		this.theLogPanel.getErrorArea().setText("");
+	}
+	
+	public void show_error_message( JTextComponent code_area, Exception e ){
+		if( frame != null ) frame.setVisible(false);
+		String msg = e.getMessage();	
+		System.out.println(msg);
+		int k = msg.indexOf(Language.MSG_SEPARATOR);
+		JOptionPane.showMessageDialog(this, machine.message(Language.ERRORS));
+		this.theLogPanel.getOutArea().setText(machine.message(Language.ERRORS));
+		this.theLogPanel.getErrorArea().setText(msg.substring(k+1));
+		this.theLogPanel.select(false);
+		Position pos = new Position(msg.substring(0, k));
+		if( pos.row()==-1 ){
+			code_area=jCommand;
+			pos.setRow(0);
+		}
+		String str = code_area.getText();
+		int caret = 0;
+		int i=0;
+		while( i<pos.row() ){
+			while(str.charAt(caret)!='\n') caret++;
+			caret++;
+			i++;
+		}
+		code_area.setCaretPosition(caret+pos.column());
+		code_area.requestFocusInWindow();
+	}
+
 	public void jCompileButton_actionPerformed(ActionEvent actionEvent) {
-		String program = jTextArea1.getText();
+		String program = jProgram.getText();
 		try{
 			machine.setProgram(program);
 			this.theLogPanel.getOutArea().setText(machine.message(Language.NO_ERRORS));
 			this.theLogPanel.getErrorArea().setText("");
+			this.theLogPanel.select(true);
 		}catch(Exception e){
-			JOptionPane.showMessageDialog(this, machine.message(Language.ERRORS));
-			this.theLogPanel.getOutArea().setText(machine.message(Language.ERRORS));
-			this.theLogPanel.getErrorArea().setText(e.getMessage());
+			show_error_message(jProgram, e);
 		}
 	}
-
+	
 	protected DrawFrame frame = null;
 	public void jCommandButton_actionPerformed(ActionEvent actionEvent) {
 		String program = jCommand.getText();
+		CommandCall command=null;
 		try{
-			Remnant r = machine.execute(program);
-		    this.theLogPanel.getOutArea().setText(r.toString());
-		    if( frame == null ) frame = new DrawFrame();
-			frame.setVisible(true);
-			frame.setRemnant(r);
-			this.theLogPanel.getOutArea().setText(machine.message(Language.NO_ERRORS));
-			this.theLogPanel.getErrorArea().setText("");
+			command = machine.command(program);
+			command.setRow(-1);
 		}catch(Exception e){
-			JOptionPane.showMessageDialog(this, machine.message(Language.ERRORS));
-			this.theLogPanel.getOutArea().setText(machine.message(Language.ERRORS));
-			this.theLogPanel.getErrorArea().setText(e.getMessage());
+			show_error_message(jCommand, e);
 		}
+		if( command != null ){
+			try{
+				Remnant r = machine.execute(command);
+			    //this.theLogPanel.getOutArea().setText(r.toString());
+			    if( frame == null ) frame = new DrawFrame();
+				frame.setVisible(true);
+				frame.setRemnant(r);
+				if(this.theLogPanel.getOutArea().getText().contains(Language.ERROR) ) this.theLogPanel.getOutArea().setText(machine.message(Language.NO_ERRORS));
+				this.theLogPanel.select(true);
+				this.theLogPanel.getErrorArea().setText("");
+			}catch(Exception e){
+				show_error_message(jProgram, e);
+			}
+		}	
 	}
 }
 
@@ -265,6 +336,28 @@ class QuiltMachineProgrammingFrame_jCompileButton_actionAdapter implements Actio
 
 	public void actionPerformed(ActionEvent actionEvent) {
 		adaptee.jCompileButton_actionPerformed(actionEvent);
+	}
+}
+
+class QuiltMachineProgrammingFrame_jRemnantButton_actionAdapter implements ActionListener {
+	private ProgrammingFrame adaptee;
+	QuiltMachineProgrammingFrame_jRemnantButton_actionAdapter(ProgrammingFrame adaptee) {
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent actionEvent) {
+		adaptee.jRemnantButton_actionPerformed(actionEvent);
+	}
+}
+
+class QuiltMachineProgrammingFrame_jPrimitiveButton_actionAdapter implements ActionListener {
+	private ProgrammingFrame adaptee;
+	QuiltMachineProgrammingFrame_jPrimitiveButton_actionAdapter(ProgrammingFrame adaptee) {
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent actionEvent) {
+		adaptee.jPrimitiveButton_actionPerformed(actionEvent);
 	}
 }
 

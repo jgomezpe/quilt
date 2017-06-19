@@ -3,7 +3,9 @@ package quilt.operation;
 import java.util.Hashtable;
 
 import quilt.Language;
+import quilt.Position;
 import quilt.QuiltMachine;
+import quilt.QuiltMachineParser;
 import quilt.Remnant;
 
 /**
@@ -50,46 +52,60 @@ import quilt.Remnant;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class CommandDef {
+public class CommandDef extends Position{
 	protected String name;
-	protected String[] args=null;
+	protected CommandCall[] args=null;
 	protected CommandCall body=null;
 	protected Command primitive=null;
 
-	public CommandDef( String name, String[] args, CommandCall body ){
+	public CommandDef( Position pos, String name, CommandCall[] args, CommandCall body ){
+		super( pos );
 		this.name = name;
 		this.args = args;
 		this.body = body;
 	}
-	
-	public CommandDef( String name, String[] args, Command primitive ){
-		this.name = name;
-		this.args = args;
-		this.primitive = primitive;
+		
+	public CommandDef( Command c ){
+		this.name = c.name();
+		String[] c_args = c.args();
+		args = new CommandCall[c_args.length];
+		Position pos = new Position();
+		for( int i=0; i<c_args.length; i++ ) args[i] = new CommandCall(pos, c_args[i]); 
+		this.primitive = c;
 	}
 	
 	public String name(){ return name; }
 	public int arity(){ return args.length; }
 	
 	public Remnant execute( QuiltMachine machine, Remnant[] value ) throws Exception{
-		if( value.length != args.length ) throw new Exception(machine.message(Language.ARGS)+" "+name());
+		Language language = machine.language();
+		if( value.length != args.length ) throw language.error(this, language.get(Language.ARGS)+" "+name());
 		if( body != null ){
 			Hashtable<String,Remnant> vars = new Hashtable<String,Remnant>();
 			for( int i=0; i<args.length; i++ ){
-				int p = args[i].indexOf('.');
-				if( p >= 0 ){
-					if( value[i].columns()==1 ) throw new Exception(machine.message(Language.UNSTITCH)+" "+name());
-					Remnant[] divided = value[i].unstitch();
-					vars.put(args[i].substring(0, p), divided[0]);
-					vars.put(args[i].substring(p+1), divided[1]);
+				if( args[i].stitch() ){
+					String[] parts = args[i].name().split("\\"+QuiltMachineParser.STITCH);
+					if( value[i].columns()<parts.length ) throw language.error(this, language.get(Language.UNSTITCH)+" "+name());
+					Remnant last = value[i];
+					for( int k=parts.length-1; k>0; k--){
+						Remnant[] divided = last.unstitch();
+						vars.put(parts[k], divided[1]);
+						last=divided[0];
+					}
+					vars.put(parts[0], last);					
 				}else{
-					if( args[i].startsWith(QuiltMachine.PRIMITIVE) ){
-						if( value[i].rows()>1 || value[i].columns()>1 ) throw new Exception(machine.message(Language.QUILT)+" "+name());
-						vars.put(args[i], value[i].get(0, 0));
+					if( args[i].primitive() ){
+						if( value[i].rows()>1 || value[i].columns()>1 ) throw language.error(this, language.get(Language.QUILT)+" "+name());
+						vars.put(args[i].name(), value[i].get(0, 0));
 					}else{
-						Remnant r = machine.remnant(args[i]);
-						if( r!=null && !r.equals(value[i]) ) throw new Exception(machine.message(Language.MISMATCH)+" "+name());
-						vars.put(args[i], value[i]);
+						Remnant r;
+						try{
+							r = args[i].execute(machine, new Hashtable<String, Remnant>());
+						}catch(Exception e){
+							r = null;
+							vars.put(args[i].name(), value[i]);
+						}	
+						if( r!=null && !r.equals(value[i]) ) throw language.error(this, language.get(Language.MISMATCH)+" "+name());
 					}
 				}
 			}
@@ -133,4 +149,5 @@ public class CommandDef {
 	public String toString(){
 		return toString(0);
 	}
+	
 }

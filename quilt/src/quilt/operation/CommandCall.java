@@ -4,7 +4,9 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import quilt.Language;
+import quilt.Position;
 import quilt.QuiltMachine;
+import quilt.QuiltMachineParser;
 import quilt.Remnant;
 
 /**
@@ -51,25 +53,92 @@ import quilt.Remnant;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class CommandCall {
+public class CommandCall extends Position{
 	protected String name;
 	protected CommandCall[] args=null;
+	protected boolean stitch = false;
+	protected boolean composed = false;
+	protected boolean composed_computed = false;
 
-	public CommandCall( String name ){
+	public CommandCall( Position pos, String name ){
+		super( pos );
 		this.name = name;
+		stitch = name.indexOf(QuiltMachineParser.STITCH)>=0;
+		if(stitch){
+			String[] parts = name.split("\\"+QuiltMachineParser.STITCH);
+			int r=row;
+			int c=column;
+			CommandCall last = new CommandCall(new Position(r,c),parts[0]);
+			int l=parts[0].length()+1;
+			for( int i=1;i<parts.length; i++){
+				c+=l;
+				CommandCall[] c_args = new CommandCall[]{last,new CommandCall(new Position(r,c),parts[i])};
+				last = new CommandCall(new Position(r, c), QuiltMachine.SEW, c_args);
+				l=parts[i].length()+1;
+			}
+			args = new CommandCall[]{last};
+		}
 	}
 	
-	public CommandCall( String name, CommandCall[] args ){
-		this(name);
+	public CommandCall( Position pos, String name, CommandCall[] args ){
+		this(pos, name);
 		this.args = args;
 	}
 
+	public void setRow(int row){ 
+		this.row = row;
+		if( args!=null ) for( CommandCall c:args ) c.setRow(row);
+	}
+	
+	public boolean stitch(){ return stitch; }
+	public boolean primitive(){ return name.startsWith(QuiltMachine.PRIMITIVE); }
+
 	public String name(){ return name; }
 	public CommandCall[] args(){ return args; }
+
 	public int arity(){ return args!=null?args.length:0; }
 	
+	protected int pos(String str, String[] prim){
+		int k=0;
+		while( k<prim.length && str.indexOf(prim[k])!=0 ) k++;
+		if( k<prim.length ) return prim[k].length();
+		else return -1;
+	}
+	
+	protected boolean composed(QuiltMachine machine){
+		if( !composed_computed ){
+			composed_computed = true;
+			String[] prim = machine.remnants();
+			Vector<String> rs = new Vector<String>();
+			String xname = new String(name);
+			int k = pos(xname, prim);
+			while( k>0 ){
+				rs.add(xname.substring(0,k));
+				xname = xname.substring(k);
+				k = pos(xname, prim);
+			}
+			composed = rs.size()>1 && xname.length()==0;
+			if( composed ){
+				int r=row;
+				int c=column;
+				CommandCall last = new CommandCall(new Position(r,c),rs.get(0));
+				int l=rs.get(0).length();
+				for( int i=1;i<rs.size(); i++){
+					c+=l;
+					CommandCall[] c_args = new CommandCall[]{last,new CommandCall(new Position(r,c),rs.get(i))};
+					last = new CommandCall(new Position(r, c), QuiltMachine.SEW, c_args);
+					l=rs.get(i).length();
+				}
+				args = new CommandCall[]{last};				
+			}
+		}
+		return composed;
+	}
+		
 	public Remnant execute( QuiltMachine machine, Hashtable<String, Remnant> values ) throws Exception{
+		Language language = machine.language();
 		Remnant r=null;
+		if( stitch() || composed(machine) ) return args[0].execute(machine, values);
 		if( arity()==0 ){
 			// Checking basic remnants
 			r = machine.remnant( name() ); 
@@ -80,19 +149,19 @@ public class CommandCall {
 			// Checking the list of defined commands
 			Vector<CommandDef> def = machine.get(name());
 			// If there is not a command with the given name return null
-			if( def == null || def.size()==0 ) throw new Exception( machine.message(Language.UNDEFINED)+" "+name());
+			if( def == null || def.size()==0 ) throw language.error(this, language.get(Language.UNDEFINED)+" "+name());
 			// Checking for a command with no arguments
 			int i=0; 
 			while( i<def.size() && def.get(i).arity()!=0 ){ i++; }
 			// If not command matches return null
-			if( i==def.size() )  throw new Exception( machine.message(Language.ARGS)+" "+name());			
+			if( i==def.size() )  throw language.error(this, language.get(Language.ARGS)+" "+name());			
 			// Executes the first command matching the name
 			return def.get(i).execute(machine, new Remnant[0]);
 		}else{
 			// Obtains a command matching the name
 			Vector<CommandDef> def = machine.get(name());
 			// If not command matches the name return null
-			if( def == null || def.size()==0 )  throw new Exception( machine.message(Language.UNDEFINED)+" "+name());
+			if( def == null || def.size()==0 )  throw language.error(this, language.get(Language.UNDEFINED)+" "+name());
 			Remnant[] val = null; 
 			String str = machine.message(Language.ARGS)+" "+name();
 			int i=0;

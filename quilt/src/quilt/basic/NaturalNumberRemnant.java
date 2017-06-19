@@ -2,8 +2,8 @@ package quilt.basic;
 
 import quilt.MinRemnant;
 import quilt.Remnant;
-import quilt.StripsRemnant;
 import quilt.gui.Drawer;
+import quilt.strips.StripsRemnant;
 
 /**
 *

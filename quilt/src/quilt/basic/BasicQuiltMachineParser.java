@@ -1,17 +1,16 @@
-package quilt.operation;
+package quilt.basic;
 
 import quilt.Language;
-import quilt.QuiltMachine;
 import quilt.QuiltMachineParser;
-import quilt.Remnant;
+import quilt.operation.CommandDef;
 
 /**
 *
-* Command
-* <P>A command that can be executed by the quilt machine
+* BasicQuiltMachineParser
+* <P>A parser for the language of the basic quilt machine.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/operation/Command.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/basic/BasicQuiltMachineParser.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -49,41 +48,71 @@ import quilt.Remnant;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public abstract class Command{
-	protected String name;
-	protected String[] args=null;
-
-	public Command( String name ){
-		this.name = name;
+public class BasicQuiltMachineParser extends QuiltMachineParser{
+	
+	public BasicQuiltMachineParser(){
+		super();
 	}
 	
-	public Command(String name, String[] args ){
-		this(name);
-		this.args = args;
-	}	
-
-	public String name(){ return name; }
-	public String[] args(){ return args; }
-
-	public abstract Remnant execute( QuiltMachine machine, Remnant[] value ) throws Exception;
+	public BasicQuiltMachineParser( Language message ){
+		super(message);
+	}
 	
-	public abstract String comment( String language );
+	public BasicQuiltMachineParser( Language message, String program ){
+		super( message, program );
+	}
 	
-	public String toString(String language){
+	
+	public String name() throws Exception{
 		StringBuilder sb = new StringBuilder();
-		sb.append(comment(language));
-		sb.append(name);
-		if( args!=null && args.length>0 ){
-			sb.append(QuiltMachineParser.LEFT);
-			sb.append(args[0]);
-			for( int i=1; i<args.length; i++ ){
-				sb.append(QuiltMachineParser.COMMA);
-				sb.append(args[i]);
-			}
-			sb.append(QuiltMachineParser.RIGHT);
+		char c = current();
+		while( Character.isLetterOrDigit(c) || c=='_' ){
+			sb.append(c);
+			c = advance();
 		}
+		String txt = sb.toString();
+		if(txt.length()>0) return txt;
+		throw error_message(message.get(Language.LETTER_DIGIT));
+	}
+	
+	public String s_name() throws Exception{
+		char c = current();
+		if( !Character.isLetter(c) ) throw error_message(message.get(Language.LETTER));
+		StringBuilder sb = new StringBuilder();
+		sb.append(c);
+		c = advance();
+		String txt = name(); 
+		sb.append(txt);
 		return sb.toString();
 	}
 	
-	public String toString(){ return toString(Language.SPANISH); }
+	public String variable() throws Exception{
+		StringBuilder sb = new StringBuilder();
+		sb.append(name());
+		char c = current();
+		if( c==STITCH ){
+			sb.append(c);
+			c = advance();
+			sb.append(name());
+		}
+		return sb.toString();
+	}	
+	
+	public CommandDef[] apply( String[] remnants, CommandDef[] commands, String program ){
+		return null;
+	}
+	
+	public static void main( String[] args ){
+		String program = "function(X,Y.Z),=rot(sew(X,Y))";
+		BasicQuiltMachineParser parser = new BasicQuiltMachineParser();
+		parser.init(Language.SPANISH);
+		try{
+			CommandDef[] commands = parser.apply(program);
+			for( int i=0; i<commands.length; i++){
+				System.out.println(commands[i]);
+			}			
+		}catch( Exception e ){
+			System.out.println(e.getMessage());
+		}
+	}
 }

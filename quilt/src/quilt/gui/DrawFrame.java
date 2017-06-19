@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 
 import quilt.Remnant;
-import quilt.basic.BasicQuiltMachine;
 
 //
 //Quilt Sewer Machine 1.0 by Jonatan Gomez-Perdomo
@@ -87,17 +86,4 @@ public class DrawFrame extends JFrame {
 		this.getContentPane().setLayout(borderLayout1);
 	    this.getContentPane().add(drawPanel,  BorderLayout.CENTER);
 	}  
-	
-	public static void main( String[] args ){
-		BasicQuiltMachine m = new BasicQuiltMachine();
-		try{
-			Remnant r = m.execute("sew(rot(sew(diag,diag)),rot(sew(squa,squa)))");
-			DrawFrame frame = new DrawFrame();
-			frame.setVisible(true);
-			frame.setRemnant(r);
-		}catch(Exception e){
-			System.out.println(e.getMessage());
-		}
-	}
-	
 }

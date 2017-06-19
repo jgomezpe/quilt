@@ -1,17 +1,12 @@
-package quilt.operation;
-
-import quilt.Language;
-import quilt.QuiltMachine;
-import quilt.QuiltMachineParser;
-import quilt.Remnant;
+package quilt.strips;
 
 /**
 *
-* Command
-* <P>A command that can be executed by the quilt machine
+* Strips
+* <P>Utility for strips based Remnants.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/operation/Command.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/strips/Strips.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -49,41 +44,58 @@ import quilt.Remnant;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public abstract class Command{
-	protected String name;
-	protected String[] args=null;
-
-	public Command( String name ){
-		this.name = name;
+public class Strips {
+	public static int compare( int[] one, int[] two ){
+		int k=0;
+		while( k<one.length && one[k]==two[k] ) k++;
+		if(k==one.length) return 0;
+		else return one[k]-two[k];
 	}
 	
-	public Command(String name, String[] args ){
-		this(name);
-		this.args = args;
-	}	
-
-	public String name(){ return name; }
-	public String[] args(){ return args; }
-
-	public abstract Remnant execute( QuiltMachine machine, Remnant[] value ) throws Exception;
-	
-	public abstract String comment( String language );
-	
-	public String toString(String language){
-		StringBuilder sb = new StringBuilder();
-		sb.append(comment(language));
-		sb.append(name);
-		if( args!=null && args.length>0 ){
-			sb.append(QuiltMachineParser.LEFT);
-			sb.append(args[0]);
-			for( int i=1; i<args.length; i++ ){
-				sb.append(QuiltMachineParser.COMMA);
-				sb.append(args[i]);
+	public static void sort( int[][] strips ){
+		int n = strips.length; 
+		if(n<8){
+			for( int i=0; i<n-1; i++ ){
+				for( int j=i+1; j<n; j++ ){
+					if( compare(strips[i],strips[j]) > 0 ){
+						int[] t = strips[i];
+						strips[i] = strips[j];
+						strips[j] = t;
+					}
+				}
 			}
-			sb.append(QuiltMachineParser.RIGHT);
+		}else{
+			int m = n/2;
+			int[][] L = new int[m][];
+			int[][] R = new int[n-m][];
+			for( int i=0; i<m; i++){ L[i]=strips[i]; }
+			int j=m;
+			for( int i=0; i<R.length; i++){ R[i]=strips[j]; j++; }
+			sort(L);
+			sort(R);
+			int i=0;
+			j=0;
+			int k=0;
+			while(i<L.length&&j<R.length){
+				if(compare(L[i],R[j])<0){
+					strips[k] = L[i];
+					i++;
+				}else{
+					strips[k] = R[j];
+					j++;
+				}
+				k++;
+			}
+			while(i<L.length){
+				strips[k] = L[i];
+				i++;
+				k++;
+			}
+			while(j<R.length){
+				strips[k] = R[j];
+				j++;
+				k++;
+			}
 		}
-		return sb.toString();
 	}
-	
-	public String toString(){ return toString(Language.SPANISH); }
 }

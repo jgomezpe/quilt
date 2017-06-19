@@ -47,6 +47,7 @@ import java.util.Hashtable;
 * @version 1.0
 */
 public class Language {
+	public static final char MSG_SEPARATOR=':'; 
 	public static final String SPANISH = "español";
 	public static final String ENGLISH = "english";
 	public static final String ERROR = "error";
@@ -62,6 +63,7 @@ public class Language {
 	public static final String UNSTITCH = "unstitch";
 	public static final String QUILT = "quilt";
 	public static final String REMNANT = "remnant";
+	public static final String PRIMITIVE = "primitive";
 	public static final String MISMATCH = "mismatch";
 	public static final String UNDEFINED = "undefined";
 	public static final String OPEN = "open";
@@ -88,6 +90,8 @@ public class Language {
 	}
 	
 	public void spanish(){
+		message.put(REMNANT, "Retazo");
+		message.put(PRIMITIVE, "Funcion Basica");
 		message.put(ERROR, "Error");
 		message.put(AT, "en la");	
 		message.put(ROW, "fila");
@@ -115,6 +119,8 @@ public class Language {
 	}
 	
 	public void english(){
+		message.put(REMNANT, "Remnant");
+		message.put(PRIMITIVE, "Primitive Function");
 		message.put(ERROR, "Error");
 		message.put(AT, "at");
 		message.put(ROW, "Row");
@@ -147,7 +153,32 @@ public class Language {
 		if( language.equals(ENGLISH)) english();
 	}	
 	
+	public String current(){ return language; }
+	
 	public String get( String code ){
 		return message.get(code);
 	}
+		
+	public Exception error( Position pos, String c ){
+		pos = new Position(pos);
+		int row = pos.row();
+		int column = pos.column();
+		StringBuilder sb = new StringBuilder();
+		sb.append(pos.toString());
+		sb.append(MSG_SEPARATOR);
+		sb.append(message.get(Language.ERROR));
+		sb.append(' ');
+		sb.append(message.get(Language.AT));
+		sb.append(' ');
+		sb.append(message.get(Language.ROW));
+		sb.append(' ');
+		sb.append(""+(row+1));
+		sb.append(' ');
+		sb.append(message.get(Language.COLUMN));
+		sb.append(' ');
+		sb.append(""+(column+1));
+		sb.append(": ");
+		sb.append(c);
+		return new Exception(sb.toString());
+	}	
 }

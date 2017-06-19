@@ -1,9 +1,11 @@
 package quilt;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import quilt.operation.Command;
+import quilt.operation.CommandCall;
 import quilt.operation.CommandDef;
 
 /**
@@ -54,6 +56,7 @@ public abstract class QuiltMachine {
 	protected Hashtable<String, Vector<CommandDef>> commands = new Hashtable<String,Vector<CommandDef>>();
 	protected Hashtable<String, Remnant> remnants = new Hashtable<String,Remnant>();
 	public static final String PRIMITIVE="prim";
+	public static final String SEW = "sew";
 	
 	protected Language message;
 	
@@ -64,12 +67,14 @@ public abstract class QuiltMachine {
 	
 	public String message( String code ){ return message.get(code); }
 	
+	public Language language(){ return message; }
+	
 	public void addPrimitives(){
 		Command[] primitives = this.primitives();
 		CommandDef[] primitives_def = new CommandDef[primitives.length];
 		for( int i=0; i<primitives.length; i++ ){
 			//System.out.println( "Adding.. "+primitives[i].name());
-			primitives_def[i] = new CommandDef(primitives[i].name(), primitives[i].args(), primitives[i]);
+			primitives_def[i] = new CommandDef(primitives[i]);
 		}
 		this.add(primitives_def);		
 	}
@@ -94,9 +99,42 @@ public abstract class QuiltMachine {
 		return commands.get(command);
 	}
 
-	public abstract Command[] primitives();
-
 	public Remnant remnant( String remnant ){
 		return remnants.get(remnant);
 	}	
+	
+	public String[] remnants(){
+		Enumeration<String> keys = remnants.keys();
+		Vector<String> v = new Vector<String>();
+		while( keys.hasMoreElements() ){
+			v.add(keys.nextElement());
+		}
+		String[] r = new String[v.size()];
+		for( int i=0; i<v.size(); i++ ) r[i] = v.get(i);
+		return r;
+	}
+	
+	public CommandCall command(String command) throws Exception{
+		QuiltMachineParser parser = parser(command);
+		return parser.command();
+	}
+	
+	public Remnant execute(CommandCall comm) throws Exception{
+		return comm.execute(this, new Hashtable<String,Remnant>());
+	}
+	
+	public void addDef( String program ) throws Exception{
+		QuiltMachineParser parser = parser(program);
+		CommandDef[] comm_def = parser.apply();
+		this.add(comm_def);
+	}
+	
+	public void setProgram( String program ) throws Exception{
+		init();
+		addDef(program);
+	}
+	
+	public abstract Command[] primitives();	
+	
+	public abstract QuiltMachineParser parser( String code );
 }

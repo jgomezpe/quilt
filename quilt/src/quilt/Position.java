@@ -1,17 +1,12 @@
-package quilt.operation;
-
-import quilt.Language;
-import quilt.QuiltMachine;
-import quilt.QuiltMachineParser;
-import quilt.Remnant;
+package quilt;
 
 /**
 *
-* Command
-* <P>A command that can be executed by the quilt machine
+* Position
+* <P>Coordinates in the source code of elements of a program or command.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/operation/Command.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/Position.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -49,41 +44,37 @@ import quilt.Remnant;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public abstract class Command{
-	protected String name;
-	protected String[] args=null;
-
-	public Command( String name ){
-		this.name = name;
+public class Position {
+	protected int row;
+	protected int column;
+	
+	public Position(){
+		row = 0;
+		column = 0;
 	}
 	
-	public Command(String name, String[] args ){
-		this(name);
-		this.args = args;
+	public Position( Position pos ){
+		this.row = pos.row();
+		this.column = pos.column();
+	}
+	
+	public Position( int row, int column ){
+		this.column = column;
+		this.row = row;
+	}
+	
+	public Position( String pos ){
+		int k = pos.indexOf(','); 
+		row = Integer.parseInt(pos.substring(1, k));
+		column = Integer.parseInt(pos.substring(k+1,pos.length()-1));
+	}
+	
+	public void setRow(int row){ this.row = row; }
+	
+	public int row(){ return row; }
+	public int column(){ return column; }
+	
+	public String toString(){
+		return "("+row+","+column+")";
 	}	
-
-	public String name(){ return name; }
-	public String[] args(){ return args; }
-
-	public abstract Remnant execute( QuiltMachine machine, Remnant[] value ) throws Exception;
-	
-	public abstract String comment( String language );
-	
-	public String toString(String language){
-		StringBuilder sb = new StringBuilder();
-		sb.append(comment(language));
-		sb.append(name);
-		if( args!=null && args.length>0 ){
-			sb.append(QuiltMachineParser.LEFT);
-			sb.append(args[0]);
-			for( int i=1; i<args.length; i++ ){
-				sb.append(QuiltMachineParser.COMMA);
-				sb.append(args[i]);
-			}
-			sb.append(QuiltMachineParser.RIGHT);
-		}
-		return sb.toString();
-	}
-	
-	public String toString(){ return toString(Language.SPANISH); }
 }

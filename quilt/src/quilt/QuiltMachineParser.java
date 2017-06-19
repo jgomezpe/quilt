@@ -1,16 +1,17 @@
-package quilt.operation;
+package quilt;
 
 import java.util.Vector;
 
-import quilt.Language;
+import quilt.operation.CommandCall;
+import quilt.operation.CommandDef;
 
 /**
 *
 * QuiltMachineParser
-* <P>A parser for the language of the quilt machine.
+* <P>Abstract parser of the Quilt programming language.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/operation/QuiltMachineParser.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/QuiltMachineParser.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -48,26 +49,32 @@ import quilt.Language;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class QuiltMachineParser{
+public abstract class QuiltMachineParser extends Position{
 	protected static final char EOF=(char)-1;
-	
-	protected int offset;
-	protected String program="";
-	protected int row;
-	protected int column;
+	protected static final char COMMENT='%';
+	public static final char COMMA=',';
+	public static final char STITCH='|';
+	protected static final char EOL='\n';
+	protected static final char SPACE=' ';
+	protected static final char TAB='\t';
+	public static final char ASSIGN='=';
+	public static final char LEFT='(';
+	public static final char RIGHT=')';
+
 	protected Language message;
+	protected String program="";
+	protected int offset;
 	
-	public QuiltMachineParser(){
-		this( new Language() );
-	}
+	public QuiltMachineParser(){ this( new Language() ); }
 	
 	public QuiltMachineParser( Language message ){
+		super(0,0);
 		this.message = message;
 		offset = 0;
 	}
 	
-	public QuiltMachineParser( Language message, String program ){
-		this( message );
+	public QuiltMachineParser( Language message, String program){
+		this(message);
 		this.program = program;
 	}
 	
@@ -81,7 +88,7 @@ public class QuiltMachineParser{
 
 	public char advance(){
 		char c = current();
-		if( c=='\n' ){
+		if( c==EOL ){
 			row++;
 			column=0;
 		}else{
@@ -93,7 +100,7 @@ public class QuiltMachineParser{
 	
 	public char next(){
 		char c = current();
-		while( c==' ' || c=='\n' || c=='\t' || c=='%'){
+		while( c==SPACE || c==EOL || c==TAB || c==COMMENT){
 			comment();
 			c = advance();
 		};
@@ -105,105 +112,40 @@ public class QuiltMachineParser{
 		return next();
 	}
 	
+	public Exception error_message( char c ){ return error_message(""+c); }
+	
 	public Exception error_message( String c ){
 		StringBuilder sb = new StringBuilder();
-		sb.append(message.get(Language.ERROR));
-		sb.append(" ");
-		sb.append(message.get(Language.AT));
-		sb.append(" ");
-		sb.append(message.get(Language.ROW));
-		sb.append(" ");
-		sb.append(""+(row+1));
-		sb.append(" ");
-		sb.append(message.get(Language.COLUMN));
-		sb.append(" ");
-		sb.append(""+(column+1));
-		sb.append(": ");
 		sb.append(message.get(Language.UNSYMBOL));
 		sb.append(" [");
 		sb.append(current());
-		sb.append("]");
+		sb.append(']');
 		sb.append(", ");
 		sb.append(message.get(Language.EXPECTING));
-		sb.append(" ");
+		sb.append(' ');
 		sb.append(c);
-		return new Exception(sb.toString());
+		return message.error(this,sb.toString());
 	}
 	
 	public char comment(){
-		while( current()=='%' ){
-			while(!eof() && advance()!='\n'){};
+		while( current()==COMMENT ){
+			while(!eof() && advance()!=EOL){};
 		}
 		return current();
-	}
+	}	
 	
-	public String name() throws Exception{
-		StringBuilder sb = new StringBuilder();
-		char c = current();
-		while( Character.isLetterOrDigit(c) || c=='_' ){
-			sb.append(c);
-			c = advance();
-		}
-		String txt = sb.toString();
-		if(txt.length()>0) return txt;
-		throw error_message(message.get(Language.LETTER_DIGIT));
-	}
-	
-	public String s_name() throws Exception{
-		char c = current();
-		if( !Character.isLetter(c) ) throw error_message(message.get(Language.LETTER));
-		StringBuilder sb = new StringBuilder();
-		sb.append(c);
-		c = advance();
-		String txt = name(); 
-		sb.append(txt);
-		return sb.toString();
-	}
-	
-	public String variable() throws Exception{
-		StringBuilder sb = new StringBuilder();
-		sb.append(name());
-		char c = current();
-		if( c=='.' ){
-			sb.append(c);
-			c = advance();
-			sb.append(name());
-		}
-		return sb.toString();
-	}
-	
-	public String[] params() throws Exception{
-		char c = next();
-		if(c != '(') throw error_message("(");
-
-		Vector<String> args = new Vector<String>();
-		c = advance_next();
-		while( c!=')' ){
-			args.add(variable());
-			c = next();
-			if( c==',' ){
-				c = advance_next();
-				if( c==')' ) throw error_message(message.get(Language.LETTER_DIGIT));
-			}
-		}
-		advance_next();
-		String[] s_args = new String[args.size()];
-		for( int i=0; i<s_args.length; i++ ) s_args[i] = args.get(i);
-		return s_args;
-	}
-
 	public CommandCall[] values() throws Exception{
 		char c = next();
-		if(c != '(') throw error_message("(");
+		if(c != LEFT) throw error_message(LEFT);
 
 		Vector<CommandCall> args = new Vector<CommandCall>();
 		c = advance_next();
-		while( c!=')' ){
+		while( c!=RIGHT ){
 			args.add(command());
 			c = next();
-			if( c==',' ){
+			if( c==COMMA ){
 				c = advance_next();
-				if( c==')' ) throw error_message(message.get(Language.LETTER_DIGIT));
+				if( c==RIGHT ) throw error_message(message.get(Language.LETTER_DIGIT));
 			}
 		}
 		advance_next();
@@ -213,30 +155,48 @@ public class QuiltMachineParser{
 	}
 	
 	public CommandCall command() throws Exception{
-		String name = name();
+		Position pos = new Position(this);
+		String name = variable();
+		if( name.indexOf(STITCH)>=0 ) return new CommandCall( pos, name ); 
 		char c = next();
-		if(c == '(') return new CommandCall(name,values());
-		else return new CommandCall( name );
+		if(c == LEFT) return new CommandCall(pos, name,values());
+		else return new CommandCall(pos, name );
 	}
+
 	
-	public CommandDef command_def() throws Exception{
-		String name = s_name();
-		String[] args = null;
+	public CommandCall[] params() throws Exception{
 		char c = next();
-		if(c == '(') args = params();
-		else args = new String[0];		
-		c=next();
-		if( c!='=') throw error_message("=");
+		if(c != LEFT) throw error_message(LEFT);
+
+		Vector<CommandCall> args = new Vector<CommandCall>();
+		c = advance_next();
+		while( c!=RIGHT ){
+			args.add(command());
+			c = next();
+			if( c==COMMA ){
+				c = advance_next();
+				if( c==RIGHT ) throw error_message(message.get(Language.LETTER_DIGIT));
+			}
+		}
 		advance_next();
-		return new CommandDef(name, args, command());
+		CommandCall[] s_args = new CommandCall[args.size()];
+		for( int i=0; i<s_args.length; i++ ) s_args[i] = args.get(i);
+		return s_args;
 	}
-	
-	public CommandDef[] apply( String program ) throws Exception{
-		offset = 0;
-		this.program = program;
-		return apply();
-	}	
-	
+
+	public CommandDef command_def() throws Exception{
+		Position pos = new Position(this);
+		String name = s_name();
+		CommandCall[] args = null;
+		char c = next();
+		if(c == LEFT) args = params();
+		else args = new CommandCall[0];		
+		c=next();
+		if( c!=ASSIGN) throw error_message(ASSIGN);
+		advance_next();
+		return new CommandDef(pos,name, args, command());
+	}
+		
 	public CommandDef[] apply() throws Exception{
 		next();
 		Vector<CommandDef> commands = new Vector<CommandDef>();
@@ -245,22 +205,14 @@ public class QuiltMachineParser{
 		for( int i=0;i<cargs.length; i++ ) cargs[i] = commands.get(i); 
 		return cargs;
 	}
-	
-	public CommandDef[] apply( String[] remnants, CommandDef[] commands, String program ){
-		return null;
+
+	public CommandDef[] apply( String program ) throws Exception{
+		offset = 0;
+		this.program = program;
+		return apply();
 	}
-	
-	public static void main( String[] args ){
-		String program = "function(X,Y.Z),=rot(sew(X,Y))";
-		QuiltMachineParser parser = new QuiltMachineParser();
-		parser.init(Language.SPANISH);
-		try{
-			CommandDef[] commands = parser.apply(program);
-			for( int i=0; i<commands.length; i++){
-				System.out.println(commands[i]);
-			}			
-		}catch( Exception e ){
-			System.out.println(e.getMessage());
-		}
-	}
+
+	public abstract String name() throws Exception;
+	public abstract String s_name() throws Exception;
+	public abstract String variable() throws Exception;	
 }
