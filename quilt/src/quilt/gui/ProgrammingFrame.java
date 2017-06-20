@@ -156,6 +156,7 @@ public class ProgrammingFrame extends JFrame {
 		jPanel2.add(jToolBar1, java.awt.BorderLayout.NORTH);
 		jPanel2.add(jLogPanel, java.awt.BorderLayout.SOUTH);
 		this.getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
+		this.theLogPanel.setLanguage(machine.message(Language.OUT), machine.message(Language.ERROR));
 		jLogPanel.add(this.theLogPanel, java.awt.BorderLayout.CENTER);
 		jCommandLabel.setText(machine.message(Language.COMMAND));
 		jPanel3.add(jCommandLabel);

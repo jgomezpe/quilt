@@ -105,7 +105,7 @@ public class BasicQuiltMachineParser extends QuiltMachineParser{
 	public static void main( String[] args ){
 		String program = "function(X,Y.Z),=rot(sew(X,Y))";
 		BasicQuiltMachineParser parser = new BasicQuiltMachineParser();
-		parser.init(Language.SPANISH);
+		parser.setLanguage(Language.SPANISH);
 		try{
 			CommandDef[] commands = parser.apply(program);
 			for( int i=0; i<commands.length; i++){

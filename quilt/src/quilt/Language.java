@@ -50,6 +50,7 @@ public class Language {
 	public static final char MSG_SEPARATOR=':'; 
 	public static final String SPANISH = "español";
 	public static final String ENGLISH = "english";
+	public static final String OUT = "out";
 	public static final String ERROR = "error";
 	public static final String ROW = "row";
 	public static final String COLUMN = "column";
@@ -92,6 +93,7 @@ public class Language {
 	public void spanish(){
 		message.put(REMNANT, "Retazo");
 		message.put(PRIMITIVE, "Funcion Basica");
+		message.put(OUT, "Salida");
 		message.put(ERROR, "Error");
 		message.put(AT, "en la");	
 		message.put(ROW, "fila");
@@ -121,6 +123,7 @@ public class Language {
 	public void english(){
 		message.put(REMNANT, "Remnant");
 		message.put(PRIMITIVE, "Primitive Function");
+		message.put(OUT, "Error");
 		message.put(ERROR, "Error");
 		message.put(AT, "at");
 		message.put(ROW, "Row");

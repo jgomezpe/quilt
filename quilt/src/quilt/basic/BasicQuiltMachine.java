@@ -1,6 +1,7 @@
 package quilt.basic;
 
 import java.awt.Color;
+import java.util.Hashtable;
 
 import quilt.Language;
 import quilt.QuiltMachine;
@@ -60,34 +61,31 @@ public class BasicQuiltMachine extends QuiltMachine{
 	
 	public static final String ROTATE = "rot";
 
+	public static Hashtable<String, Remnant> loadRemnants(){
+		Hashtable<String, Remnant> t = new Hashtable<String,Remnant>();
+		t.put(DIAGONAL, new StripsRemnant(Color.green, 
+				new int[][]{ {40,0,100,60}, {50,0,100,50}, {60,0,100,40} } ) );
+		t.put(SQUARE, new StripsRemnant(Color.red, 
+				new int[][]{ {40,0,40,60}, {40,60,100,60},
+				 {50,0,50,50}, {50,50,100,50},
+				 {60,0,60,40}, {60,40,100,40} }) );
+		return t;
+	}
+	
 	public BasicQuiltMachine(){
 		this(new Language());
 	}
 	
-	public BasicQuiltMachine(Language message){
-		super(message);
-		remnants.put(DIAGONAL, new StripsRemnant(Color.green, 
-				new int[][]{ {40,0,100,60}, {50,0,100,50}, {60,0,100,40} } ) );
-		remnants.put(SQUARE, new StripsRemnant(Color.red, 
-				new int[][]{ {40,0,40,60}, {40,60,100,60},
-				 {50,0,50,50}, {50,50,100,50},
-				 {60,0,60,40}, {60,40,100,40} }) );
+	
+	public BasicQuiltMachine( Language message){
+		super(new Command[]{ new Rotate(), new Sew()}, loadRemnants(), new BasicQuiltMachineParser(message), message);
 	}
 	
 	public Remnant remnant(String remnant) {
-		try{
+		/*try{
 			int n = Integer.parseInt(remnant);
 			return new NaturalNumberRemnant(n, (StripsRemnant)remnants.get(DIAGONAL));
-		}catch( NumberFormatException e ){}
+		}catch( NumberFormatException e ){}*/
 		return super.remnant(remnant);
 	}
-
-	public Command[] primitives() {
-		return new Command[]{ new Rotate(), new Sew()};
-	}
-
-	public BasicQuiltMachineParser parser( String code ){
-		return new BasicQuiltMachineParser(message, code);
-	}
-	
 }

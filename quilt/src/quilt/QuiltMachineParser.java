@@ -78,7 +78,18 @@ public abstract class QuiltMachineParser extends Position{
 		this.program = program;
 	}
 	
-	public void init( String language ){
+	public void init(){
+		row=0;
+		column=0;
+		offset=0;
+	}
+
+	public void init(String program){
+		init();
+		this.program = program;
+	}
+	
+	public void setLanguage( String language ){
 		message.init(language);
 	}
 	
@@ -205,10 +216,14 @@ public abstract class QuiltMachineParser extends Position{
 		for( int i=0;i<cargs.length; i++ ) cargs[i] = commands.get(i); 
 		return cargs;
 	}
+	
+	public CommandCall command( String call ) throws Exception{
+		init(call);
+		return command();
+	}
 
 	public CommandDef[] apply( String program ) throws Exception{
-		offset = 0;
-		this.program = program;
+		init(program);
 		return apply();
 	}
 
