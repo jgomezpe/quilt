@@ -1,14 +1,23 @@
-package quilt;
+package quilt.computer;
 
-import quilt.gui.ProgrammingFrame;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 
+import javax.swing.JFrame;
+
+import quilt.Remnant;
+
+//
+//Quilt Sewer Machine 1.0 by Jonatan Gomez-Perdomo
+//https://github.com/jgomezpe/quilt/tree/master/quilt/
+//
 /**
 *
-* Sewer
-* <P>Main program.
+* DrawFrame
+* <P>Frame window for drawing quilts.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/Sewer.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/gui/DrawFrame.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -46,10 +55,35 @@ import quilt.gui.ProgrammingFrame;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class Sewer {
-	public static void main( String[] args ){
-		String lang = args.length==1?args[0]:Language.SPANISH;
-		ProgrammingFrame frame = new ProgrammingFrame(lang);
-		frame.setVisible(true);
+public class DrawFrame extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3169120551000963064L;
+
+	protected BorderLayout borderLayout1 = new BorderLayout();
+	protected DrawPanel drawPanel = new DrawPanel();
+	
+	public DrawFrame() {
+		super();
+	    try {
+	        jbInit();
+	      }
+	      catch(Exception e) {
+	        e.printStackTrace();
+	      }
 	}
+	
+	public void setRemnant( Remnant remnant ){
+		drawPanel.set(remnant);
+		drawPanel.repaint();
+	}
+
+	protected void jbInit() throws Exception {
+		this.setSize(new Dimension(500, 550));
+		this.setTitle("Colcha");
+		this.getContentPane().setLayout(borderLayout1);
+	    this.getContentPane().add(drawPanel,  BorderLayout.CENTER);
+	}  
 }

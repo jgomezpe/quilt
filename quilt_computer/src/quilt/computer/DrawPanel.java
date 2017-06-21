@@ -1,19 +1,20 @@
-package quilt.gui;
+package quilt.computer;
+import javax.swing.JPanel;
+
+import quilt.Remnant;
+import quilt.gui.Drawer;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Dimension;
 
-//
-//Quilt Sewer Machine 1.0 by Jonatan Gomez-Perdomo
-//https://github.com/jgomezpe/quilt/tree/master/quilt/
-//
 /**
 *
-* SimpleDrawer
-* <P>Simple GUI for drawing quilts.
+* DrawPanel
+* <P>Panel of the Frame window for drawing quilts.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/gui/SimpleDrawer.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/gui/DrawPanel.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -51,29 +52,44 @@ import java.awt.Graphics;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class SimpleDrawer extends Drawer{
-	
-	protected Graphics g;
-	
-	public SimpleDrawer( Graphics g, int scale ){
-		this.g = g;
-		this.scale = scale;
-	}
-	
-	@Override
-	public void drawLine(int start_x, int start_y, int end_x, int end_y){
-		g.drawLine(scale(start_x),scale(start_y),scale(end_x),scale(end_y));
+public class DrawPanel extends JPanel{
+	/**
+	 * Serialization purposes 
+	 */
+	private static final long serialVersionUID = -608013051247107752L;
+  
+	public Remnant remnant = null;
+
+	public DrawPanel(){
+		this( null );
 	}
 
-	@Override
-	public void drawString(int x, int y, String str) {
-		g.drawString(str, scale(x), scale(y));
+	public DrawPanel( Remnant remnant ) {
+		this.remnant = remnant;
+		setBackground(new Color(255,255,255));
 	}
 
-	@Override
-	public Color setColor(Color color) {
-		Color c = g.getColor();
-		g.setColor(color);
-		return c;
+	public Remnant get(){
+		return remnant;
+	}
+
+	public void set( Remnant remnant ){
+		this.remnant = remnant;
+	}
+
+	/**
+	 * Paints the graphic component
+	 * @param g Graphic component
+	 */
+	protected void paintComponent(Graphics g){
+		super.paintComponent(g);
+		if( remnant != null ){
+			Dimension d = this.getSize();
+			//System.out.println( "Painting..." + d );
+			int w = Math.min(d.width, d.height);
+			int wr = Math.max(remnant.columns(), remnant.rows());
+			Drawer drawer = new SimpleDrawer( g, w/wr );
+			remnant.draw(drawer, 0, 0);
+		}
 	}
 }

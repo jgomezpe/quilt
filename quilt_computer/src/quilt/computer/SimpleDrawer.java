@@ -1,11 +1,9 @@
-package quilt.gui;
+package quilt.computer;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.Color;
+import java.awt.Graphics;
 
-import javax.swing.JFrame;
-
-import quilt.Remnant;
+import quilt.gui.Drawer;
 
 //
 //Quilt Sewer Machine 1.0 by Jonatan Gomez-Perdomo
@@ -13,11 +11,11 @@ import quilt.Remnant;
 //
 /**
 *
-* DrawFrame
-* <P>Frame window for drawing quilts.
+* SimpleDrawer
+* <P>Simple GUI for drawing quilts.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/gui/DrawFrame.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/gui/SimpleDrawer.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -55,35 +53,29 @@ import quilt.Remnant;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class DrawFrame extends JFrame {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3169120551000963064L;
-
-	protected BorderLayout borderLayout1 = new BorderLayout();
-	protected DrawPanel drawPanel = new DrawPanel();
+public class SimpleDrawer extends Drawer{
 	
-	public DrawFrame() {
-		super();
-	    try {
-	        jbInit();
-	      }
-	      catch(Exception e) {
-	        e.printStackTrace();
-	      }
+	protected Graphics g;
+	
+	public SimpleDrawer( Graphics g, int scale ){
+		this.g = g;
+		this.scale = scale;
 	}
 	
-	public void setRemnant( Remnant remnant ){
-		drawPanel.set(remnant);
-		drawPanel.repaint();
+	@Override
+	public void drawLine(int start_x, int start_y, int end_x, int end_y){
+		g.drawLine(scale(start_x),scale(start_y),scale(end_x),scale(end_y));
 	}
 
-	protected void jbInit() throws Exception {
-		this.setSize(new Dimension(500, 550));
-		this.setTitle("Colcha");
-		this.getContentPane().setLayout(borderLayout1);
-	    this.getContentPane().add(drawPanel,  BorderLayout.CENTER);
-	}  
+	@Override
+	public void drawString(int x, int y, String str) {
+		g.drawString(str, scale(x), scale(y));
+	}
+
+	@Override
+	public Color setColor(Color color) {
+		Color c = g.getColor();
+		g.setColor(color);
+		return c;
+	}
 }

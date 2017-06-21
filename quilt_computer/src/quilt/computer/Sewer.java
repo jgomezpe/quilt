@@ -1,19 +1,14 @@
-package quilt.gui;
-import javax.swing.JPanel;
+package quilt.computer;
 
-import quilt.Remnant;
-
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Dimension;
+import quilt.Language;
 
 /**
 *
-* DrawPanel
-* <P>Panel of the Frame window for drawing quilts.
+* Sewer
+* <P>Main program.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/gui/DrawPanel.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/Sewer.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -51,44 +46,10 @@ import java.awt.Dimension;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class DrawPanel extends JPanel{
-	/**
-	 * Serialization purposes 
-	 */
-	private static final long serialVersionUID = -608013051247107752L;
-  
-	public Remnant remnant = null;
-
-	public DrawPanel(){
-		this( null );
-	}
-
-	public DrawPanel( Remnant remnant ) {
-		this.remnant = remnant;
-		setBackground(new Color(255,255,255));
-	}
-
-	public Remnant get(){
-		return remnant;
-	}
-
-	public void set( Remnant remnant ){
-		this.remnant = remnant;
-	}
-
-	/**
-	 * Paints the graphic component
-	 * @param g Graphic component
-	 */
-	protected void paintComponent(Graphics g){
-		super.paintComponent(g);
-		if( remnant != null ){
-			Dimension d = this.getSize();
-			//System.out.println( "Painting..." + d );
-			int w = Math.min(d.width, d.height);
-			int wr = Math.max(remnant.columns(), remnant.rows());
-			Drawer drawer = new SimpleDrawer( g, w/wr );
-			remnant.draw(drawer, 0, 0);
-		}
+public class Sewer {
+	public static void main( String[] args ){
+		String lang = args.length==1?args[0]:Language.SPANISH;
+		ProgrammingFrame frame = new ProgrammingFrame(lang);
+		frame.setVisible(true);
 	}
 }

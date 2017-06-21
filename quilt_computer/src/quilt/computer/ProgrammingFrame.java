@@ -1,4 +1,4 @@
-package quilt.gui;
+package quilt.computer;
 import unalcol.gui.io.FileFilter;
 import unalcol.gui.log.*;
 import java.io.*;
