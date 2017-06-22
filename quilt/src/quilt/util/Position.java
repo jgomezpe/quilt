@@ -1,12 +1,12 @@
-package quilt.strips;
+package quilt.util;
 
 /**
 *
-* Strips
-* <P>Utility for strips based Remnants.
+* Position
+* <P>Coordinates in the source code of elements of a program or command.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/strips/Strips.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/Position.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -44,58 +44,37 @@ package quilt.strips;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class Strips {
-	public static int compare( int[] one, int[] two ){
-		int k=0;
-		while( k<one.length && one[k]==two[k] ) k++;
-		if(k==one.length) return 0;
-		else return one[k]-two[k];
+public class Position {
+	protected int row;
+	protected int column;
+	
+	public Position(){
+		row = 0;
+		column = 0;
 	}
 	
-	public static void sort( int[][] strips ){
-		int n = strips.length; 
-		if(n<8){
-			for( int i=0; i<n-1; i++ ){
-				for( int j=i+1; j<n; j++ ){
-					if( compare(strips[i],strips[j]) > 0 ){
-						int[] t = strips[i];
-						strips[i] = strips[j];
-						strips[j] = t;
-					}
-				}
-			}
-		}else{
-			int m = n/2;
-			int[][] L = new int[m][];
-			int[][] R = new int[n-m][];
-			for( int i=0; i<m; i++){ L[i]=strips[i]; }
-			int j=m;
-			for( int i=0; i<R.length; i++){ R[i]=strips[j]; j++; }
-			sort(L);
-			sort(R);
-			int i=0;
-			j=0;
-			int k=0;
-			while(i<L.length&&j<R.length){
-				if(compare(L[i],R[j])<0){
-					strips[k] = L[i];
-					i++;
-				}else{
-					strips[k] = R[j];
-					j++;
-				}
-				k++;
-			}
-			while(i<L.length){
-				strips[k] = L[i];
-				i++;
-				k++;
-			}
-			while(j<R.length){
-				strips[k] = R[j];
-				j++;
-				k++;
-			}
-		}
+	public Position( Position pos ){
+		this.row = pos.row();
+		this.column = pos.column();
 	}
+	
+	public Position( int row, int column ){
+		this.column = column;
+		this.row = row;
+	}
+	
+	public Position( String pos ){
+		int k = pos.indexOf(','); 
+		row = Integer.parseInt(pos.substring(1, k));
+		column = Integer.parseInt(pos.substring(k+1,pos.length()-1));
+	}
+	
+	public void setRow(int row){ this.row = row; }
+	
+	public int row(){ return row; }
+	public int column(){ return column; }
+	
+	public String toString(){
+		return "("+row+","+column+")";
+	}	
 }

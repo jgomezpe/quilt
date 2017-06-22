@@ -1,9 +1,9 @@
 package quilt.operation;
 
-import quilt.Language;
 import quilt.QuiltMachine;
-import quilt.QuiltMachineParser;
+import quilt.QuiltSymbols;
 import quilt.Remnant;
+import quilt.util.Language;
 
 /**
 *
@@ -69,21 +69,22 @@ public abstract class Command{
 	
 	public abstract String comment( String language );
 	
+	
 	public String toString(String language){
 		StringBuilder sb = new StringBuilder();
 		sb.append(comment(language));
 		sb.append(name);
 		if( args!=null && args.length>0 ){
-			sb.append(QuiltMachineParser.LEFT);
+			sb.append(QuiltSymbols.left());
 			sb.append(args[0]);
 			for( int i=1; i<args.length; i++ ){
-				sb.append(QuiltMachineParser.COMMA);
+				sb.append(QuiltSymbols.comma());
 				sb.append(args[i]);
 			}
-			sb.append(QuiltMachineParser.RIGHT);
+			sb.append(QuiltSymbols.right());
 		}
 		return sb.toString();
 	}
 	
-	public String toString(){ return toString(Language.SPANISH); }
+	public String toString(){ return toString(Language.SPANISH); } 
 }

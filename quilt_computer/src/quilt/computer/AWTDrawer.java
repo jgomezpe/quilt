@@ -1,12 +1,20 @@
-package quilt;
+package quilt.computer;
 
+import java.awt.Graphics;
+
+import quilt.gui.Drawer;
+import quilt.gui.Color;
+//
+//Quilt Sewer Machine 1.0 by Jonatan Gomez-Perdomo
+//https://github.com/jgomezpe/quilt/tree/master/quilt/
+//
 /**
 *
-* Position
-* <P>Coordinates in the source code of elements of a program or command.
+* AWTDrawer
+* <P>Simple GUI for drawing quilts.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/Position.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/gui/AWTDrawer.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -44,37 +52,30 @@ package quilt;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class Position {
-	protected int row;
-	protected int column;
+public class AWTDrawer extends Drawer{
 	
-	public Position(){
-		row = 0;
-		column = 0;
+	protected Graphics g;
+	
+	public AWTDrawer( Graphics g, int scale ){
+		this.g = g;
+		this.scale = scale;
 	}
 	
-	public Position( Position pos ){
-		this.row = pos.row();
-		this.column = pos.column();
+	@Override
+	public void drawLine(int start_x, int start_y, int end_x, int end_y){
+		g.drawLine(scale(start_x),scale(start_y),scale(end_x),scale(end_y));
 	}
-	
-	public Position( int row, int column ){
-		this.column = column;
-		this.row = row;
+
+	@Override
+	public void drawString(int x, int y, String str) {
+		g.drawString(str, scale(x), scale(y));
 	}
-	
-	public Position( String pos ){
-		int k = pos.indexOf(','); 
-		row = Integer.parseInt(pos.substring(1, k));
-		column = Integer.parseInt(pos.substring(k+1,pos.length()-1));
+
+	@Override
+	public Color setColor(Color color) {
+		java.awt.Color awt_color = g.getColor();
+		Color quilt_color = new Color( awt_color.getRed(), awt_color.getGreen(), awt_color.getBlue(), awt_color.getAlpha()); 
+		g.setColor(new java.awt.Color(color.red(),color.green(),color.blue(),color.alpha()));
+		return quilt_color;
 	}
-	
-	public void setRow(int row){ this.row = row; }
-	
-	public int row(){ return row; }
-	public int column(){ return column; }
-	
-	public String toString(){
-		return "("+row+","+column+")";
-	}	
 }

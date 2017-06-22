@@ -1,7 +1,5 @@
 package quilt.gui;
 
-import java.awt.Color;
-
 //
 //Quilt Sewer Machine 1.0 by Jonatan Gomez-Perdomo
 //https://github.com/jgomezpe/quilt/tree/master/quilt/

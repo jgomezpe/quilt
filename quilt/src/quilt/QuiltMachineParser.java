@@ -4,6 +4,8 @@ import java.util.Vector;
 
 import quilt.operation.CommandCall;
 import quilt.operation.CommandDef;
+import quilt.util.Language;
+import quilt.util.Position;
 
 /**
 *
@@ -49,33 +51,36 @@ import quilt.operation.CommandDef;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public abstract class QuiltMachineParser extends Position{
-	protected static final char EOF=(char)-1;
-	protected static final char COMMENT='%';
-	public static final char COMMA=',';
-	public static final char STITCH='|';
-	protected static final char EOL='\n';
-	protected static final char SPACE=' ';
-	protected static final char TAB='\t';
-	public static final char ASSIGN='=';
-	public static final char LEFT='(';
-	public static final char RIGHT=')';
+public class QuiltMachineParser extends Position{
 
-	protected Language message;
+	protected QuiltMachine machine=null;
+	protected QuiltSymbols symbols = null;
 	protected String program="";
 	protected int offset;
+	protected int MAX_STITCHS;
 	
-	public QuiltMachineParser(){ this( new Language() ); }
-	
-	public QuiltMachineParser( Language message ){
-		super(0,0);
-		this.message = message;
-		offset = 0;
+	public QuiltMachineParser(){
+		this(null, 1, new QuiltSymbols());
 	}
 	
-	public QuiltMachineParser( Language message, String program){
-		this(message);
-		this.program = program;
+	public QuiltMachineParser( QuiltMachine machine, int max_stitchs, QuiltSymbols symbols ){
+		super(0,0);
+		offset = 0;
+		this.machine = machine;
+		this.symbols = symbols;
+		this.MAX_STITCHS = max_stitchs;
+	}
+
+	public QuiltMachineParser( QuiltMachine machine, int max_stitchs ){
+		this( machine, max_stitchs, new QuiltSymbols() );
+	}
+
+	public QuiltMachineParser( QuiltMachine machine ){
+		this(machine, 1, new QuiltSymbols());
+	}
+	
+	public void setMachine( QuiltMachine machine ){
+		this.machine = machine;
 	}
 	
 	public void init(){
@@ -89,17 +94,13 @@ public abstract class QuiltMachineParser extends Position{
 		this.program = program;
 	}
 	
-	public void setLanguage( String language ){
-		message.init(language);
-	}
-	
 	public boolean eof(){ return offset >= program.length(); }
 	
-	protected char current(){ return eof()?EOF:program.charAt(offset); }
+	protected char current(){ return eof()?QuiltSymbols.EOF:program.charAt(offset); }
 
 	public char advance(){
 		char c = current();
-		if( c==EOL ){
+		if( symbols.is_eol(c) ){
 			row++;
 			column=0;
 		}else{
@@ -111,7 +112,7 @@ public abstract class QuiltMachineParser extends Position{
 	
 	public char next(){
 		char c = current();
-		while( c==SPACE || c==EOL || c==TAB || c==COMMENT){
+		while( symbols.is_space(c) || symbols.is_comment(c) ){
 			comment();
 			c = advance();
 		};
@@ -127,36 +128,36 @@ public abstract class QuiltMachineParser extends Position{
 	
 	public Exception error_message( String c ){
 		StringBuilder sb = new StringBuilder();
-		sb.append(message.get(Language.UNSYMBOL));
+		sb.append(machine.message(Language.UNSYMBOL));
 		sb.append(" [");
 		sb.append(current());
 		sb.append(']');
 		sb.append(", ");
-		sb.append(message.get(Language.EXPECTING));
+		sb.append(machine.message(Language.EXPECTING));
 		sb.append(' ');
 		sb.append(c);
-		return message.error(this,sb.toString());
+		return machine.error(this,sb.toString());
 	}
 	
 	public char comment(){
-		while( current()==COMMENT ){
-			while(!eof() && advance()!=EOL){};
+		while( symbols.is_comment(current()) ){
+			while(!eof() && !symbols.is_eol(advance())){};
 		}
 		return current();
 	}	
 	
 	public CommandCall[] values() throws Exception{
 		char c = next();
-		if(c != LEFT) throw error_message(LEFT);
+		if( !symbols.is_left(c)) throw error_message(QuiltSymbols.left());
 
 		Vector<CommandCall> args = new Vector<CommandCall>();
 		c = advance_next();
-		while( c!=RIGHT ){
+		while( !symbols.is_right(c) ){
 			args.add(command());
 			c = next();
-			if( c==COMMA ){
+			if( symbols.is_comma(c) ){
 				c = advance_next();
-				if( c==RIGHT ) throw error_message(message.get(Language.LETTER_DIGIT));
+				if( symbols.is_right(c) ) throw error_message(machine.message(Language.LETTER_DIGIT)); 
 			}
 		}
 		advance_next();
@@ -168,25 +169,25 @@ public abstract class QuiltMachineParser extends Position{
 	public CommandCall command() throws Exception{
 		Position pos = new Position(this);
 		String name = variable();
-		if( name.indexOf(STITCH)>=0 ) return new CommandCall( pos, name ); 
+		if( name.indexOf(QuiltSymbols.stitch())>=0 ) return new CommandCall( pos, name ); 
 		char c = next();
-		if(c == LEFT) return new CommandCall(pos, name,values());
+		if(symbols.is_left(c)) return new CommandCall(pos, name,values());
 		else return new CommandCall(pos, name );
 	}
 
 	
 	public CommandCall[] params() throws Exception{
 		char c = next();
-		if(c != LEFT) throw error_message(LEFT);
+		if(!symbols.is_left(c)) throw error_message(QuiltSymbols.left());
 
 		Vector<CommandCall> args = new Vector<CommandCall>();
 		c = advance_next();
-		while( c!=RIGHT ){
+		while( !symbols.is_right(c) ){
 			args.add(command());
 			c = next();
-			if( c==COMMA ){
+			if( symbols.is_comma(c) ){
 				c = advance_next();
-				if( c==RIGHT ) throw error_message(message.get(Language.LETTER_DIGIT));
+				if( symbols.is_right(c) ) throw error_message(machine.message(Language.LETTER_DIGIT));
 			}
 		}
 		advance_next();
@@ -197,13 +198,14 @@ public abstract class QuiltMachineParser extends Position{
 
 	public CommandDef command_def() throws Exception{
 		Position pos = new Position(this);
-		String name = s_name();
+		String name = name();
+		if( machine.is_primitive(name) || machine.composed(name).length > 0 ) throw error_message(machine.message(Language.REDEFINED));
 		CommandCall[] args = null;
 		char c = next();
-		if(c == LEFT) args = params();
+		if(symbols.is_left(c)) args = params();
 		else args = new CommandCall[0];		
 		c=next();
-		if( c!=ASSIGN) throw error_message(ASSIGN);
+		if( !symbols.is_assign(c)) throw error_message(symbols.assign());
 		advance_next();
 		return new CommandDef(pos,name, args, command());
 	}
@@ -227,7 +229,66 @@ public abstract class QuiltMachineParser extends Position{
 		return apply();
 	}
 
-	public abstract String name() throws Exception;
-	public abstract String s_name() throws Exception;
-	public abstract String variable() throws Exception;	
+	public String name() throws Exception{
+		StringBuilder sb = new StringBuilder();
+		char c = current();
+		while( symbols.is_name(c) ){
+			sb.append(c);
+			c = advance();
+		}
+		String txt = sb.toString();
+		if(txt.length()>0) return txt;
+		throw error_message(machine.message(Language.LETTER_DIGIT));
+	}
+
+	public String variable() throws Exception{
+		StringBuilder sb = new StringBuilder();
+		sb.append(name());
+		char c = current();
+		int count_stitchs=0;
+		while( count_stitchs<MAX_STITCHS && symbols.is_stitch(c) ){
+			count_stitchs++;
+			sb.append(c);
+			c = advance();
+			sb.append(name());
+		}
+		return sb.toString();
+	}	
+	
+	public static final int UNDEFINED = 0;
+	public static final int SPACE = 1;
+	public static final int COMMENT = 2;
+	public static final int SYMBOL = 3;
+	public static final int STITCH = 4;
+	public static final int NAME = 5;
+	public static final int PRIMITIVE = 6;
+
+	protected int token(char c){
+		if(symbols.is_space(c)) return SPACE;
+		if(symbols.is_comment(c)) return COMMENT;
+		if(symbols.is_special(c)) return SYMBOL;
+		if(symbols.is_stitch(c)) return STITCH;
+		if(symbols.is_name(c)) return NAME;
+		return UNDEFINED;
+	}
+	
+	public Vector<int[]> tokenize(String code){
+		if( code==null || code.length()==0 ) return null;
+		Vector<int[]> v = new Vector<int[]>();
+		int[] prev=new int[]{token(code.charAt(0)),0,1};
+		v.addElement(prev);
+		for( int k=1; k<code.length(); k++){
+			int t = token(code.charAt(k));
+			if( t==prev[0] || (prev[0]==COMMENT && !symbols.is_eol(code.charAt(k))) ) prev[2]++;
+			else{
+				String name=code.substring(prev[1],prev[2]);
+				if(name.startsWith(QuiltMachine.PRIMITIVE) || machine.is_primitive(name)||machine.composed(name).length>0) prev[0]=PRIMITIVE;
+				prev = new int[]{t,k,k+1};
+				v.add(prev);
+			}
+		}
+		String name=code.substring(prev[1],prev[2]);
+		if(name.startsWith(QuiltMachine.PRIMITIVE) || machine.is_primitive(name)||machine.composed(name).length>0) prev[0]=PRIMITIVE;
+		return v;
+	}
 }

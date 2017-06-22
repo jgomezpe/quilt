@@ -3,11 +3,11 @@ package quilt.operation;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import quilt.Language;
-import quilt.Position;
 import quilt.QuiltMachine;
-import quilt.QuiltMachineParser;
+import quilt.QuiltSymbols;
 import quilt.Remnant;
+import quilt.util.Language;
+import quilt.util.Position;
 
 /**
 *
@@ -63,9 +63,9 @@ public class CommandCall extends Position{
 	public CommandCall( Position pos, String name ){
 		super( pos );
 		this.name = name;
-		stitch = name.indexOf(QuiltMachineParser.STITCH)>=0;
+		stitch = name.indexOf(QuiltSymbols.stitch())>=0;
 		if(stitch){
-			String[] parts = name.split("\\"+QuiltMachineParser.STITCH);
+			String[] parts = name.split("\\"+QuiltSymbols.stitch());
 			int r=row;
 			int c=column;
 			CommandCall last = new CommandCall(new Position(r,c),parts[0]);
@@ -98,36 +98,21 @@ public class CommandCall extends Position{
 
 	public int arity(){ return args!=null?args.length:0; }
 	
-	protected int pos(String str, String[] prim){
-		int k=0;
-		while( k<prim.length && str.indexOf(prim[k])!=0 ) k++;
-		if( k<prim.length ) return prim[k].length();
-		else return -1;
-	}
-	
 	protected boolean composed(QuiltMachine machine){
 		if( !composed_computed ){
 			composed_computed = true;
-			String[] prim = machine.remnants();
-			Vector<String> rs = new Vector<String>();
-			String xname = new String(name);
-			int k = pos(xname, prim);
-			while( k>0 ){
-				rs.add(xname.substring(0,k));
-				xname = xname.substring(k);
-				k = pos(xname, prim);
-			}
-			composed = rs.size()>1 && xname.length()==0;
+			String[] rs = machine.composed(name);
+			composed = rs.length>1;
 			if( composed ){
 				int r=row;
 				int c=column;
-				CommandCall last = new CommandCall(new Position(r,c),rs.get(0));
-				int l=rs.get(0).length();
-				for( int i=1;i<rs.size(); i++){
+				CommandCall last = new CommandCall(new Position(r,c),rs[0]);
+				int l=rs[0].length();
+				for( int i=1;i<rs.length; i++){
 					c+=l;
-					CommandCall[] c_args = new CommandCall[]{last,new CommandCall(new Position(r,c),rs.get(i))};
+					CommandCall[] c_args = new CommandCall[]{last,new CommandCall(new Position(r,c),rs[i])};
 					last = new CommandCall(new Position(r, c), QuiltMachine.SEW, c_args);
-					l=rs.get(i).length();
+					l=rs[i].length();
 				}
 				args = new CommandCall[]{last};				
 			}

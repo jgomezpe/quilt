@@ -2,11 +2,11 @@ package quilt.operation;
 
 import java.util.Hashtable;
 
-import quilt.Language;
-import quilt.Position;
 import quilt.QuiltMachine;
-import quilt.QuiltMachineParser;
+import quilt.QuiltSymbols;
 import quilt.Remnant;
+import quilt.util.Language;
+import quilt.util.Position;
 
 /**
 *
@@ -84,7 +84,7 @@ public class CommandDef extends Position{
 			Hashtable<String,Remnant> vars = new Hashtable<String,Remnant>();
 			for( int i=0; i<args.length; i++ ){
 				if( args[i].stitch() ){
-					String[] parts = args[i].name().split("\\"+QuiltMachineParser.STITCH);
+					String[] parts = args[i].name().split("\\"+QuiltSymbols.stitch());
 					if( value[i].columns()<parts.length ) throw language.error(this, language.get(Language.UNSTITCH)+" "+name());
 					Remnant last = value[i];
 					for( int k=parts.length-1; k>0; k--){

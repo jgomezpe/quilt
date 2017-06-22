@@ -1,5 +1,8 @@
 package quilt;
 
+import quilt.gui.Color;
+import quilt.gui.Drawer;
+
 /**
 *
 * MinRemnant
@@ -54,4 +57,15 @@ public abstract class MinRemnant implements Remnant{
 		if( 0<=r && r<rows() && 0<=c && c<columns()) return this;
 		return null;
 	}
+
+	public void draw( Drawer g, int column, int row ){
+		column = units(column);
+		row = units(row);
+		g.setColor(new Color(0,0,0,255));
+		int one = unit();
+		g.drawLine(column, row, column+one, row);		
+		g.drawLine(column+one, row, column+one, row+one);		
+		g.drawLine(column+one, row+one, column, row+one);		
+		g.drawLine(column, row+one, column, row);		
+	};	
 }

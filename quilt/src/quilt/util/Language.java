@@ -1,4 +1,4 @@
-package quilt;
+package quilt.util;
 
 import java.util.Hashtable;
 
@@ -67,6 +67,7 @@ public class Language {
 	public static final String PRIMITIVE = "primitive";
 	public static final String MISMATCH = "mismatch";
 	public static final String UNDEFINED = "undefined";
+	public static final String REDEFINED = "redefined";
 	public static final String OPEN = "open";
 	public static final String SAVE = "save";
 	public static final String COMPILE = "compile";
@@ -107,6 +108,7 @@ public class Language {
 		message.put(UNSTITCH, "No se puede asociar un retazo primitivo a una colcha en la operación");
 		message.put(QUILT, "No se puede asociar una colcha a un retazo primitivo en la operación");
 		message.put(MISMATCH, "No se puede asociar el retazo al retazo definido en la operación");
+		message.put(REDEFINED, "No se puede redefinir una operación primitiva o retazo primitivo");		
 		message.put(UNDEFINED, "Variable u operación no definida");		
 		message.put(OPEN, "Cargar");		
 		message.put(SAVE, "Guardar");		
@@ -138,6 +140,7 @@ public class Language {
 		message.put(QUILT, "Quilt cannot be associated to a primitive remnant in function");
 		message.put(MISMATCH, "Remnant cannot be associated to remnant defined in function");
 		message.put(UNDEFINED, "Undefined variable or function");		
+		message.put(REDEFINED, "Primitive function or remnant cannot be redefined");		
 		message.put(OPEN, "Load");		
 		message.put(SAVE, "Save");		
 		message.put(COMPILE, "Compile");		

@@ -1,6 +1,6 @@
 package quilt.computer;
 
-import quilt.Language;
+import quilt.util.Language;
 
 /**
 *

@@ -1,12 +1,13 @@
 package quilt.basic;
 
-import quilt.Language;
 import quilt.MinRemnant;
 import quilt.Quilt;
 import quilt.QuiltMachine;
 import quilt.Remnant;
 import quilt.operation.Command;
+import quilt.strips.Strip;
 import quilt.strips.StripsRemnant;
+import quilt.util.Language;
 
 /**
 *
@@ -60,17 +61,10 @@ public class Rotate extends Command{
 	public Remnant execute(Remnant value){
 		if( value instanceof StripsRemnant ){
 			StripsRemnant r = (StripsRemnant)value;
-			int[][] strips = new int[r.strips().length][];
+			Strip[] strips = new Strip[r.strips().length];
 			for( int i=0; i<strips.length; i++ ){
 			    strips[i] = r.strips()[i].clone();
-				int x = strips[i][0];
-				int y = strips[i][1];
-				strips[i][0] = y;
-				strips[i][1] = 100-x;
-				x = strips[i][2];
-				y = strips[i][3];
-				strips[i][2] = y;
-				strips[i][3] = 100-x;
+				strips[i].rotate();
 			}
 			return new StripsRemnant(r.color(), strips);
 		}else{

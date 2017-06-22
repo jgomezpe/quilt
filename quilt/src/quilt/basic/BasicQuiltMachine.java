@@ -1,14 +1,15 @@
 package quilt.basic;
 
-import java.awt.Color;
 import java.util.Hashtable;
 
-import quilt.Language;
 import quilt.QuiltMachine;
+import quilt.QuiltMachineParser;
 import quilt.Remnant;
 import quilt.Sew;
+import quilt.gui.Color;
 import quilt.operation.Command;
 import quilt.strips.StripsRemnant;
+import quilt.util.Language;
 
 /**
 *
@@ -63,9 +64,9 @@ public class BasicQuiltMachine extends QuiltMachine{
 
 	public static Hashtable<String, Remnant> loadRemnants(){
 		Hashtable<String, Remnant> t = new Hashtable<String,Remnant>();
-		t.put(DIAGONAL, new StripsRemnant(Color.green, 
+		t.put(DIAGONAL, new StripsRemnant(new Color(0,255,0,255), 
 				new int[][]{ {40,0,100,60}, {50,0,100,50}, {60,0,100,40} } ) );
-		t.put(SQUARE, new StripsRemnant(Color.red, 
+		t.put(SQUARE, new StripsRemnant(new Color(255,0,0,255), 
 				new int[][]{ {40,0,40,60}, {40,60,100,60},
 				 {50,0,50,50}, {50,50,100,50},
 				 {60,0,60,40}, {60,40,100,40} }) );
@@ -78,7 +79,7 @@ public class BasicQuiltMachine extends QuiltMachine{
 	
 	
 	public BasicQuiltMachine( Language message){
-		super(new Command[]{ new Rotate(), new Sew()}, loadRemnants(), new BasicQuiltMachineParser(message), message);
+		super(new Command[]{ new Rotate(), new Sew()}, loadRemnants(), new QuiltMachineParser(), message);
 	}
 	
 	public Remnant remnant(String remnant) {

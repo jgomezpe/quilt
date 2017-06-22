@@ -7,6 +7,8 @@ import java.util.Vector;
 import quilt.operation.Command;
 import quilt.operation.CommandCall;
 import quilt.operation.CommandDef;
+import quilt.util.Language;
+import quilt.util.Position;
 
 /**
 *
@@ -62,19 +64,21 @@ public abstract class QuiltMachine {
 	public static final String SEW = "sew";
 	
 	
-	protected Language message;
+	protected Language language;
 	
 	public QuiltMachine( Command[] primitives, Hashtable<String, Remnant> remnants, 
-						QuiltMachineParser parser, Language message ){
+						QuiltMachineParser parser, Language language ){
 		this.addPrimitives(primitives);
 		this.remnants.putAll(remnants);
 		this.parser = parser;
-		this.message = message;
+		this.parser.setMachine(this);
+		this.language = language;
 	}
 	
-	public String message( String code ){ return message.get(code); }
+	public String message( String code ){ return language.get(code); }
+	public Exception error( Position pos, String message ){ return language.error(pos, message); }
 	
-	public Language language(){ return message; }
+	public Language language(){ return language; }
 	
 	public void add( CommandDef[] def ){
 		for( int i=0; i<def.length; i++ ){
@@ -95,6 +99,12 @@ public abstract class QuiltMachine {
 	}
 	
 	public Command[] primitives(){ return primitives; }
+	
+	public boolean is_primitive( String command ){
+		int i=0;
+		while( i<primitives.length && !primitives[i].name().equals(command) ) i++;
+		return i<primitives.length;
+	}
 	
 	public void init(){
 		commands.clear();
@@ -136,4 +146,30 @@ public abstract class QuiltMachine {
 		init();
 		addDef(program);
 	}	
+	
+	protected int pos(String str, String[] prim){
+		int k=0;
+		while( k<prim.length && str.indexOf(prim[k])!=0 ) k++;
+		if( k<prim.length ) return prim[k].length();
+		else return -1;
+	}
+		
+	public String[] composed( String name ){
+		String[] prim = this.remnants();
+		Vector<String> rs = new Vector<String>();
+		int k = pos(name, prim);
+		while( k>0 ){
+			rs.add(name.substring(0,k));
+			name = name.substring(k);
+			k = pos(name, prim);
+		}
+		int l=(name.length()==0)?rs.size():0;
+		String[] r = new String[l];
+		for(int i=0; i<l; i++ ) r[i] = rs.get(i);
+		return r;
+	}
+	
+	public QuiltMachineParser parser(){
+		return parser;
+	}
 }

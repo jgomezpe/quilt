@@ -1,21 +1,14 @@
-package quilt.computer;
+package quilt.util;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import quilt.strips.Strip;
 
-import quilt.gui.Drawer;
-
-//
-//Quilt Sewer Machine 1.0 by Jonatan Gomez-Perdomo
-//https://github.com/jgomezpe/quilt/tree/master/quilt/
-//
 /**
 *
-* SimpleDrawer
-* <P>Simple GUI for drawing quilts.
+* Strips
+* <P>Utility for strips based Remnants.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/gui/SimpleDrawer.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/strips/Strips.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -53,29 +46,70 @@ import quilt.gui.Drawer;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class SimpleDrawer extends Drawer{
-	
-	protected Graphics g;
-	
-	public SimpleDrawer( Graphics g, int scale ){
-		this.g = g;
-		this.scale = scale;
-	}
-	
-	@Override
-	public void drawLine(int start_x, int start_y, int end_x, int end_y){
-		g.drawLine(scale(start_x),scale(start_y),scale(end_x),scale(end_y));
+public class Util {
+	public static int compare(int[] one, int[] two) {
+		if( one.length!=two.length ) return one.length-two.length;
+		int k=0;
+		while( k<one.length && one[k]==two[k] ) k++;
+		if(k==one.length) return 0;
+		else return one[k]-two[k];
 	}
 
-	@Override
-	public void drawString(int x, int y, String str) {
-		g.drawString(str, scale(x), scale(y));
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static boolean compare( Comparable[] one, Comparable[] two ){
+		if( one.length!=two.length ) return false;
+		int i=0;
+		while( i<one.length && one[i].compareTo(two[i])==0){
+			i++;
+		}
+		return i==one.length;
 	}
-
-	@Override
-	public Color setColor(Color color) {
-		Color c = g.getColor();
-		g.setColor(color);
-		return c;
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static void sort( Comparable[] strips ){
+		int n = strips.length; 
+		if(n<8){
+			for( int i=0; i<n-1; i++ ){
+				for( int j=i+1; j<n; j++ ){
+					if( strips[i].compareTo(strips[j]) > 0 ){
+						Comparable t = strips[i];
+						strips[i] = strips[j];
+						strips[j] = t;
+					}
+				}
+			}
+		}else{
+			int m = n/2;
+			Comparable[] L = new Comparable[m];
+			Comparable[] R = new Strip[n-m];
+			for( int i=0; i<m; i++){ L[i]=strips[i]; }
+			int j=m;
+			for( int i=0; i<R.length; i++){ R[i]=strips[j]; j++; }
+			sort(L);
+			sort(R);
+			int i=0;
+			j=0;
+			int k=0;
+			while(i<L.length&&j<R.length){
+				if(L[i].compareTo(R[j])<0){
+					strips[k] = L[i];
+					i++;
+				}else{
+					strips[k] = R[j];
+					j++;
+				}
+				k++;
+			}
+			while(i<L.length){
+				strips[k] = L[i];
+				i++;
+				k++;
+			}
+			while(j<R.length){
+				strips[k] = R[j];
+				j++;
+				k++;
+			}
+		}
 	}
 }

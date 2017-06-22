@@ -88,7 +88,7 @@ public class DrawPanel extends JPanel{
 			//System.out.println( "Painting..." + d );
 			int w = Math.min(d.width, d.height);
 			int wr = Math.max(remnant.columns(), remnant.rows());
-			Drawer drawer = new SimpleDrawer( g, w/wr );
+			Drawer drawer = new AWTDrawer( g, w/wr );
 			remnant.draw(drawer, 0, 0);
 		}
 	}

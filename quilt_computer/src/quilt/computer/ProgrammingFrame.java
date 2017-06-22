@@ -2,13 +2,19 @@ package quilt.computer;
 import unalcol.gui.io.FileFilter;
 import unalcol.gui.log.*;
 import java.io.*;
+import java.util.Vector;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
 
-import quilt.Language;
-import quilt.Position;
+import quilt.util.Language;
+import quilt.util.Position;
 import quilt.Remnant;
 import quilt.basic.BasicQuiltMachine;
 import quilt.operation.Command;
@@ -81,7 +87,7 @@ public class ProgrammingFrame extends JFrame {
 	BorderLayout borderLayout1 = new BorderLayout();
 	JPanel jLogPanel = new JPanel();
 	JScrollPane jScrollPane1 = new JScrollPane();
-	JTextArea jProgram = new JTextArea();
+	JTextPane jProgram = new JTextPane();
 	JToolBar jToolBar1 = new JToolBar();
 	JPanel jPanel2 = new JPanel();
 	BorderLayout borderLayout2 = new BorderLayout();
@@ -117,6 +123,8 @@ public class ProgrammingFrame extends JFrame {
 		jProgram.setToolTipText("");
 		jProgram.setVerifyInputWhenFocusTarget(true);
 		jProgram.setText("");
+		StyledDocument doc = jProgram.getStyledDocument();
+        addStylesToDocument(doc);
 		this.setTitle(title);
 		this.getContentPane().setLayout(borderLayout1);
 		jScrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -173,27 +181,51 @@ public class ProgrammingFrame extends JFrame {
 				System.exit(0);
 			} } );
 	}
+	
+    protected String[] initStyles = { "undef", "regular", "italic", "symbol", "stitch", "regular", "bold" };
 
+	
+    protected void addStylesToDocument(StyledDocument doc) {
+        //Initialize some styles.
+        Style def = StyleContext.getDefaultStyleContext().
+                        getStyle(StyleContext.DEFAULT_STYLE);
+ 
+        Style regular = doc.addStyle("regular", def);
+        StyleConstants.setFontFamily(def, "SansSerif");
+        StyleConstants.setFontSize(def, 12);
+ 
+        Style s = doc.addStyle("italic", regular);
+        StyleConstants.setItalic(s, true);
+        StyleConstants.setForeground(s, Color.gray);
 
-	void jButton1_actionPerformed(ActionEvent e) {
-		try{
-			StringBuffer sb = new StringBuffer();
-			int n = jProgram.getLineCount();
-			for (int i = 0; i < n; i++) {
-				int start = jProgram.getLineStartOffset(i);
-				int end = jProgram.getLineEndOffset(i);
-				String line;
-				if( i == n - 1 ){
-					line = jProgram.getText(start, end - start);
-				}else{
-					line = jProgram.getText(start, end - start - 1);
-				}
+        s = doc.addStyle("undef", regular);
+        StyleConstants.setItalic(s, true);
+        StyleConstants.setForeground(s, Color.pink);
+        
+        s = doc.addStyle("bold", regular);
+        StyleConstants.setBold(s, true);
+ 
+        s = doc.addStyle("symbol", regular);
+        StyleConstants.setForeground(s, Color.blue);
 
-				sb.append(line);
-				sb.append(",");
+        s = doc.addStyle("stitch", regular);
+        StyleConstants.setForeground(s, Color.red);
+
+        s = doc.addStyle("stitch", regular);
+        StyleConstants.setForeground(s, Color.red);
+    }
+    
+    protected void setText( JTextPane pane, String code ){
+		Vector<int[]> tokens = machine.parser().tokenize(code);
+		try {
+	        StyledDocument doc = pane.getStyledDocument();
+        	for( int[] t:tokens ){
+                doc.insertString(t[1], code.substring(t[1], t[2]), doc.getStyle(initStyles[t[0]]));
 			}
-		}catch( Exception x ){ x.printStackTrace(); }
-	}
+        } catch (BadLocationException ble) {
+            System.err.println("Couldn't insert initial text into text pane.");
+        }    	
+    }
 
 	public void jOpenButton_actionPerformed(ActionEvent actionEvent) {
 		FileFilter filter = new FileFilter( machine.message(Language.FILE)+" (*.quilt)" );
@@ -212,8 +244,8 @@ public class ProgrammingFrame extends JFrame {
 					sb.append('\n');
 					s = reader.readLine();
 				}
-				jProgram.setText(sb.toString());
 				reader.close();
+				setText(jProgram, sb.toString());
 				this.setTitle(title + " [" + fileName + "]");
 			}catch (Exception e){ e.printStackTrace(); }
 		}
