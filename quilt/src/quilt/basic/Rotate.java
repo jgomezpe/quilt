@@ -1,12 +1,8 @@
 package quilt.basic;
 
-import quilt.MinRemnant;
-import quilt.Quilt;
 import quilt.QuiltMachine;
 import quilt.Remnant;
 import quilt.operation.Command;
-import quilt.strips.Strip;
-import quilt.strips.StripsRemnant;
 import quilt.util.Language;
 
 /**
@@ -58,27 +54,12 @@ public class Rotate extends Command{
 		super(BasicQuiltMachine.ROTATE, new String[]{"X"});
 	}
 
+	@SuppressWarnings("unchecked")
 	public Remnant execute(Remnant value){
-		if( value instanceof StripsRemnant ){
-			StripsRemnant r = (StripsRemnant)value;
-			Strip[] strips = new Strip[r.strips().length];
-			for( int i=0; i<strips.length; i++ ){
-			    strips[i] = r.strips()[i].clone();
-				strips[i].rotate();
-			}
-			return new StripsRemnant(r.color(), strips);
+		if( value instanceof Rotatable ){
+			return ((Rotatable<Remnant>)value).rotate(this);
 		}else{
-			if( value instanceof NaturalNumberRemnant ){
-				return value;
-			}else{	
-				MinRemnant[][] r = new MinRemnant[value.columns()][value.rows()];
-				for( int i=0; i<r.length; i++ ){
-					for( int j=0; j<r[0].length; j++ ){
-						r[i][j] = (MinRemnant)execute(value.get(j, value.columns()-i-1));
-					}
-				}
-				return new Quilt(r);
-			}
+			return (Remnant)value.clone();
 		}		
 	}
 	

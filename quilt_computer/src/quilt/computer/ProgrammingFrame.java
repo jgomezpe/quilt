@@ -1,17 +1,15 @@
 package quilt.computer;
+import unalcol.gui.editor.SyntaxEditPanel;
 import unalcol.gui.io.FileFilter;
 import unalcol.gui.log.*;
 import java.io.*;
-import java.util.Vector;
 import java.awt.*;
 import java.awt.event.*;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
+import javax.swing.border.EtchedBorder;
 import javax.swing.text.JTextComponent;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
-import javax.swing.text.StyledDocument;
 
 import quilt.util.Language;
 import quilt.util.Position;
@@ -78,38 +76,40 @@ public class ProgrammingFrame extends JFrame {
 	String title;
 	String fileName = null;
 	String fileDir = ".";
-	FlowLayout flowLayout1 = new FlowLayout();
-	ButtonGroup buttonGroup1 = new ButtonGroup();
-	JCheckBox jCheckBox1 = new JCheckBox();
-	JCheckBox jCheckBox2 = new JCheckBox();
-	JCheckBox jCheckBox3 = new JCheckBox();
-	JCheckBox jCheckBox4 = new JCheckBox();
-	BorderLayout borderLayout1 = new BorderLayout();
-	JPanel jLogPanel = new JPanel();
-	JScrollPane jScrollPane1 = new JScrollPane();
-	JTextPane jProgram = new JTextPane();
-	JToolBar jToolBar1 = new JToolBar();
-	JPanel jPanel2 = new JPanel();
-	BorderLayout borderLayout2 = new BorderLayout();
+	
+	// Window area
+	BorderLayout windowLayout = new BorderLayout();
+	JPanel windowPanel = new JPanel();
+	BorderLayout windowPaneLayout = new BorderLayout();
+	
+	// The program area
+	JScrollPane jProgramScrollPane1 = new JScrollPane();
+	SyntaxEditPanel jProgram = new SyntaxEditPanel();
+	
+	// The tool bar
+	JToolBar jToolBar = new JToolBar();
 	JButton jOpenButton = new JButton();
 	JButton jSaveButton = new JButton();
 	JButton jCompileButton = new JButton();
 	JButton jRemnantButton = new JButton();
 	JButton jPrimitiveButton = new JButton();
-	LogPanel theLogPanel = new LogPanel();
-	BorderLayout borderLayout3 = new BorderLayout();
 	
-	// The command panel
-	JToolBar jPanel3 = new JToolBar();
+	// The log area
+	JPanel jLogPanel = new JPanel();
+	LogPanel log = new LogPanel();
+	BorderLayout logLayout = new BorderLayout();
+	
+	// The command area
+	JPanel jCommandBar = new JPanel();
+	BorderLayout commandLayout = new BorderLayout();
 	JLabel jCommandLabel = new JLabel();
-	FlowLayout flowLayout3 = new FlowLayout();
-	JTextField jCommand = new JTextField();
+	SyntaxEditPanel jCommand = new SyntaxEditPanel();
 	JButton jCommandButton = new JButton();
 
 	
 	protected BasicQuiltMachine machine;;
 	
-	public LogPanel getLogPanel(){ return theLogPanel; }
+	public LogPanel getLogPanel(){ return log; }
 
 	public ProgrammingFrame(String language){
 		machine = new BasicQuiltMachine(new Language(language));
@@ -120,61 +120,70 @@ public class ProgrammingFrame extends JFrame {
 	}
 	private void jbInit() throws Exception {
 		this.setSize(new Dimension(600, 400));
+		this.setTitle(title);
+		this.getContentPane().setLayout(windowLayout);
+
+		// Program area
+		jProgram.setTokenizer(machine.parser(), tokens);
+		jProgram.setStyle(styles);
 		jProgram.setToolTipText("");
 		jProgram.setVerifyInputWhenFocusTarget(true);
 		jProgram.setText("");
-		StyledDocument doc = jProgram.getStyledDocument();
-        addStylesToDocument(doc);
-		this.setTitle(title);
-		this.getContentPane().setLayout(borderLayout1);
-		jScrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		jScrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		jScrollPane1.setAutoscrolls(true);
-		jScrollPane1.setMaximumSize(new Dimension(261, 261));
-		jScrollPane1.setMinimumSize(new Dimension(261, 261));
-		jPanel2.setLayout(borderLayout2);
-		jOpenButton.setToolTipText(machine.message(Language.OPEN));
-		jOpenButton.setSelectedIcon(null);
-		jOpenButton.setText(machine.message(Language.OPEN));
-		jOpenButton.addActionListener(new
-				QuiltMachineProgrammingFrame_jOpenButton_actionAdapter(this));
-		jSaveButton.setText(machine.message(Language.SAVE));
-		jSaveButton.addActionListener(new
-				QuiltMachineProgrammingFrame_jSaveButton_actionAdapter(this));
-		jCompileButton.setToolTipText(machine.message(Language.COMPILE));
-		jCompileButton.setText(machine.message(Language.COMPILE));
-		jCompileButton.addActionListener(new
-				QuiltMachineProgrammingFrame_jCompileButton_actionAdapter(this));
-		jRemnantButton.setToolTipText(machine.message(Language.REMNANT));
-		jRemnantButton.setText(machine.message(Language.REMNANT));
-		jRemnantButton.addActionListener(new
-				QuiltMachineProgrammingFrame_jRemnantButton_actionAdapter(this));
-		jPrimitiveButton.setToolTipText(machine.message(Language.PRIMITIVE));
-		jPrimitiveButton.setText(machine.message(Language.PRIMITIVE));
-		jPrimitiveButton.addActionListener(new
-				QuiltMachineProgrammingFrame_jPrimitiveButton_actionAdapter(this));
-		jLogPanel.setLayout(borderLayout3);
-		jToolBar1.add(jOpenButton);
-		jToolBar1.add(jSaveButton);
-		jToolBar1.add(jCompileButton);
-		jToolBar1.add(jRemnantButton);
-		jToolBar1.add(jPrimitiveButton);
-		jPanel2.add(jScrollPane1, java.awt.BorderLayout.CENTER);
-		jScrollPane1.getViewport().add(jProgram, null);
-		jPanel2.add(jToolBar1, java.awt.BorderLayout.NORTH);
-		jPanel2.add(jLogPanel, java.awt.BorderLayout.SOUTH);
-		this.getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
-		this.theLogPanel.setLanguage(machine.message(Language.OUT), machine.message(Language.ERROR));
-		jLogPanel.add(this.theLogPanel, java.awt.BorderLayout.CENTER);
+		jProgramScrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		jProgramScrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		jProgramScrollPane1.setAutoscrolls(true);
+		jProgramScrollPane1.setMaximumSize(new Dimension(261, 261));
+		jProgramScrollPane1.setMinimumSize(new Dimension(261, 261));
+		jProgramScrollPane1.getViewport().add(jProgram, null);
+		
+		
+		// Tool bar 
+		initButton(jOpenButton, "open.png", machine.message(Language.OPEN));
+		jOpenButton.addActionListener(new QuiltMachineProgrammingFrame_jOpenButton_actionAdapter(this));
+		initButton(jSaveButton, "save.png", machine.message(Language.SAVE));
+		jSaveButton.addActionListener(new QuiltMachineProgrammingFrame_jSaveButton_actionAdapter(this));
+		initButton(jCompileButton, "compile.png", machine.message(Language.COMPILE));
+		jCompileButton.addActionListener(new QuiltMachineProgrammingFrame_jCompileButton_actionAdapter(this));
+		initButton(jRemnantButton, "remnant.png", machine.message(Language.REMNANT));
+		jRemnantButton.addActionListener(new QuiltMachineProgrammingFrame_jRemnantButton_actionAdapter(this));
+		initButton(jPrimitiveButton, "tools.png", machine.message(Language.PRIMITIVE));
+		jPrimitiveButton.addActionListener(new QuiltMachineProgrammingFrame_jPrimitiveButton_actionAdapter(this));
+		jToolBar.add(jOpenButton);
+		jToolBar.add(jSaveButton);
+		jToolBar.add(jCompileButton);
+		jToolBar.add(jRemnantButton);
+		jToolBar.add(jPrimitiveButton);
+
+		// Command area
+		jCommandBar.setLayout(commandLayout);
+		jCommandBar.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 		jCommandLabel.setText(machine.message(Language.COMMAND));
-		jPanel3.add(jCommandLabel);
-		jPanel3.add(jCommand);
-		jCommandButton.setText(machine.message(Language.EXECUTE));
-		jCommandButton.addActionListener(new
-				QuiltMachineProgrammingFrame_jCommandButton_actionAdapter(this));
-		jPanel3.add(jCommandButton);
-		jLogPanel.add(jPanel3, java.awt.BorderLayout.NORTH);
-		this.theLogPanel.getOutArea().setText(machine.message(Language.AUTHOR));
+		jCommand.setTokenizer(machine.parser(), tokens);
+		jCommand.setStyle(styles);
+		jCommand.setToolTipText("");
+		jCommand.setVerifyInputWhenFocusTarget(true);
+		jCommand.setText("");
+		
+		initButton(jCommandButton, "quilt-run.png", machine.message(Language.EXECUTE));
+		jCommandButton.addActionListener(new QuiltMachineProgrammingFrame_jCommandButton_actionAdapter(this));
+		jCommandBar.add(jCommandLabel, java.awt.BorderLayout.WEST);
+		jCommandBar.add(jCommand, java.awt.BorderLayout.CENTER);
+		jCommandBar.add(jCommandButton, java.awt.BorderLayout.EAST);
+
+		//Log area
+		jLogPanel.setLayout(logLayout);	
+		jLogPanel.add(log, java.awt.BorderLayout.CENTER);
+		jLogPanel.add(jCommandBar, java.awt.BorderLayout.NORTH);
+		log.setLanguage(machine.message(Language.OUT), machine.message(Language.ERROR));
+		log.getOutArea().setText(machine.message(Language.AUTHOR));
+
+		// Window area
+		windowPanel.setLayout(windowPaneLayout);
+		windowPanel.add(jProgramScrollPane1, java.awt.BorderLayout.CENTER);
+		windowPanel.add(jToolBar, java.awt.BorderLayout.NORTH);
+		windowPanel.add(jLogPanel, java.awt.BorderLayout.SOUTH);
+		this.getContentPane().add(windowPanel, java.awt.BorderLayout.CENTER);
+	
 		// Closing the window
 		this.addWindowListener( new WindowAdapter(){
 			public void windowClosing( WindowEvent e ){
@@ -182,51 +191,31 @@ public class ProgrammingFrame extends JFrame {
 			} } );
 	}
 	
-    protected String[] initStyles = { "undef", "regular", "italic", "symbol", "stitch", "regular", "bold" };
-
+	protected static final String resources="resources/";
+	protected static final String images="imgs/";
 	
-    protected void addStylesToDocument(StyledDocument doc) {
-        //Initialize some styles.
-        Style def = StyleContext.getDefaultStyleContext().
-                        getStyle(StyleContext.DEFAULT_STYLE);
- 
-        Style regular = doc.addStyle("regular", def);
-        StyleConstants.setFontFamily(def, "SansSerif");
-        StyleConstants.setFontSize(def, 12);
- 
-        Style s = doc.addStyle("italic", regular);
-        StyleConstants.setItalic(s, true);
-        StyleConstants.setForeground(s, Color.gray);
-
-        s = doc.addStyle("undef", regular);
-        StyleConstants.setItalic(s, true);
-        StyleConstants.setForeground(s, Color.pink);
-        
-        s = doc.addStyle("bold", regular);
-        StyleConstants.setBold(s, true);
- 
-        s = doc.addStyle("symbol", regular);
-        StyleConstants.setForeground(s, Color.blue);
-
-        s = doc.addStyle("stitch", regular);
-        StyleConstants.setForeground(s, Color.red);
-
-        s = doc.addStyle("stitch", regular);
-        StyleConstants.setForeground(s, Color.red);
-    }
-    
-    protected void setText( JTextPane pane, String code ){
-		Vector<int[]> tokens = machine.parser().tokenize(code);
+	protected void initButton( JButton button, String resource, String message ){
+		button.setToolTipText(message);
 		try {
-	        StyledDocument doc = pane.getStyledDocument();
-        	for( int[] t:tokens ){
-                doc.insertString(t[1], code.substring(t[1], t[2]), doc.getStyle(initStyles[t[0]]));
-			}
-        } catch (BadLocationException ble) {
-            System.err.println("Couldn't insert initial text into text pane.");
-        }    	
-    }
-
+			File f = new File(resources+images+resource);
+			Image img = ImageIO.read(f).getScaledInstance((button==jCommandButton)?60:30, 30, Image.SCALE_SMOOTH);;
+			//Image img = ImageIO.read(getClass().getResource(resource));
+			button.setIcon(new ImageIcon(img));
+		} catch (Exception ex) {
+			button.setText(message); 
+		}		
+		button.setToolTipText(message);
+	}
+	
+    protected String[] tokens = { "undef", "regular", "comment", "symbol", "stitch", "regular", "reserved", "remnant" };
+    protected String[] styles = {"[regular,[SansSerif,12]]", "[undef,["+color(Color.pink)+"]]","[comment,[italic,"+color(Color.gray)+"]]",
+    							 "[symbol,["+color(Color.blue)+"]]","[stitch,["+color(Color.red)+"]]",
+    							 "[reserved,[bold]]","[remnant,["+color(Color.orange)+"]]"};
+    
+	protected static String color( Color c ){
+		return "["+c.getRed()+","+c.getGreen()+","+c.getBlue()+","+c.getAlpha()+"]";
+	}
+    
 	public void jOpenButton_actionPerformed(ActionEvent actionEvent) {
 		FileFilter filter = new FileFilter( machine.message(Language.FILE)+" (*.quilt)" );
 		filter.add("quilt");
@@ -245,7 +234,7 @@ public class ProgrammingFrame extends JFrame {
 					s = reader.readLine();
 				}
 				reader.close();
-				setText(jProgram, sb.toString());
+				jProgram.setText(sb.toString());
 				this.setTitle(title + " [" + fileName + "]");
 			}catch (Exception e){ e.printStackTrace(); }
 		}
@@ -281,8 +270,8 @@ public class ProgrammingFrame extends JFrame {
 			sb.append(c.toString(machine.language().current()));
 			sb.append('\n');
 		}
-		this.theLogPanel.getOutArea().setText(sb.toString());
-		this.theLogPanel.getErrorArea().setText("");
+		this.log.getOutArea().setText(sb.toString());
+		this.log.getErrorArea().setText("");
 	}
 
 	public void jRemnantButton_actionPerformed(ActionEvent actionEvent) {
@@ -292,8 +281,8 @@ public class ProgrammingFrame extends JFrame {
 			sb.append(r);
 			sb.append('\n');
 		}
-		this.theLogPanel.getOutArea().setText(sb.toString());
-		this.theLogPanel.getErrorArea().setText("");
+		this.log.getOutArea().setText(sb.toString());
+		this.log.getErrorArea().setText("");
 	}
 	
 	public void show_error_message( JTextComponent code_area, Exception e ){
@@ -302,9 +291,9 @@ public class ProgrammingFrame extends JFrame {
 		System.out.println(msg);
 		int k = msg.indexOf(Language.MSG_SEPARATOR);
 		JOptionPane.showMessageDialog(this, machine.message(Language.ERRORS));
-		this.theLogPanel.getOutArea().setText(machine.message(Language.ERRORS));
-		this.theLogPanel.getErrorArea().setText(msg.substring(k+1));
-		this.theLogPanel.select(false);
+		this.log.getOutArea().setText(machine.message(Language.ERRORS));
+		this.log.getErrorArea().setText(msg.substring(k+1));
+		this.log.select(false);
 		Position pos = new Position(msg.substring(0, k));
 		if( pos.row()==-1 ){
 			code_area=jCommand;
@@ -326,9 +315,9 @@ public class ProgrammingFrame extends JFrame {
 		String program = jProgram.getText();
 		try{
 			machine.setProgram(program);
-			this.theLogPanel.getOutArea().setText(machine.message(Language.NO_ERRORS));
-			this.theLogPanel.getErrorArea().setText("");
-			this.theLogPanel.select(true);
+			this.log.getOutArea().setText(machine.message(Language.NO_ERRORS));
+			this.log.getErrorArea().setText("");
+			this.log.select(true);
 		}catch(Exception e){
 			show_error_message(jProgram, e);
 		}
@@ -351,15 +340,16 @@ public class ProgrammingFrame extends JFrame {
 			    if( frame == null ) frame = new DrawFrame();
 				frame.setVisible(true);
 				frame.setRemnant(r);
-				if(this.theLogPanel.getOutArea().getText().contains(Language.ERROR) ) this.theLogPanel.getOutArea().setText(machine.message(Language.NO_ERRORS));
-				this.theLogPanel.select(true);
-				this.theLogPanel.getErrorArea().setText("");
+				if(this.log.getOutArea().getText().contains(Language.ERROR) ) this.log.getOutArea().setText(machine.message(Language.NO_ERRORS));
+				this.log.select(true);
+				this.log.getErrorArea().setText("");
 			}catch(Exception e){
 				show_error_message(jProgram, e);
 			}
 		}	
 	}
 }
+
 
 class QuiltMachineProgrammingFrame_jCompileButton_actionAdapter implements ActionListener {
 	private ProgrammingFrame adaptee;

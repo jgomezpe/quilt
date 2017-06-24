@@ -6,6 +6,8 @@ import quilt.operation.CommandCall;
 import quilt.operation.CommandDef;
 import quilt.util.Language;
 import quilt.util.Position;
+import unalcol.gui.editor.Token;
+import unalcol.gui.editor.Tokenizer;
 
 /**
 *
@@ -51,7 +53,7 @@ import quilt.util.Position;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class QuiltMachineParser extends Position{
+public class QuiltMachineParser extends Position implements Tokenizer{
 
 	protected QuiltMachine machine=null;
 	protected QuiltSymbols symbols = null;
@@ -262,6 +264,7 @@ public class QuiltMachineParser extends Position{
 	public static final int STITCH = 4;
 	public static final int NAME = 5;
 	public static final int PRIMITIVE = 6;
+	public static final int REMNANT = 7;
 
 	protected int token(char c){
 		if(symbols.is_space(c)) return SPACE;
@@ -272,7 +275,7 @@ public class QuiltMachineParser extends Position{
 		return UNDEFINED;
 	}
 	
-	public Vector<int[]> tokenize(String code){
+	public Token[] tokens(String code){
 		if( code==null || code.length()==0 ) return null;
 		Vector<int[]> v = new Vector<int[]>();
 		int[] prev=new int[]{token(code.charAt(0)),0,1};
@@ -282,13 +285,22 @@ public class QuiltMachineParser extends Position{
 			if( t==prev[0] || (prev[0]==COMMENT && !symbols.is_eol(code.charAt(k))) ) prev[2]++;
 			else{
 				String name=code.substring(prev[1],prev[2]);
-				if(name.startsWith(QuiltMachine.PRIMITIVE) || machine.is_primitive(name)||machine.composed(name).length>0) prev[0]=PRIMITIVE;
+				if(symbols.is_dollar(name.charAt(0)) || machine.is_primitive(name)) prev[0]=PRIMITIVE;
+				else if(machine.composed(name).length>0) prev[0]=REMNANT;
 				prev = new int[]{t,k,k+1};
 				v.add(prev);
 			}
 		}
 		String name=code.substring(prev[1],prev[2]);
-		if(name.startsWith(QuiltMachine.PRIMITIVE) || machine.is_primitive(name)||machine.composed(name).length>0) prev[0]=PRIMITIVE;
-		return v;
+		if(symbols.is_dollar(name.charAt(0)) || machine.is_primitive(name)) prev[0]=PRIMITIVE;
+		else if(machine.composed(name).length>0) prev[0]=REMNANT;
+		Token[] tokens = new Token[v.size()];
+		for(int i=0; i<v.size(); i++){
+			int[] t = v.get(i);
+			tokens[i] = new Token(t[0],t[1],t[2]-t[1]);
+		}
+		return tokens;
 	}
+	
+	public QuiltSymbols symbols(){ return symbols; }
 }

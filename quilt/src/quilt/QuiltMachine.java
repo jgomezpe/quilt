@@ -60,7 +60,6 @@ public abstract class QuiltMachine {
 	protected Command[] primitives;
 	protected QuiltMachineParser parser;
 	
-	public static final String PRIMITIVE="prim";
 	public static final String SEW = "sew";
 	
 	
@@ -145,7 +144,7 @@ public abstract class QuiltMachine {
 	public void setProgram( String program ) throws Exception{
 		init();
 		addDef(program);
-	}	
+	}
 	
 	protected int pos(String str, String[] prim){
 		int k=0;

@@ -2,6 +2,8 @@ package quilt.strips;
 
 import quilt.MinRemnant;
 import quilt.Remnant;
+import quilt.basic.Rotatable;
+import quilt.basic.Rotate;
 import quilt.gui.Drawer;
 import quilt.util.Util;
 import quilt.gui.Color;
@@ -51,7 +53,7 @@ import quilt.gui.Color;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class StripsRemnant extends MinRemnant{
+public class StripsRemnant extends MinRemnant implements Rotatable<Remnant>{
 	protected Color color;
 	protected Strip[] strips;
 
@@ -67,6 +69,8 @@ public class StripsRemnant extends MinRemnant{
 		this.strips = strips;
 		Util.sort(this.strips);
 	}
+
+	public Remnant clone(){	return new StripsRemnant(color(), Strip.clone(strips));	}
 	
 	public Color color(){ return color;	}
 	
@@ -93,5 +97,12 @@ public class StripsRemnant extends MinRemnant{
 		}else{
 			return r.equals(this);
 		}
+	}
+	
+	@Override
+	public Remnant rotate( Rotate command ) {
+		Strip[] _strips = Strip.clone(strips);
+		for( int i=0; i<_strips.length; i++ ) strips[i].rotate();
+		return new StripsRemnant(color(), strips);		
 	}	
 }

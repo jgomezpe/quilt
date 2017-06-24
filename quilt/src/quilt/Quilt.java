@@ -1,5 +1,7 @@
 package quilt;
 
+import quilt.basic.Rotatable;
+import quilt.basic.Rotate;
 import quilt.gui.Drawer;
 
 /**
@@ -46,7 +48,7 @@ import quilt.gui.Drawer;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class Quilt implements Remnant{
+public class Quilt implements Remnant, Rotatable<Remnant>{
 	protected MinRemnant[][] remnant;
 	public Quilt( Remnant left, Remnant right ){
 		int c = left.columns();
@@ -59,6 +61,16 @@ public class Quilt implements Remnant{
 	
 	public Quilt( MinRemnant[][] remnant ){
 		this.remnant = remnant;
+	}
+
+	public Object clone(){
+		MinRemnant[][] r = new MinRemnant[rows()][columns()];
+		for( int i=0; i<r.length; i++ ){
+			for( int j=0; j<r[0].length; j++ ){
+				r[i][j] = (MinRemnant)get(i,j).clone();
+			}
+		}
+		return new Quilt(r);
 	}
 	
 	public MinRemnant get( int r, int c ){
@@ -116,5 +128,16 @@ public class Quilt implements Remnant{
 			sb.append('\n');
 		}
 		return sb.toString();
+	}
+
+	@Override
+	public Remnant rotate( Rotate command ) {
+		MinRemnant[][] r = new MinRemnant[columns()][rows()];
+		for( int i=0; i<r.length; i++ ){
+			for( int j=0; j<r[0].length; j++ ){
+				r[i][j] = (MinRemnant)command.execute(get(j,columns()-i-1));
+			}
+		}
+		return new Quilt(r);
 	}	
 }

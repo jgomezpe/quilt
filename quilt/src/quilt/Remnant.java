@@ -56,7 +56,7 @@ public interface Remnant {
 	public default int unit(){ return UNIT; };
 	public default int units( int value ){ return value*UNIT; }
 	public void draw( Drawer g, int column, int row );
-	
+	public Object clone();
 	public default boolean equals(Remnant r) {
 		if( r==null || r.rows()!=rows() || columns()!=r.columns() ) return false;
 		boolean flag = true;

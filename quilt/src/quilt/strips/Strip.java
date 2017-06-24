@@ -24,6 +24,15 @@ public class Strip implements Comparable<Object>{
 		this.color = color;
 	}
 	
+	public static Strip[] clone( Strip[] strips ){
+		Strip[] _strips = new Strip[strips.length];
+		for( int i=0; i<_strips.length; i++ ){
+		    _strips[i] = strips[i].clone();
+		}
+		return _strips;
+		
+	}
+	
 	public Strip clone(){
 		return new Strip(control, color);
 	}

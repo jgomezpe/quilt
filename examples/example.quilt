@@ -1,13 +1,13 @@
 %negando al cuadrado: aqui diagonal es el número zero y square es el número uno
 not(diag)=squa
 not(squa)=diag
-not(X|prim)=not(not(X))
+not(X|$)=not(not(X))
 % determina si una colcha lineal tiene un numero impar de retazos
 odd(prim)=squa
-odd(X|prim)=not(odd(X))
+odd(X|$)=not(odd(X))
 %crea un retazo del número dado marcando pares e impares
-number(prim)=squa
-number(X|prim)=sew(number(X),not(odd(X)))
+number($)=squa
+number(X|$)=sew(number(X),not(odd(X)))
 %sucesor
 acc(diag)=diag
 suc(diag)=squa
@@ -15,4 +15,4 @@ suc(squa)=sew(squa,diag)
 acc(squa)=squa
 add(X,diag)=X
 add(X,squa)=suc(X)
-suc(X|prim)=sew(add(X,acc(prim)),not(prim))
+suc(X|$)=sew(add(X,acc($)),not($))

@@ -94,7 +94,7 @@ public class CommandDef extends Position{
 					}
 					vars.put(parts[0], last);					
 				}else{
-					if( args[i].primitive() ){
+					if( args[i].primitive(machine.parser().symbols()) ){
 						if( value[i].rows()>1 || value[i].columns()>1 ) throw language.error(this, language.get(Language.QUILT)+" "+name());
 						vars.put(args[i].name(), value[i].get(0, 0));
 					}else{

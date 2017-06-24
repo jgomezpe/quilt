@@ -91,7 +91,7 @@ public class CommandCall extends Position{
 	}
 	
 	public boolean stitch(){ return stitch; }
-	public boolean primitive(){ return name.startsWith(QuiltMachine.PRIMITIVE); }
+	public boolean primitive(QuiltSymbols symbols){ return symbols.is_dollar(name.charAt(0)); }
 
 	public String name(){ return name; }
 	public CommandCall[] args(){ return args; }

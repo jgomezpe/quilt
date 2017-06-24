@@ -51,6 +51,8 @@ public abstract class MinRemnant implements Remnant{
 	public int rows(){ return 1; }
 
 	public int columns(){ return 1; }
+	
+	public abstract Object clone();
 
 	@Override
 	public MinRemnant get(int r, int c) {
