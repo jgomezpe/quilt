@@ -13,8 +13,8 @@ import javax.swing.text.JTextComponent;
 
 import quilt.util.Language;
 import quilt.util.Position;
+import quilt.QuiltMachine;
 import quilt.Remnant;
-import quilt.basic.BasicQuiltMachine;
 import quilt.operation.Command;
 import quilt.operation.CommandCall;
 
@@ -107,12 +107,12 @@ public class ProgrammingFrame extends JFrame {
 	JButton jCommandButton = new JButton();
 
 	
-	protected BasicQuiltMachine machine;;
+	protected QuiltMachine machine;;
 	
 	public LogPanel getLogPanel(){ return log; }
 
 	public ProgrammingFrame(String language){
-		machine = new BasicQuiltMachine(new Language(language));
+		machine = QuiltMachinePicker.get(4,language,image("remnant.png"));
 		title = machine.message(Language.TITLE);
 		try {
 			jbInit();
@@ -194,11 +194,21 @@ public class ProgrammingFrame extends JFrame {
 	protected static final String resources="resources/";
 	protected static final String images="imgs/";
 	
+	public Image image(String resource){
+		try {
+			File f = new File(resources+images+resource);
+			return ImageIO.read(f);
+			//return ImageIO.read(getClass().getResource(resource));
+		} catch (Exception ex) {
+			return null; 
+		}		
+	}
+	
 	protected void initButton( JButton button, String resource, String message ){
 		button.setToolTipText(message);
 		try {
 			File f = new File(resources+images+resource);
-			Image img = ImageIO.read(f).getScaledInstance((button==jCommandButton)?60:30, 30, Image.SCALE_SMOOTH);;
+			Image img = ImageIO.read(f).getScaledInstance((button==jCommandButton)?60:30, 30, Image.SCALE_SMOOTH);
 			//Image img = ImageIO.read(getClass().getResource(resource));
 			button.setIcon(new ImageIcon(img));
 		} catch (Exception ex) {

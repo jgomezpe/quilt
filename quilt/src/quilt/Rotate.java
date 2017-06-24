@@ -1,24 +1,16 @@
-package quilt.basic;
+package quilt;
 
-import java.util.Hashtable;
-
-import quilt.QuiltMachine;
-import quilt.QuiltMachineParser;
-import quilt.Remnant;
-import quilt.Sew;
-import quilt.gui.Color;
+import quilt.factory.BasicQuiltMachine;
 import quilt.operation.Command;
-import quilt.strips.StripsRemnant;
 import quilt.util.Language;
 
 /**
 *
-* BasicQuiltMachine
-* <P>A quilt machine that has defined rotate and sew operations and uses three types of remnants
-* two StripsRemnants (diagonal and square) and natural number (without the zero).
+* Rotate
+* <P>Rotates a quilt 90 degrees counter clock wise.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/basic/BasicQuiltMachine.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/basic/Rotate.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -56,37 +48,31 @@ import quilt.util.Language;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class BasicQuiltMachine extends QuiltMachine{
-	protected static final String DIAGONAL = "diag";
-	protected static final String SQUARE = "squa";
-	
-	public static final String ROTATE = "rot";
+public class Rotate extends Command{
+	public Rotate() {
+		super(BasicQuiltMachine.ROTATE, new String[]{"X"});
+	}
 
-	public static Hashtable<String, Remnant> loadRemnants(){
-		Hashtable<String, Remnant> t = new Hashtable<String,Remnant>();
-		t.put(DIAGONAL, new StripsRemnant(new Color(0,255,0,255), 
-				new int[][]{ {40,0,100,60}, {50,0,100,50}, {60,0,100,40} } ) );
-		t.put(SQUARE, new StripsRemnant(new Color(255,0,0,255), 
-				new int[][]{ {40,0,40,60}, {40,60,100,60},
-				 {50,0,50,50}, {50,50,100,50},
-				 {60,0,60,40}, {60,40,100,40} }) );
-		return t;
+	@SuppressWarnings("unchecked")
+	public Remnant execute(Remnant value){
+		if( value instanceof Rotatable ){
+			return ((Rotatable<Remnant>)value).rotate(this);
+		}else{
+			return (Remnant)value.clone();
+		}		
 	}
 	
-	public BasicQuiltMachine(){
-		this(new Language());
+	@Override
+	public Remnant execute(QuiltMachine machine, Remnant[] value) throws Exception{
+		if( value.length == args.length ){
+			return execute(value[0]);
+		}
+		throw new Exception(machine.message(Language.ARGS)+" "+name());
 	}
 	
-	
-	public BasicQuiltMachine( Language message){
-		super(new Command[]{ new Rotate(), new Sew()}, loadRemnants(), new QuiltMachineParser(), message);
-	}
-	
-	public Remnant remnant(String remnant) {
-		/*try{
-			int n = Integer.parseInt(remnant);
-			return new NaturalNumberRemnant(n, (StripsRemnant)remnants.get(DIAGONAL));
-		}catch( NumberFormatException e ){}*/
-		return super.remnant(remnant);
+	public String comment( String language ){
+		if( language.equals(Language.SPANISH) ) return "% Rota un retazo 90 grados en dirección contraria al reloj.\n";
+		else if( language.equals(Language.ENGLISH) ) return "% Rotates a remnant 90 degrees counter clock wise.\n";
+		return "";
 	}
 }

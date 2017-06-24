@@ -1,6 +1,9 @@
 package quilt.computer;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.geom.AffineTransform;
 
 import quilt.gui.Drawer;
 import quilt.gui.Color;
@@ -77,5 +80,31 @@ public class AWTDrawer extends Drawer{
 		Color quilt_color = new Color( awt_color.getRed(), awt_color.getGreen(), awt_color.getBlue(), awt_color.getAlpha()); 
 		g.setColor(new java.awt.Color(color.red(),color.green(),color.blue(),color.alpha()));
 		return quilt_color;
+	}
+
+	@Override
+	public void drawFill(int x, int y, int width, int height) {
+		g.fillRect(scale(x),scale(y),scale(width),scale(height));
+	}
+
+	@Override
+	public void drawImage(int x, int y, int width, int height, int rotation, Object obj) {
+		Image img = ((Image)obj).getScaledInstance(scale(width), scale(height), Image.SCALE_SMOOTH);
+		double rotationRequired = Math.toRadians(rotation);
+		int cx = img.getWidth(null) / 2;
+		int cy = img.getHeight(null) / 2;
+		AffineTransform identity = new AffineTransform();
+		AffineTransform trans = new AffineTransform();
+		trans.setTransform(identity);
+		trans.rotate( rotationRequired, cx, cy );
+		// Drawing the rotated image at the required drawing locations
+		Graphics2D g2d = (Graphics2D)g;
+		AffineTransform orTr= g2d.getTransform();
+		AffineTransform transX = new AffineTransform();
+		transX.setTransform(identity);
+		transX.translate(scale(x), scale(y));
+		g2d.setTransform(transX);
+		g2d.drawImage(img, trans, null);
+		g2d.setTransform(orTr);
 	}
 }

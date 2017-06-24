@@ -1,4 +1,4 @@
-package quilt.strips;
+package quilt.remnant;
 
 import quilt.gui.Color;
 import quilt.gui.Drawer;

@@ -63,5 +63,7 @@ public abstract class Drawer {
 	
 	public abstract Color setColor( Color color );
 	public abstract void drawLine( int start_x, int start_y, int end_x, int end_y );	
+	public abstract void drawFill( int start_x, int start_y, int width, int height );	
+	public abstract void drawImage( int start_x, int start_y, int width, int height, int rot, Object image );	
 	public abstract void drawString( int x, int y, String str );
 }

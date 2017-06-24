@@ -5,11 +5,11 @@ import java.util.Hashtable;
 import quilt.QuiltMachine;
 import quilt.QuiltMachineParser;
 import quilt.Remnant;
+import quilt.Rotate;
 import quilt.Sew;
-import quilt.basic.Rotate;
 import quilt.gui.Color;
 import quilt.operation.Command;
-import quilt.strips.StripsRemnant;
+import quilt.remnant.StripsRemnant;
 import quilt.util.Language;
 
 public class LogicQuiltMachine extends QuiltMachine{

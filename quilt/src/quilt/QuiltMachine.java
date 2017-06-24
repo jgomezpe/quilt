@@ -54,7 +54,7 @@ import quilt.util.Position;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public abstract class QuiltMachine {
+public class QuiltMachine {
 	protected Hashtable<String, Vector<CommandDef>> commands = new Hashtable<String,Vector<CommandDef>>();
 	protected Hashtable<String, Remnant> remnants = new Hashtable<String,Remnant>();
 	protected Command[] primitives;

@@ -1,7 +1,5 @@
 package quilt;
 
-import quilt.basic.Rotatable;
-import quilt.basic.Rotate;
 import quilt.gui.Drawer;
 
 /**

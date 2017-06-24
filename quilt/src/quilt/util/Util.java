@@ -1,6 +1,6 @@
 package quilt.util;
 
-import quilt.strips.Strip;
+import quilt.remnant.Strip;
 
 /**
 *

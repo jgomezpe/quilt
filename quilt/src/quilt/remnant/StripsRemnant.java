@@ -1,9 +1,8 @@
-package quilt.strips;
+package quilt.remnant;
 
-import quilt.MinRemnant;
 import quilt.Remnant;
-import quilt.basic.Rotatable;
-import quilt.basic.Rotate;
+import quilt.Rotatable;
+import quilt.Rotate;
 import quilt.gui.Drawer;
 import quilt.util.Util;
 import quilt.gui.Color;
@@ -53,26 +52,23 @@ import quilt.gui.Color;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class StripsRemnant extends MinRemnant implements Rotatable<Remnant>{
-	protected Color color;
+public class StripsRemnant extends ColoredRemnant implements Rotatable<Remnant>{
 	protected Strip[] strips;
 
 	public StripsRemnant( Color color, int[][] strips ) {
-		this.color = color;
+		super( color );
 		this.strips = new Strip[strips.length];
 		for( int i=0; i<strips.length; i++){ this.strips[i] = new Strip(strips[i], color); }
 		Util.sort(this.strips);
 	}
 
 	public StripsRemnant( Color color, Strip[] strips ) {
-		this.color = color;
+		super( color );
 		this.strips = strips;
 		Util.sort(this.strips);
 	}
 
 	public Remnant clone(){	return new StripsRemnant(color(), Strip.clone(strips));	}
-	
-	public Color color(){ return color;	}
 	
 	public Strip[] strips(){ return strips; }
 	
@@ -80,23 +76,19 @@ public class StripsRemnant extends MinRemnant implements Rotatable<Remnant>{
 		super.draw(g,column,row);
 		column = units(column);
 		row = units(row);
-		Color c = g.setColor(color());
+		g.setColor(color());
 		for( Strip s:strips){
 			s.draw(g,column, row);
 		}
-		g.setColor(c);
 	}
-
-	public Remnant[] unstitch(){ return null; }	
 	
 	public boolean equals( Remnant r ){
-		if( r==null ) return false;
-		if( r instanceof StripsRemnant ){
+		r = check(r);
+		if( r!=null && r instanceof StripsRemnant ){
 			StripsRemnant other = (StripsRemnant)r;
-			return Util.compare(strips, other.strips);
-		}else{
-			return r.equals(this);
+			return super.equals(other) && Util.compare(strips, other.strips);
 		}
+		return false;
 	}
 	
 	@Override
