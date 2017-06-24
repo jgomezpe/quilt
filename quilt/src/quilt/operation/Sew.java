@@ -1,6 +1,8 @@
-package quilt;
+package quilt.operation;
 
-import quilt.operation.Command;
+import quilt.Quilt;
+import quilt.QuiltMachine;
+import quilt.Remnant;
 import quilt.util.Language;
 
 /**

@@ -1,9 +1,9 @@
 package quilt.remnant;
 
 import quilt.Remnant;
-import quilt.Rotatable;
-import quilt.Rotate;
 import quilt.gui.Drawer;
+import quilt.operation.Rotatable;
+import quilt.operation.Rotate;
 import quilt.util.Util;
 import quilt.gui.Color;
 

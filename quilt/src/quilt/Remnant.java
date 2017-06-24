@@ -52,6 +52,7 @@ public interface Remnant {
 	public int columns();
 	public MinRemnant get( int r, int c );
 	public Remnant[] unstitch();
+	public Remnant[] leftunstitch();
 	public default int[] bounding_box(){ return new int[]{rows(), columns()}; }
 	public default int unit(){ return UNIT; };
 	public default int units( int value ){ return value*UNIT; }

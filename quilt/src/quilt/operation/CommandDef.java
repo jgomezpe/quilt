@@ -3,10 +3,11 @@ package quilt.operation;
 import java.util.Hashtable;
 
 import quilt.QuiltMachine;
-import quilt.QuiltSymbols;
 import quilt.Remnant;
+import quilt.syntax.QuiltSymbols;
 import quilt.util.Language;
-import quilt.util.Position;
+import unalcol.gui.editor.ErrorManager;
+import unalcol.gui.editor.Position;
 
 /**
 *
@@ -78,15 +79,25 @@ public class CommandDef extends Position{
 	public int arity(){ return args.length; }
 	
 	public Remnant execute( QuiltMachine machine, Remnant[] value ) throws Exception{
-		Language language = machine.language();
-		if( value.length != args.length ) throw language.error(this, language.get(Language.ARGS)+" "+name());
+		ErrorManager error_manager = machine.language();
+		if( value.length != args.length ) throw error_manager.error(this, error_manager.get(Language.ARGS)+" "+name());
 		if( body != null ){
 			Hashtable<String,Remnant> vars = new Hashtable<String,Remnant>();
 			for( int i=0; i<args.length; i++ ){
 				if( args[i].stitch() ){
-					String[] parts = args[i].name().split("\\"+QuiltSymbols.stitch());
-					if( value[i].columns()<parts.length ) throw language.error(this, language.get(Language.UNSTITCH)+" "+name());
+					String name = args[i].name();
+					String[] parts = name.split("[\\"+QuiltSymbols.stitch()+"\\"+QuiltSymbols.leftstitch()+"]");
+					if( value[i].columns()<parts.length ) throw error_manager.error(this, error_manager.get(Language.UNSTITCH)+" "+name());
 					Remnant last = value[i];
+					int pos = name.indexOf(QuiltSymbols.leftstitch()); 
+					while(pos>0){
+						Remnant[] divided = last.leftunstitch();
+						vars.put(name.substring(0, pos), divided[0]);
+						last=divided[1];
+						name = name.substring(pos+1);
+						pos = name.indexOf(QuiltSymbols.leftstitch());
+					}
+					parts = name.split("\\"+QuiltSymbols.stitch());
 					for( int k=parts.length-1; k>0; k--){
 						Remnant[] divided = last.unstitch();
 						vars.put(parts[k], divided[1]);
@@ -95,7 +106,7 @@ public class CommandDef extends Position{
 					vars.put(parts[0], last);					
 				}else{
 					if( args[i].primitive(machine.parser().symbols()) ){
-						if( value[i].rows()>1 || value[i].columns()>1 ) throw language.error(this, language.get(Language.QUILT)+" "+name());
+						if( value[i].rows()>1 || value[i].columns()>1 ) throw error_manager.error(this, error_manager.get(Language.QUILT)+" "+name());
 						vars.put(args[i].name(), value[i].get(0, 0));
 					}else{
 						Remnant r;
@@ -105,7 +116,7 @@ public class CommandDef extends Position{
 							r = null;
 							vars.put(args[i].name(), value[i]);
 						}	
-						if( r!=null && !r.equals(value[i]) ) throw language.error(this, language.get(Language.MISMATCH)+" "+name());
+						if( r!=null && !r.equals(value[i]) ) throw error_manager.error(this, error_manager.get(Language.MISMATCH)+" "+name());
 					}
 				}
 			}
@@ -150,4 +161,8 @@ public class CommandDef extends Position{
 		return toString(0);
 	}
 	
+	public static void main( String[] args ){
+		String[] parts = "X#YZA|AAA#U|ZZZ".split("[\\"+QuiltSymbols.leftstitch()+"\\"+QuiltSymbols.stitch()+"]");
+		for( String s:parts ) System.out.println(s); 
+	}
 }

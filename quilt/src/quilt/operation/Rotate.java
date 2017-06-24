@@ -1,12 +1,16 @@
-package quilt.util;
+package quilt.operation;
+
+import quilt.QuiltMachine;
+import quilt.Remnant;
+import quilt.util.Language;
 
 /**
 *
-* Position
-* <P>Coordinates in the source code of elements of a program or command.
+* Rotate
+* <P>Rotates a quilt 90 degrees counter clock wise.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/Position.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/basic/Rotate.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -44,37 +48,32 @@ package quilt.util;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class Position {
-	protected int row;
-	protected int column;
-	
-	public Position(){
-		row = 0;
-		column = 0;
+public class Rotate extends Command{
+	public static final String ROTATE="rot";
+	public Rotate() {
+		super(ROTATE, new String[]{"X"});
+	}
+
+	@SuppressWarnings("unchecked")
+	public Remnant execute(Remnant value){
+		if( value instanceof Rotatable ){
+			return ((Rotatable<Remnant>)value).rotate(this);
+		}else{
+			return (Remnant)value.clone();
+		}		
 	}
 	
-	public Position( Position pos ){
-		this.row = pos.row();
-		this.column = pos.column();
+	@Override
+	public Remnant execute(QuiltMachine machine, Remnant[] value) throws Exception{
+		if( value.length == args.length ){
+			return execute(value[0]);
+		}
+		throw new Exception(machine.message(Language.ARGS)+" "+name());
 	}
 	
-	public Position( int row, int column ){
-		this.column = column;
-		this.row = row;
+	public String comment( String language ){
+		if( language.equals(Language.SPANISH) ) return "% Rota un retazo 90 grados en dirección contraria al reloj.\n";
+		else if( language.equals(Language.ENGLISH) ) return "% Rotates a remnant 90 degrees counter clock wise.\n";
+		return "";
 	}
-	
-	public Position( String pos ){
-		int k = pos.indexOf(','); 
-		row = Integer.parseInt(pos.substring(1, k));
-		column = Integer.parseInt(pos.substring(k+1,pos.length()-1));
-	}
-	
-	public void setRow(int row){ this.row = row; }
-	
-	public int row(){ return row; }
-	public int column(){ return column; }
-	
-	public String toString(){
-		return "("+row+","+column+")";
-	}	
 }

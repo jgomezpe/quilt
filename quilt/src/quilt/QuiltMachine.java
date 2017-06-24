@@ -7,8 +7,9 @@ import java.util.Vector;
 import quilt.operation.Command;
 import quilt.operation.CommandCall;
 import quilt.operation.CommandDef;
-import quilt.util.Language;
-import quilt.util.Position;
+import quilt.syntax.QuiltMachineParser;
+import unalcol.gui.editor.ErrorManager;
+import unalcol.gui.editor.Position;
 
 /**
 *
@@ -63,10 +64,10 @@ public class QuiltMachine {
 	public static final String SEW = "sew";
 	
 	
-	protected Language language;
+	protected ErrorManager language;
 	
 	public QuiltMachine( Command[] primitives, Hashtable<String, Remnant> remnants, 
-						QuiltMachineParser parser, Language language ){
+						QuiltMachineParser parser, ErrorManager language ){
 		this.addPrimitives(primitives);
 		this.remnants.putAll(remnants);
 		this.parser = parser;
@@ -77,7 +78,7 @@ public class QuiltMachine {
 	public String message( String code ){ return language.get(code); }
 	public Exception error( Position pos, String message ){ return language.error(pos, message); }
 	
-	public Language language(){ return language; }
+	public ErrorManager language(){ return language; }
 	
 	public void add( CommandDef[] def ){
 		for( int i=0; i<def.length; i++ ){

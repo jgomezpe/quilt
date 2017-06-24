@@ -1,4 +1,4 @@
-package quilt;
+package quilt.syntax;
 
 public class QuiltSymbols{
 	protected static final char EOF=(char)-1;
@@ -6,6 +6,7 @@ public class QuiltSymbols{
 	protected static final char UNDER_SCORE='_';
 	protected static final char COMMA=',';
 	protected static final char STITCH='|';
+	protected static final char LEFTSTITCH='#';
 	protected static final char EOL='\n';
 	protected static final char SPACE=' ';
 	protected static final char TAB='\t';
@@ -19,6 +20,7 @@ public class QuiltSymbols{
 	public boolean is_name(char c){ return Character.isLetterOrDigit(c) || c==DOLLAR; };
 	public boolean is_special(char c){ return c==COMMA || c==ASSIGN || c==LEFT || c==RIGHT; };
 	public boolean is_stitch(char c){ return c==STITCH; };
+	public boolean is_leftstitch(char c){ return c==LEFTSTITCH; };
 	public boolean is_comment(char c){ return c==COMMENT; };
 	public boolean is_left(char c){ return c==LEFT; }
 	public boolean is_right(char c){ return c==RIGHT; }
@@ -29,6 +31,7 @@ public class QuiltSymbols{
 	public boolean is_eof(char c){ return c==EOF; }
 
 	public static char stitch(){ return STITCH; };
+	public static char leftstitch(){ return LEFTSTITCH; };
 	public static char comment(){ return COMMENT; };
 	public static char left(){ return LEFT; }
 	public static char right(){ return RIGHT; }

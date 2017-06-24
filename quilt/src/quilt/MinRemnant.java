@@ -49,6 +49,7 @@ import quilt.gui.Drawer;
 */
 public abstract class MinRemnant implements Remnant{
 	public Remnant[] unstitch(){ return null; }	
+	public Remnant[] leftunstitch(){ return null; }	
 
 	public int rows(){ return 1; }
 

@@ -48,8 +48,9 @@ import quilt.util.Language;
 */
 public class SewingMachineProgrammer {
 	public static void main( String[] args ){
-		String lang = args.length==1?args[0]:Language.SPANISH;
-		ProgrammingFrame frame = new ProgrammingFrame(lang);
+		String language = args.length>=1?args[0]:Language.SPANISH;
+		boolean asResource = args.length<2 || args[1].equals("true");
+		ProgrammingFrame frame = new ProgrammingFrame(language,asResource);
 		frame.setVisible(true);
 	}
 }

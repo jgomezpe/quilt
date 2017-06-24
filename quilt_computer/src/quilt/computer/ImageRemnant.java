@@ -4,9 +4,9 @@ import java.awt.Image;
 
 import quilt.MinRemnant;
 import quilt.Remnant;
-import quilt.Rotatable;
-import quilt.Rotate;
 import quilt.gui.Drawer;
+import quilt.operation.Rotatable;
+import quilt.operation.Rotate;
 
 public class ImageRemnant extends MinRemnant implements Rotatable<Remnant>{
 	protected Image image;

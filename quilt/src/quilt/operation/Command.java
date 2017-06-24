@@ -1,8 +1,8 @@
 package quilt.operation;
 
 import quilt.QuiltMachine;
-import quilt.QuiltSymbols;
 import quilt.Remnant;
+import quilt.syntax.QuiltSymbols;
 import quilt.util.Language;
 
 /**

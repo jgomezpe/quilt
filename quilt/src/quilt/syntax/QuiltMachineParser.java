@@ -1,11 +1,12 @@
-package quilt;
+package quilt.syntax;
 
 import java.util.Vector;
 
+import quilt.QuiltMachine;
 import quilt.operation.CommandCall;
 import quilt.operation.CommandDef;
 import quilt.util.Language;
-import quilt.util.Position;
+import unalcol.gui.editor.Position;
 import unalcol.gui.editor.Token;
 import unalcol.gui.editor.Tokenizer;
 
@@ -248,6 +249,13 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 		sb.append(name());
 		char c = current();
 		int count_stitchs=0;
+		while( count_stitchs<MAX_STITCHS && symbols.is_leftstitch(c) ){
+			count_stitchs++;
+			sb.append(c);
+			c = advance();
+			sb.append(name());
+		}
+		count_stitchs=0;
 		while( count_stitchs<MAX_STITCHS && symbols.is_stitch(c) ){
 			count_stitchs++;
 			sb.append(c);
@@ -270,7 +278,7 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 		if(symbols.is_space(c)) return SPACE;
 		if(symbols.is_comment(c)) return COMMENT;
 		if(symbols.is_special(c)) return SYMBOL;
-		if(symbols.is_stitch(c)) return STITCH;
+		if(symbols.is_stitch(c)||symbols.is_leftstitch(c)) return STITCH;
 		if(symbols.is_name(c)) return NAME;
 		return UNDEFINED;
 	}

@@ -4,10 +4,11 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import quilt.QuiltMachine;
-import quilt.QuiltSymbols;
 import quilt.Remnant;
+import quilt.syntax.QuiltSymbols;
 import quilt.util.Language;
-import quilt.util.Position;
+import unalcol.gui.editor.ErrorManager;
+import unalcol.gui.editor.Position;
 
 /**
 *
@@ -63,9 +64,9 @@ public class CommandCall extends Position{
 	public CommandCall( Position pos, String name ){
 		super( pos );
 		this.name = name;
-		stitch = name.indexOf(QuiltSymbols.stitch())>=0;
+		stitch = name.indexOf(QuiltSymbols.stitch())>=0 || name.indexOf(QuiltSymbols.leftstitch())>=0 ;
 		if(stitch){
-			String[] parts = name.split("\\"+QuiltSymbols.stitch());
+			String[] parts = name.split("[\\"+QuiltSymbols.stitch()+"\\"+QuiltSymbols.leftstitch()+"]");
 			int r=row;
 			int c=column;
 			CommandCall last = new CommandCall(new Position(r,c),parts[0]);
@@ -121,7 +122,7 @@ public class CommandCall extends Position{
 	}
 		
 	public Remnant execute( QuiltMachine machine, Hashtable<String, Remnant> values ) throws Exception{
-		Language language = machine.language();
+		ErrorManager error_manager = machine.language();
 		Remnant r=null;
 		if( stitch() || composed(machine) ) return args[0].execute(machine, values);
 		if( arity()==0 ){
@@ -134,19 +135,19 @@ public class CommandCall extends Position{
 			// Checking the list of defined commands
 			Vector<CommandDef> def = machine.get(name());
 			// If there is not a command with the given name return null
-			if( def == null || def.size()==0 ) throw language.error(this, language.get(Language.UNDEFINED)+" "+name());
+			if( def == null || def.size()==0 ) throw error_manager.error(this, error_manager.get(Language.UNDEFINED)+" "+name());
 			// Checking for a command with no arguments
 			int i=0; 
 			while( i<def.size() && def.get(i).arity()!=0 ){ i++; }
 			// If not command matches return null
-			if( i==def.size() )  throw language.error(this, language.get(Language.ARGS)+" "+name());			
+			if( i==def.size() )  throw error_manager.error(this, error_manager.get(Language.ARGS)+" "+name());			
 			// Executes the first command matching the name
 			return def.get(i).execute(machine, new Remnant[0]);
 		}else{
 			// Obtains a command matching the name
 			Vector<CommandDef> def = machine.get(name());
 			// If not command matches the name return null
-			if( def == null || def.size()==0 )  throw language.error(this, language.get(Language.UNDEFINED)+" "+name());
+			if( def == null || def.size()==0 )  throw error_manager.error(this, error_manager.get(Language.UNDEFINED)+" "+name());
 			Remnant[] val = null; 
 			String str = machine.message(Language.ARGS)+" "+name();
 			int i=0;

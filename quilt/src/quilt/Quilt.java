@@ -1,6 +1,8 @@
 package quilt;
 
 import quilt.gui.Drawer;
+import quilt.operation.Rotatable;
+import quilt.operation.Rotate;
 
 /**
 *
@@ -110,6 +112,29 @@ public class Quilt implements Remnant, Rotatable<Remnant>{
 			if( r==1 ){
 				if(c==1) return new Remnant[]{left_m[0][0],right_m[0][0]};
 				else return new Remnant[]{new Quilt(left_m),right_m[0][0]};
+			}else{
+				return new Remnant[]{new Quilt(left_m),new Quilt(right_m)};
+			}
+		}
+		return null;
+	}
+	
+	public Remnant[] leftunstitch(){
+		int c = columns();
+		if( c>1 ){
+			int r = rows();
+			c--;
+			MinRemnant[][] right_m = new MinRemnant[r][c];
+			MinRemnant[][] left_m = new MinRemnant[r][1];
+			for( int i=0; i<r; i++ ){
+				for( int j=0; j<c; j++){
+					right_m[i][j] = remnant[i][j+1];
+				}
+				left_m[i][0] = remnant[i][0];
+			}
+			if( r==1 ){
+				if(c==1) return new Remnant[]{left_m[0][0],right_m[0][0]};
+				else return new Remnant[]{left_m[0][0],new Quilt(right_m)};
 			}else{
 				return new Remnant[]{new Quilt(left_m),new Quilt(right_m)};
 			}

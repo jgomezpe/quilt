@@ -1,4 +1,7 @@
 package quilt.computer;
+import unalcol.gui.I18N.I18NManager;
+import unalcol.gui.editor.ErrorManager;
+import unalcol.gui.editor.Position;
 import unalcol.gui.editor.SyntaxEditPanel;
 import unalcol.gui.io.FileFilter;
 import unalcol.gui.log.*;
@@ -12,7 +15,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.text.JTextComponent;
 
 import quilt.util.Language;
-import quilt.util.Position;
 import quilt.QuiltMachine;
 import quilt.Remnant;
 import quilt.operation.Command;
@@ -76,6 +78,8 @@ public class ProgrammingFrame extends JFrame {
 	String title;
 	String fileName = null;
 	String fileDir = ".";
+	String language="spanish";
+	boolean asResource=false;
 	
 	// Window area
 	BorderLayout windowLayout = new BorderLayout();
@@ -111,8 +115,11 @@ public class ProgrammingFrame extends JFrame {
 	
 	public LogPanel getLogPanel(){ return log; }
 
-	public ProgrammingFrame(String language){
-		machine = QuiltMachinePicker.get(4,language,image("remnant.png"));
+	public ProgrammingFrame(String language, boolean asResource){
+		this.language=language;
+		this.asResource=asResource;
+		System.out.println(i18n_file_name());
+		machine = QuiltMachinePicker.get(4,i18n_file_name(),asResource, image("remnant.png"));
 		title = machine.message(Language.TITLE);
 		try {
 			jbInit();
@@ -174,7 +181,7 @@ public class ProgrammingFrame extends JFrame {
 		jLogPanel.setLayout(logLayout);	
 		jLogPanel.add(log, java.awt.BorderLayout.CENTER);
 		jLogPanel.add(jCommandBar, java.awt.BorderLayout.NORTH);
-		log.setLanguage(machine.message(Language.OUT), machine.message(Language.ERROR));
+		log.setLanguage(machine.message(Language.OUT), machine.message(ErrorManager.ERROR));
 		log.getOutArea().setText(machine.message(Language.AUTHOR));
 
 		// Window area
@@ -193,24 +200,38 @@ public class ProgrammingFrame extends JFrame {
 	
 	protected static final String resources="resources/";
 	protected static final String images="imgs/";
+	protected static final String i18n="I18N/";
 	
 	public Image image(String resource){
+		System.out.println(asResource);
 		try {
-			File f = new File(resources+images+resource);
-			return ImageIO.read(f);
-			//return ImageIO.read(getClass().getResource(resource));
+			if( asResource )
+				return ImageIO.read(getClass().getResource("/"+images+resource));
+			else{
+				File f = new File(resources+images+resource);
+				return ImageIO.read(f);
+			}	
 		} catch (Exception ex) {
+			System.err.println(ex.getMessage());
 			return null; 
 		}		
+	}
+	
+	public String i18n_file_name(){
+		if( asResource ) return "/"+i18n+language+".txt";
+		else return resources+i18n+language+".txt";
 	}
 	
 	protected void initButton( JButton button, String resource, String message ){
 		button.setToolTipText(message);
 		try {
-			File f = new File(resources+images+resource);
-			Image img = ImageIO.read(f).getScaledInstance((button==jCommandButton)?60:30, 30, Image.SCALE_SMOOTH);
-			//Image img = ImageIO.read(getClass().getResource(resource));
-			button.setIcon(new ImageIcon(img));
+			Image img;
+			if( asResource ) img = ImageIO.read(getClass().getResource("/"+images+resource));
+			else{
+				File f = new File(resources+images+resource);
+				img = ImageIO.read(f);
+			}
+			button.setIcon(new ImageIcon(img.getScaledInstance((button==jCommandButton)?60:30, 30, Image.SCALE_SMOOTH)));
 		} catch (Exception ex) {
 			button.setText(message); 
 		}		
@@ -277,7 +298,7 @@ public class ProgrammingFrame extends JFrame {
 		Command[] commands = machine.primitives();
 		StringBuilder sb = new StringBuilder();
 		for( Command c:commands ){
-			sb.append(c.toString(machine.language().current()));
+			sb.append(c.toString(language));
 			sb.append('\n');
 		}
 		this.log.getOutArea().setText(sb.toString());
@@ -299,7 +320,7 @@ public class ProgrammingFrame extends JFrame {
 		if( frame != null ) frame.setVisible(false);
 		String msg = e.getMessage();	
 		System.out.println(msg);
-		int k = msg.indexOf(Language.MSG_SEPARATOR);
+		int k = msg.indexOf(I18NManager.MSG_SEPARATOR);
 		JOptionPane.showMessageDialog(this, machine.message(Language.ERRORS));
 		this.log.getOutArea().setText(machine.message(Language.ERRORS));
 		this.log.getErrorArea().setText(msg.substring(k+1));
@@ -350,7 +371,7 @@ public class ProgrammingFrame extends JFrame {
 			    if( frame == null ) frame = new DrawFrame();
 				frame.setVisible(true);
 				frame.setRemnant(r);
-				if(this.log.getOutArea().getText().contains(Language.ERROR) ) this.log.getOutArea().setText(machine.message(Language.NO_ERRORS));
+				if(this.log.getOutArea().getText().contains(ErrorManager.ERROR) ) this.log.getOutArea().setText(machine.message(Language.NO_ERRORS));
 				this.log.select(true);
 				this.log.getErrorArea().setText("");
 			}catch(Exception e){
