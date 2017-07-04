@@ -1,5 +1,7 @@
 package quilt;
 
+import java.io.Serializable;
+
 import quilt.gui.Drawer;
 
 /**
@@ -46,19 +48,23 @@ import quilt.gui.Drawer;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public interface Remnant {
+public abstract class Remnant implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4056052894248889552L;
 	public static final int UNIT = 100;
-	public int rows();
-	public int columns();
-	public MinRemnant get( int r, int c );
-	public Remnant[] unstitch();
-	public Remnant[] leftunstitch();
-	public default int[] bounding_box(){ return new int[]{rows(), columns()}; }
-	public default int unit(){ return UNIT; };
-	public default int units( int value ){ return value*UNIT; }
-	public void draw( Drawer g, int column, int row );
-	public Object clone();
-	public default boolean equals(Remnant r) {
+	public abstract int rows();
+	public abstract int columns();
+	public abstract MinRemnant get( int r, int c );
+	public abstract Remnant[] unstitch();
+	public abstract Remnant[] leftunstitch();
+	public int[] bounding_box(){ return new int[]{rows(), columns()}; }
+	public int unit(){ return UNIT; };
+	public int units( int value ){ return value*UNIT; }
+	public abstract void draw( Drawer g, int column, int row );
+	public abstract Object clone();
+	public boolean equals(Remnant r) {
 		if( r==null || r.rows()!=rows() || columns()!=r.columns() ) return false;
 		boolean flag = true;
 		for( int i=0; i<rows() && flag; i++ ){

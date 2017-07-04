@@ -119,9 +119,14 @@ public class ProgrammingFrame extends JFrame {
 		this.language=language;
 		this.asResource=asResource;
 		System.out.println(i18n_file_name());
-		machine = QuiltMachinePicker.get(4,i18n_file_name(),asResource, image("remnant.png"));
-		title = machine.message(Language.TITLE);
-		try {
+		try{
+			String fileName = i18n_file_name();
+			InputStream in;
+			if( asResource ) in = this.getClass().getResourceAsStream(fileName);
+			else in = new FileInputStream(fileName);
+		
+			machine = QuiltMachinePicker.get(4, new ErrorManager(in), image("remnant.png"));
+			title = machine.message(Language.TITLE);
 			jbInit();
 		}catch(Exception e){ e.printStackTrace();  }
 	}

@@ -1,11 +1,17 @@
 package quilt.remnant;
 
+import java.io.Serializable;
+
 import quilt.MinRemnant;
 import quilt.Remnant;
 import quilt.gui.Color;
 import quilt.gui.Drawer;
 
-public class FilledRemnant extends MinRemnant{
+public class FilledRemnant extends MinRemnant implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2226033461318290004L;
 	protected Color color;
 	protected int side;
 

@@ -47,7 +47,12 @@ import quilt.gui.Drawer;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public abstract class MinRemnant implements Remnant{
+public abstract class MinRemnant extends Remnant{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8420832790398674080L;
+
 	public Remnant[] unstitch(){ return null; }	
 	public Remnant[] leftunstitch(){ return null; }	
 

@@ -1,5 +1,7 @@
 package quilt.remnant;
 
+import java.io.Serializable;
+
 import quilt.Remnant;
 import quilt.gui.Drawer;
 import quilt.operation.Rotatable;
@@ -52,7 +54,11 @@ import quilt.gui.Color;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class StripsRemnant extends ColoredRemnant implements Rotatable<Remnant>{
+public class StripsRemnant extends ColoredRemnant implements Rotatable<Remnant>, Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5140443832349831296L;
 	protected Strip[] strips;
 
 	public StripsRemnant( Color color, int[][] strips ) {

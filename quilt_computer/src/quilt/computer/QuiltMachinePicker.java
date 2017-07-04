@@ -19,8 +19,14 @@ public class QuiltMachinePicker {
 		return new QuiltMachine(QuiltCommandFactory.little(), RemnantFactory.single("image", image(img)), new QuiltMachineParser(), message);
 	}
 	
-	public static QuiltMachine get(int machine, String language, boolean asResource, Image img){
+	public static QuiltMachine get(int machine, ErrorManager error_manager, Image img){
+/*
+		InputStream in=null;
+		try{
+			if( asResource ) in = this.getClass().getResourceAsStream(fileName);
+			else in = new FileInputStream(fileName);
 		ErrorManager error_manager = new ErrorManager(language,asResource);
+*/			
 		switch(machine){
 			case 1: return QuiltMachineFactory.little2(error_manager);
 			case 2: return QuiltMachineFactory.little3(error_manager);

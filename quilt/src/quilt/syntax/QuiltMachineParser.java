@@ -202,7 +202,7 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 	public CommandDef command_def() throws Exception{
 		Position pos = new Position(this);
 		String name = name();
-		if( machine.is_primitive(name) || machine.composed(name).length > 0 ) throw error_message(machine.message(Language.REDEFINED));
+		if( machine.is_primitive(name) || machine.composed(name).length > 0 ) throw machine.error(this,machine.message(Language.REDEFINED));
 		CommandCall[] args = null;
 		char c = next();
 		if(symbols.is_left(c)) args = params();

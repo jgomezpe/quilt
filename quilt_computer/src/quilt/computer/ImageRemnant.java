@@ -1,6 +1,7 @@
 package quilt.computer;
 
 import java.awt.Image;
+import java.io.Serializable;
 
 import quilt.MinRemnant;
 import quilt.Remnant;
@@ -8,7 +9,11 @@ import quilt.gui.Drawer;
 import quilt.operation.Rotatable;
 import quilt.operation.Rotate;
 
-public class ImageRemnant extends MinRemnant implements Rotatable<Remnant>{
+public class ImageRemnant extends MinRemnant implements Rotatable<Remnant>, Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7010995528622812625L;
 	protected Image image;
 	protected int rot=0;
 	
