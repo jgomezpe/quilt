@@ -11,7 +11,7 @@ public class QuiltMachineFactory {
 	}
 
 	public static QuiltMachine little2( ErrorManager message ){
-		return new QuiltMachine(QuiltCommandFactory.little(), RemnantFactory.little2("red", new Color(0,0,255,255), "blue", new Color(255,0,0,255)), new QuiltMachineParser(), message);
+		return new QuiltMachine(QuiltCommandFactory.little(), RemnantFactory.little2("red", new Color(255,0,0,255), "blue", new Color(0,0,255,255)), new QuiltMachineParser(), message);
 	}
 
 	public static QuiltMachine little3( ErrorManager message ){
