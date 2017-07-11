@@ -49,11 +49,8 @@ import quilt.operation.Rotate;
 * @version 1.0
 */
 public class Quilt extends Remnant implements Rotatable<Remnant>{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7564986718868499795L;
 	protected MinRemnant[][] remnant;
+
 	public Quilt( Remnant left, Remnant right ){
 		int c = left.columns();
 		remnant = new MinRemnant[left.rows()][c+right.columns()];

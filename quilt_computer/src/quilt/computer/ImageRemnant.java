@@ -1,7 +1,6 @@
 package quilt.computer;
 
 import java.awt.Image;
-import java.io.Serializable;
 
 import quilt.MinRemnant;
 import quilt.Remnant;
@@ -9,26 +8,27 @@ import quilt.gui.Drawer;
 import quilt.operation.Rotatable;
 import quilt.operation.Rotate;
 
-public class ImageRemnant extends MinRemnant implements Rotatable<Remnant>, Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7010995528622812625L;
+public class ImageRemnant extends MinRemnant implements Rotatable<Remnant>{
+	protected String name;
+	protected boolean asResource;
+	
 	protected Image image;
 	protected int rot=0;
 	
-	public ImageRemnant(Image image) {
-		this.image=image;
+	public ImageRemnant(String name, boolean asResource, Image image, int rot){
+		this.name = name;
+		this.asResource = asResource;
+		this.image = image;
+		this.rot = rot;
 	}
 	
-	public ImageRemnant(Image image, int rot) {
-		this(image);
-		this.rot=rot;
+	public ImageRemnant(String name, boolean asResource, Image image) {
+		this(name, asResource, image, 0 );
 	}
 	
 	@Override
 	public Object clone() {
-		return new ImageRemnant(image,rot);
+		return new ImageRemnant(name,asResource,image,rot);
 	}
 
 	@Override
@@ -41,6 +41,6 @@ public class ImageRemnant extends MinRemnant implements Rotatable<Remnant>, Seri
 
 	@Override
 	public Remnant rotate(Rotate command) {
-		return new ImageRemnant(image, (rot+90)%360);
+		return new ImageRemnant(name, asResource, image, (rot+90)%360);
 	}
 }

@@ -1,7 +1,5 @@
 package quilt;
 
-import java.io.Serializable;
-
 import quilt.gui.Drawer;
 
 /**
@@ -48,11 +46,7 @@ import quilt.gui.Drawer;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public abstract class Remnant implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4056052894248889552L;
+public abstract class Remnant{
 	public static final int UNIT = 100;
 	public abstract int rows();
 	public abstract int columns();

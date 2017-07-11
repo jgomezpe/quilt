@@ -125,7 +125,7 @@ public class ProgrammingFrame extends JFrame {
 			if( asResource ) in = this.getClass().getResourceAsStream(fileName);
 			else in = new FileInputStream(fileName);
 		
-			machine = QuiltMachinePicker.get(4, new ErrorManager(in), image("remnant.png"));
+			machine = QuiltMachinePicker.get(4, new ErrorManager(in), Util.resource("remnant.png",asResource), asResource);
 			title = machine.message(Language.TITLE);
 			jbInit();
 		}catch(Exception e){ e.printStackTrace();  }
@@ -208,23 +208,11 @@ public class ProgrammingFrame extends JFrame {
 	protected static final String i18n="I18N/";
 	
 	public Image image(String resource){
-		System.out.println(asResource);
-		try {
-			if( asResource )
-				return ImageIO.read(getClass().getResource("/"+images+resource));
-			else{
-				File f = new File(resources+images+resource);
-				return ImageIO.read(f);
-			}	
-		} catch (Exception ex) {
-			System.err.println(ex.getMessage());
-			return null; 
-		}		
+		return Util.image(Util.resource(resource, asResource), asResource);	
 	}
 	
 	public String i18n_file_name(){
-		if( asResource ) return "/"+i18n+language+".txt";
-		else return resources+i18n+language+".txt";
+		return Util.i18n_file_name( language, asResource );
 	}
 	
 	protected void initButton( JButton button, String resource, String message ){
@@ -244,9 +232,9 @@ public class ProgrammingFrame extends JFrame {
 	}
 	
     protected String[] tokens = { "undef", "regular", "comment", "symbol", "stitch", "regular", "reserved", "remnant" };
-    protected String[] styles = {"[regular,[SansSerif,12]]", "[undef,["+color(Color.pink)+"]]","[comment,[italic,"+color(Color.gray)+"]]",
-    							 "[symbol,["+color(Color.blue)+"]]","[stitch,["+color(Color.red)+"]]",
-    							 "[reserved,[bold]]","[remnant,["+color(Color.orange)+"]]"};
+    protected String[] styles = {"[\"regular\",[\"SansSerif\",12]]", "[\"undef\",["+color(Color.pink)+"]]","[\"comment\",[\"italic\","+color(Color.gray)+"]]",
+    							 "[\"symbol\",["+color(Color.blue)+"]]","[\"stitch\",["+color(Color.red)+"]]",
+    							 "[\"reserved\",[\"bold\"]]","[\"remnant\",["+color(Color.orange)+"]]"};
     
 	protected static String color( Color c ){
 		return "["+c.getRed()+","+c.getGreen()+","+c.getBlue()+","+c.getAlpha()+"]";

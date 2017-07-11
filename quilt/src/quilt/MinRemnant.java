@@ -48,11 +48,6 @@ import quilt.gui.Drawer;
 * @version 1.0
 */
 public abstract class MinRemnant extends Remnant{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8420832790398674080L;
-
 	public Remnant[] unstitch(){ return null; }	
 	public Remnant[] leftunstitch(){ return null; }	
 
