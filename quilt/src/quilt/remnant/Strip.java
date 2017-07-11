@@ -60,6 +60,5 @@ public class Strip implements Comparable<Object>{
 	public void draw( Drawer g, int column, int row ){
 		if( color != null ){ g.setColor(color); }
 		g.drawLine(column+control[0], row+control[1], column+control[2], row+control[3]);
-		//if( color != null ){ g.setColor(prev); }
 	}
 }

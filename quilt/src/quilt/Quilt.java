@@ -1,7 +1,5 @@
 package quilt;
 
-import java.io.Serializable;
-
 import quilt.gui.Drawer;
 import quilt.operation.Rotatable;
 import quilt.operation.Rotate;
@@ -50,7 +48,7 @@ import quilt.operation.Rotate;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class Quilt extends Remnant implements Rotatable<Remnant>, Serializable{
+public class Quilt extends Remnant implements Rotatable<Remnant>{
 	/**
 	 * 
 	 */
@@ -164,9 +162,9 @@ public class Quilt extends Remnant implements Rotatable<Remnant>, Serializable{
 		MinRemnant[][] r = new MinRemnant[columns()][rows()];
 		for( int i=0; i<r.length; i++ ){
 			for( int j=0; j<r[0].length; j++ ){
-				r[i][j] = (MinRemnant)command.execute(get(j,columns()-i-1));
+				r[i][j] = (MinRemnant)command.execute(get(rows()-j-1,i));
 			}
 		}
 		return new Quilt(r);
-	}	
+	}
 }

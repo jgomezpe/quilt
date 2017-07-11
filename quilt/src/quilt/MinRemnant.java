@@ -60,8 +60,6 @@ public abstract class MinRemnant extends Remnant{
 
 	public int columns(){ return 1; }
 	
-	public abstract Object clone();
-
 	public Remnant check( Remnant r ){
 		if( r!=null && r.rows()==1 && r.columns()==1 && !(r instanceof MinRemnant) ) return r.get(0, 0);
 		return r;
