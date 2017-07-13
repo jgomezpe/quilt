@@ -47,6 +47,29 @@ import quilt.remnant.Strip;
 * @version 1.0
 */
 public class Util {
+	public static int[] rotate( int x, int y, int SIDE ){ return new int[]{y,SIDE-x}; }
+	
+	public static int[] rotate( int[] p, int SIDE ){ return rotate(p[0],p[1],SIDE);	}
+	
+	public static Object[] store( String tag, int[] x ){
+		Object[] obj = new Object[x.length+1];
+		for( int i=0; i<x.length; i++ ) obj[i+1]=x[i];
+		obj[0] = tag;
+		return obj;
+	}
+
+	public static Object[] store( int[] x ){
+		Object[] obj = new Object[x.length];
+		for( int i=0; i<x.length; i++ ) obj[i]=x[i];
+		return obj;
+	}
+
+	public static int[] load( Object[] obj, int offset ){
+		int[] x = new int[obj.length-offset];
+		for( int i=0; i<x.length; i++ ) x[i]=(int)obj[i+offset];
+		return x;
+	}
+
 	public static int compare(int[] one, int[] two) {
 		if( one.length!=two.length ) return one.length-two.length;
 		int k=0;

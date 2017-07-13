@@ -9,7 +9,8 @@ public class QuiltMachinePicker {
 	public static QuiltMachine image( ErrorManager language, String resource, boolean asResource){
 		//resource = "http://www.mkyong.com/image/mypic.jpg";
 		resource = ObjectParser.store(resource);
-		String machine_txt = "[\"machine\",[\"commands\",\"sew\",\"rot\"],[[\"image\",[\"image\","+resource+","+asResource+"]]]]";
+		//String machine_txt = "[\"machine\",[\"commands\",\"sew\",\"rot\"],[[\"image\",[\"image\","+resource+","+asResource+"]]]]";
+		String machine_txt = "[\"machine\",[\"commands\",\"sew\",\"rot\"],[[\"image\",[\"polygons\",[\"color\",255,0,0,255],[\"polygon\",[0,100,100,0],[40,40,60,60]]]]]]";
 		System.out.println(machine_txt);
 		QuiltMachineInstanceForComputer qm = new QuiltMachineInstanceForComputer(language);
 		try{

@@ -75,6 +75,7 @@ public class DrawPanel extends JPanel{
 
 	public void set( Remnant remnant ){
 		this.remnant = remnant;
+		this.updateUI();
 	}
 
 	/**

@@ -11,6 +11,8 @@ import quilt.operation.Rotate;
 import quilt.operation.Sew;
 import quilt.remnant.FilledRemnant;
 import quilt.remnant.FilledRemnantInstance;
+import quilt.remnant.PolygonRemnant;
+import quilt.remnant.PolygonRemnantInstance;
 import quilt.remnant.StripsRemnant;
 import quilt.remnant.StripsRemnantInstance;
 import quilt.syntax.QuiltMachineParser;
@@ -33,6 +35,7 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 		remnants.register(StripsRemnantInstance.STRIPS, StripsRemnant.class.getName(), new StripsRemnantInstance());	
 		remnants.register(QuiltInstance.QUILT, Quilt.class.getName(), new QuiltInstance(remnants));			
 		remnants.register(FilledRemnantInstance.FILLED, FilledRemnant.class.getName(), new FilledRemnantInstance());
+		remnants.register(PolygonRemnantInstance.POLYGONS, PolygonRemnant.class.getName(), new PolygonRemnantInstance());
 	}
 	
 	@Override
@@ -43,6 +46,7 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 		Hashtable<String, Remnant> r = new Hashtable<String,Remnant>();
 		for( int i=0; i<robj.length; i++){
 			Object[] pair = (Object[])robj[i];
+			System.out.println("****"+pair[0]);
 			r.put((String)pair[0], remnants.load((Object[])pair[1]));
 		}
 		return new QuiltMachine(c, r, new QuiltMachineParser(), language);

@@ -94,7 +94,7 @@ public class StripsRemnant extends ColoredRemnant implements Rotatable<Remnant>{
 	@Override
 	public Remnant rotate( Rotate command ) {
 		Strip[] _strips = Strip.clone(strips);
-		for( int i=0; i<_strips.length; i++ ) strips[i].rotate();
+		for( int i=0; i<_strips.length; i++ ) strips[i].rotate(Remnant.UNIT);
 		return new StripsRemnant(color(), strips);		
 	}	
 }

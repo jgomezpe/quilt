@@ -107,4 +107,9 @@ public class AWTDrawer extends Drawer{
 		g2d.drawImage(img, trans, null);
 		g2d.setTransform(orTr);
 	}
+
+	@Override
+	public void drawFillPolygon(int[] x, int[] y) {
+		g.fillPolygon(scale(x), scale(y), x.length);
+	}
 }

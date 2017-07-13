@@ -24,8 +24,7 @@ public class StripInstance implements Instance<Strip>{
 
 	@Override
 	public Object[] store(Strip obj) {
-		int[] control = obj.control;
-		if( obj.color==null ) return new Object[]{STRIP, control[0], control[1], control[2], control[3]};
-		else  return new Object[]{STRIP, c_instance.store(obj.color), control[0], control[1], control[2], control[3]};
+		if( obj.color==null ) return new Object[]{STRIP, obj.start[0], obj.start[1], obj.end[2], obj.end[3]};
+		else  return new Object[]{STRIP, c_instance.store(obj.color), obj.start[0], obj.start[1], obj.end[2], obj.end[3]};
 	}
 }

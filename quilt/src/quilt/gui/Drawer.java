@@ -61,8 +61,15 @@ public abstract class Drawer {
 		return value*scale/100;
 	}
 	
+	public int[] scale( int[] value ){
+		int[] svalue = new int[value.length];
+		for( int i=0; i<svalue.length; i++ ) svalue[i] = scale(value[i]);
+		return svalue;
+	}
+	
 	public abstract Color setColor( Color color );
 	public abstract void drawLine( int start_x, int start_y, int end_x, int end_y );	
+	public abstract void drawFillPolygon( int[] x, int[] y );	
 	public abstract void drawFill( int start_x, int start_y, int width, int height );	
 	public abstract void drawImage( int start_x, int start_y, int width, int height, int rot, Object image );	
 	public abstract void drawString( int x, int y, String str );
