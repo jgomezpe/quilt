@@ -2,8 +2,8 @@ package quilt.remnant;
 
 import quilt.MinRemnant;
 import quilt.Remnant;
-import quilt.gui.Color;
 import quilt.util.Util;
+import unalcol.gui.paint.Color;
 
 public abstract class ColoredRemnant extends MinRemnant{
 	protected Color color;

@@ -1,8 +1,8 @@
 package quilt.remnant;
 
-import quilt.gui.Color;
 import quilt.gui.Drawer;
 import quilt.util.Util;
+import unalcol.gui.paint.Color;
 
 public class Polygon implements Comparable<Object>{
 	protected Color color=null;

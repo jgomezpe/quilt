@@ -1,13 +1,10 @@
 package quilt.computer;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.FileInputStream;
-import java.io.InputStream;
 
 import javax.swing.*;
 
 import quilt.QuiltMachine;
-import unalcol.gui.editor.ErrorManager;
 import unalcol.gui.util.ObjectParser;
 
 //
@@ -70,23 +67,14 @@ public class ProgrammingFrame extends JFrame implements TitleComponent {
 	BorderLayout windowLayout = new BorderLayout();
 	BorderLayout windowPaneLayout = new BorderLayout();
 
-	public String i18n_file_name(String language, boolean asResource ){
-		return Util.i18n_file_name( language, asResource );
-	}
-
-	public ProgrammingFrame(String language, boolean asResource){
+	public ProgrammingFrame(String machine_txt, String language, String styles){
 		try{
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 			int width = (int)screenSize.getWidth();
 			int height = (int)screenSize.getHeight();
 			this.setSize(new Dimension(width*4/5, height*4/5));
-			String fileName = i18n_file_name(language,asResource);
-			InputStream in;
-			if( asResource ) in = this.getClass().getResourceAsStream(fileName);
-			else in = new FileInputStream(fileName);
-			String machine_txt = "[\"machine\",[\"commands\",\"sew\",\"rot\"],[[\"image\",[\"polygons\",[\"color\",255,0,0,255],[\"polygon\",[0,100,100,0],[40,40,60,60]]]]]]";
 			System.out.println(machine_txt);
-			QuiltMachineInstanceForComputer qm = new QuiltMachineInstanceForComputer(new ErrorManager(in));
+			QuiltMachineInstanceForComputer qm = new QuiltMachineInstanceForComputer(Util.i18n(language));
 			QuiltMachine machine;
 			try{
 				machine = qm.load(ObjectParser.parse(machine_txt));
@@ -94,7 +82,7 @@ public class ProgrammingFrame extends JFrame implements TitleComponent {
 				e.printStackTrace();
 				machine = null;
 			}
-			windowPanel = new ProgrammingPanel(this, width, height, machine, language, asResource);
+			windowPanel = new ProgrammingPanel(this, width, height, styles, machine, language);
 			this.getContentPane().setLayout(windowLayout);
 			this.getContentPane().add(windowPanel, java.awt.BorderLayout.CENTER);
 			// Closing the window

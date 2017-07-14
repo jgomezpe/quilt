@@ -46,7 +46,6 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 		Hashtable<String, Remnant> r = new Hashtable<String,Remnant>();
 		for( int i=0; i<robj.length; i++){
 			Object[] pair = (Object[])robj[i];
-			System.out.println("****"+pair[0]);
 			r.put((String)pair[0], remnants.load((Object[])pair[1]));
 		}
 		return new QuiltMachine(c, r, new QuiltMachineParser(), language);

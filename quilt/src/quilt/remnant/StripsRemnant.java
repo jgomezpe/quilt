@@ -5,7 +5,7 @@ import quilt.gui.Drawer;
 import quilt.operation.Rotatable;
 import quilt.operation.Rotate;
 import quilt.util.Util;
-import quilt.gui.Color;
+import unalcol.gui.paint.Color;
 
 
 /**

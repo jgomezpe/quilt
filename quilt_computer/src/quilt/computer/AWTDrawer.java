@@ -6,7 +6,7 @@ import java.awt.Image;
 import java.awt.geom.AffineTransform;
 
 import quilt.gui.Drawer;
-import quilt.gui.Color;
+import unalcol.gui.paint.Color;
 //
 //Quilt Sewer Machine 1.0 by Jonatan Gomez-Perdomo
 //https://github.com/jgomezpe/quilt/tree/master/quilt/
@@ -73,12 +73,15 @@ public class AWTDrawer extends Drawer{
 	public void drawString(int x, int y, String str) {
 		g.drawString(str, scale(x), scale(y));
 	}
+	
+	public static java.awt.Color convert( Color color ){ return new java.awt.Color(color.red(),color.green(),color.blue(),color.alpha()); }
+	public static Color convert( java.awt.Color color ){ return new Color( color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()); }
 
 	@Override
 	public Color setColor(Color color) {
 		java.awt.Color awt_color = g.getColor();
-		Color quilt_color = new Color( awt_color.getRed(), awt_color.getGreen(), awt_color.getBlue(), awt_color.getAlpha()); 
-		g.setColor(new java.awt.Color(color.red(),color.green(),color.blue(),color.alpha()));
+		Color quilt_color = convert( awt_color ); 
+		g.setColor( convert(color) );
 		return quilt_color;
 	}
 

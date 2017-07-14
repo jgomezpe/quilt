@@ -1,5 +1,7 @@
 package quilt.gui;
 
+import unalcol.gui.paint.Color;
+
 //
 //Quilt Sewer Machine 1.0 by Jonatan Gomez-Perdomo
 //https://github.com/jgomezpe/quilt/tree/master/quilt/

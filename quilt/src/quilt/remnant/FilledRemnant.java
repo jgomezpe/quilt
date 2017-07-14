@@ -2,8 +2,8 @@ package quilt.remnant;
 
 import quilt.MinRemnant;
 import quilt.Remnant;
-import quilt.gui.Color;
 import quilt.gui.Drawer;
+import unalcol.gui.paint.Color;
 
 public class FilledRemnant extends MinRemnant{
 	protected Color color;
@@ -25,8 +25,9 @@ public class FilledRemnant extends MinRemnant{
 		super.draw(g,column,row);
 		column = units(column);
 		row = units(row);
+		int one = unit();
 		g.setColor(color());
-		g.drawFill(column+side/2, row+side/2, side, side);
+		g.drawFill(column+(one-side)/2, row+(one-side)/2, side, side);
 	}
 
 	public boolean equals( Remnant r ){

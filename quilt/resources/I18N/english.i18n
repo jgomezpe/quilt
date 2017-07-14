@@ -26,3 +26,7 @@ file=Sewer machine files
 no_errors=No errors...!!!!
 errors=Problems!!! There are some errors.\nSee error tab for a complete description of the error
 author=Developed by Professor Jonatan Gomez Perdomo.\n jgomezpe at unal.edu.co \nUniversidad Nacional de Colombia
+machine=Machine configuration
+style=Editor Text Style
+rot=% Rotates a remnant 90 degrees counter clock wise.\n
+sew=% Sews two remnants with same high.\n

@@ -10,25 +10,23 @@ import quilt.operation.Rotate;
 
 public class ImageRemnant extends MinRemnant implements Rotatable<Remnant>{
 	protected String name;
-	protected boolean asResource;
 	
 	protected Image image;
 	protected int rot=0;
 	
-	public ImageRemnant(String name, boolean asResource, Image image, int rot){
+	public ImageRemnant(String name, Image image, int rot){
 		this.name = name;
-		this.asResource = asResource;
 		this.image = image;
 		this.rot = rot;
 	}
 	
-	public ImageRemnant(String name, boolean asResource, Image image) {
-		this(name, asResource, image, 0 );
+	public ImageRemnant(String name, Image image) {
+		this(name, image, 0 );
 	}
 	
 	@Override
 	public Object clone() {
-		return new ImageRemnant(name,asResource,image,rot);
+		return new ImageRemnant(name,image,rot);
 	}
 
 	@Override
@@ -41,6 +39,6 @@ public class ImageRemnant extends MinRemnant implements Rotatable<Remnant>{
 
 	@Override
 	public Remnant rotate(Rotate command) {
-		return new ImageRemnant(name, asResource, image, (rot+90)%360);
+		return new ImageRemnant(name, image, (rot+270)%360);
 	}
 }

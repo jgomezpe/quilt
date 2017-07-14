@@ -161,8 +161,8 @@ public class CommandDef extends Position{
 		return toString(0);
 	}
 	
-	public static void main( String[] args ){
+/*	public static void main( String[] args ){
 		String[] parts = "X#YZA|AAA#U|ZZZ".split("[\\"+QuiltSymbols.leftstitch()+"\\"+QuiltSymbols.stitch()+"]");
 		for( String s:parts ) System.out.println(s); 
-	}
+	} */
 }

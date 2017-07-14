@@ -1,7 +1,7 @@
 package quilt.remnant;
 
-import quilt.gui.Color;
-import quilt.gui.ColorInstance;
+import unalcol.gui.paint.Color;
+import unalcol.gui.paint.ColorInstance;
 import unalcol.gui.util.Instance;
 
 public class StripInstance implements Instance<Strip>{

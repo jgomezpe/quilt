@@ -1,7 +1,7 @@
 package quilt;
 
-import quilt.gui.Color;
 import quilt.gui.Drawer;
+import unalcol.gui.paint.Color;
 
 /**
 *

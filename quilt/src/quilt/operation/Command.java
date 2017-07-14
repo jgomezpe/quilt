@@ -3,7 +3,7 @@ package quilt.operation;
 import quilt.QuiltMachine;
 import quilt.Remnant;
 import quilt.syntax.QuiltSymbols;
-import quilt.util.Language;
+import unalcol.gui.editor.ErrorManager;
 
 /**
 *
@@ -66,13 +66,10 @@ public abstract class Command{
 	public String[] args(){ return args; }
 
 	public abstract Remnant execute( QuiltMachine machine, Remnant[] value ) throws Exception;
-	
-	public abstract String comment( String language );
-	
-	
-	public String toString(String language){
+
+	public String toString(ErrorManager language){
 		StringBuilder sb = new StringBuilder();
-		sb.append(comment(language));
+		sb.append(language.get(name));
 		sb.append(name);
 		if( args!=null && args.length>0 ){
 			sb.append(QuiltSymbols.left());
@@ -84,7 +81,5 @@ public abstract class Command{
 			sb.append(QuiltSymbols.right());
 		}
 		return sb.toString();
-	}
-	
-	public String toString(){ return toString(Language.SPANISH); } 
+	}	
 }

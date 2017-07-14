@@ -63,6 +63,8 @@ public class QuiltMachine {
 	
 	public static final String SEW = "sew";
 	
+	public static final String QMP = ".qmp";	
+	public static final String QMC = ".qmc";	
 	
 	protected ErrorManager language;
 	

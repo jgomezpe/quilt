@@ -69,11 +69,5 @@ public class Rotate extends Command{
 			return execute(value[0]);
 		}
 		throw new Exception(machine.message(Language.ARGS)+" "+name());
-	}
-	
-	public String comment( String language ){
-		if( language.equals(Language.SPANISH) ) return "% Rota un retazo 90 grados en dirección contraria al reloj.\n";
-		else if( language.equals(Language.ENGLISH) ) return "% Rotates a remnant 90 degrees counter clock wise.\n";
-		return "";
-	}
+	}	
 }

@@ -67,11 +67,5 @@ public class Sew extends Command{
 			return execute( value[0], value[1] );
 		}
 		throw new Exception(machine.message(Language.ARGS)+" "+name());
-	}
-	
-	public String comment( String language ){
-		if( language.equals(Language.SPANISH) ) return "% Cose dos retazos que tengan el mismo alto.\n";
-		else if( language.equals(Language.ENGLISH) ) return "% Sews two remnants with same high.\n";
-		return "";
 	}	
 }

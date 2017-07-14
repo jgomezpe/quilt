@@ -71,4 +71,6 @@ public class Language{
 	public static final String NO_ERRORS = "no_errors";
 	public static final String ERRORS = "errors";
 	public static final String AUTHOR = "author";	
+	public static final String MACHINE = "machine";
+	public static final String STYLE = "style";		
 }

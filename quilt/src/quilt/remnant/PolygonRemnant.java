@@ -1,10 +1,10 @@
 package quilt.remnant;
 
 import quilt.Remnant;
-import quilt.gui.Color;
 import quilt.gui.Drawer;
 import quilt.operation.Rotatable;
 import quilt.operation.Rotate;
+import unalcol.gui.paint.Color;
 
 public class PolygonRemnant extends ColoredRemnant implements Rotatable<Remnant>{
 	protected Polygon[] p;

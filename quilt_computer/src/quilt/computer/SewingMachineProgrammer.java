@@ -1,6 +1,10 @@
 package quilt.computer;
 
+import java.awt.Color;
+
+import quilt.QuiltMachine;
 import quilt.util.Language;
+import unalcol.gui.util.ObjectParser;
 
 /**
 *
@@ -47,10 +51,17 @@ import quilt.util.Language;
 * @version 1.0
 */
 public class SewingMachineProgrammer {
+	protected static String color( Color c ){
+		return ObjectParser.store(new Object[]{"color",c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha()});
+	}
+    
 	public static void main( String[] args ){
 		String language = args.length>=1?args[0]:Language.SPANISH;
-		boolean asResource = args.length<2 || args[1].equals("true");
-		ProgrammingFrame frame = new ProgrammingFrame(language,asResource);
+		String conf_file = args.length>=2?args[1]:"default"+QuiltMachine.QMC;
+		String machine_txt = Util.config(conf_file);
+		conf_file = args.length==3?args[2]:"default"+Util.QMS;
+		String styles = Util.config(conf_file);
+		ProgrammingFrame frame = new ProgrammingFrame(machine_txt, language, styles);
 		frame.setVisible(true);
 	}
 }
