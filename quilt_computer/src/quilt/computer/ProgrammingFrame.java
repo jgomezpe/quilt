@@ -6,6 +6,7 @@ import javax.swing.*;
 
 import quilt.QuiltMachine;
 import unalcol.gui.util.ObjectParser;
+import quilt.util.Util;
 
 //
 //Quilt Sewer Machine 1.0 by Jonatan Gomez-Perdomo

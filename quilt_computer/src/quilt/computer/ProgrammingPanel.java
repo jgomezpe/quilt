@@ -36,6 +36,7 @@ import unalcol.gui.editor.SyntaxStyle;
 import unalcol.gui.io.FileFilter;
 import unalcol.gui.log.LogPanel;
 import unalcol.gui.util.ObjectParser;
+import quilt.util.Util;
 
 public class ProgrammingPanel extends JPanel{
 	/**
@@ -100,7 +101,7 @@ public class ProgrammingPanel extends JPanel{
 
 			// Program area
 			jProgram.setTokenizer(machine.parser(), tokens);
-			jProgram.setStyle(styles);
+			jProgram.setStyle(SyntaxStyle.get(styles));
 			jProgram.setToolTipText("");
 			jProgram.setVerifyInputWhenFocusTarget(true);
 			jProgram.setText("");
@@ -140,7 +141,7 @@ public class ProgrammingPanel extends JPanel{
 			jCommandBar.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 			jCommandLabel.setText(machine.message(Language.COMMAND));
 			jCommand.setTokenizer(machine.parser(), tokens);
-			jCommand.setStyle(styles);
+			jCommand.setStyle(SyntaxStyle.get(styles));
 			jCommand.setToolTipText("");
 			jCommand.setVerifyInputWhenFocusTarget(true);
 			jCommand.setText("");
@@ -212,9 +213,9 @@ public class ProgrammingPanel extends JPanel{
 					s = reader.readLine();
 				}
 				reader.close();
-				String str = sb.toString();
-				jProgram.setStyle(str);
-				jCommand.setStyle(str);				
+				String styles = sb.toString();
+				jProgram.setStyle(SyntaxStyle.get(styles));
+				jCommand.setStyle(SyntaxStyle.get(styles));				
 			}catch (Exception e){ e.printStackTrace(); }
 		}
 	}

@@ -1,6 +1,7 @@
 package quilt.computer;
 
 import quilt.Remnant;
+import quilt.util.Util;
 import unalcol.gui.util.Instance;
 
 public class ImageRemnantInstance implements Instance<Remnant>{
