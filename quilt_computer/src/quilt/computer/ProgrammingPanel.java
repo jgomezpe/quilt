@@ -297,7 +297,7 @@ public class ProgrammingPanel extends JPanel{
 
 	public void jNewButton_actionPerformed(ActionEvent actionEvent) {
 		fileName = machine.message(Language.NONAME);
-		if( jProgram.getText().length()>0 && jCommand.getText().length()>0 && JOptionPane.showConfirmDialog(this, machine.message(Language.CLEAN)) == JOptionPane.YES_OPTION ){
+		if( (jProgram.getText().length()>0 || jCommand.getText().length()>0) && JOptionPane.showConfirmDialog(this, machine.message(Language.CLEAN)) == JOptionPane.YES_OPTION ){
 			jProgram.setText("");
 			jCommand.setText("");
 		}
