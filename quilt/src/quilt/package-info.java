@@ -1,10 +1,10 @@
 /**
 *
-* Quilt
+* Quilt basic classes
 * <P>A Quilt machine programming environment.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>

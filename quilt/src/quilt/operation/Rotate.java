@@ -10,7 +10,7 @@ import quilt.util.Language;
 * <P>Rotates a quilt 90 degrees counter clock wise.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/basic/Rotate.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/basic/Rotate.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>

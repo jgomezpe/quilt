@@ -16,7 +16,7 @@ import unalcol.gui.editor.Position;
 * <P>A command execution call.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/operation/CommandCall.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/operation/CommandCall.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>

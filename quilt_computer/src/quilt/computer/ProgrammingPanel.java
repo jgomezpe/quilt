@@ -64,6 +64,7 @@ public class ProgrammingPanel extends JPanel{
 	
 	// The tool bar
 	JToolBar jToolBar = new JToolBar();
+	JButton jNewButton = new JButton();
 	JButton jOpenButton = new JButton();
 	JButton jSaveButton = new JButton();
 	JButton jCompileButton = new JButton();
@@ -95,7 +96,8 @@ public class ProgrammingPanel extends JPanel{
 		this.language=language;
 		try{		
 			title = machine.message(Language.TITLE);
-			parent.setTitle(title);
+			fileName = machine.message(Language.NONAME);
+			parent.setTitle(title + " [" + fileName + "]");
 			this.setSize(new Dimension(width*4/5, height*4/5));
 			this.setLayout(windowLayout);
 
@@ -114,6 +116,8 @@ public class ProgrammingPanel extends JPanel{
 			
 			
 			// Tool bar 
+			initButton(jNewButton, "new.png", machine.message(Language.NEW));
+			jNewButton.addActionListener(new ProgrammingPanel_jNewButton_actionAdapter(this));
 			initButton(jOpenButton, "open.png", machine.message(Language.OPEN));
 			jOpenButton.addActionListener(new ProgrammingPanel_jOpenButton_actionAdapter(this));
 			initButton(jSaveButton, "save.png", machine.message(Language.SAVE));
@@ -128,6 +132,7 @@ public class ProgrammingPanel extends JPanel{
 			jMachineButton.addActionListener(new ProgrammingPanel_jMachineButton_actionAdapter(this));
 			initButton(jStyleButton, "style.png", machine.message(Language.STYLE));
 			jStyleButton.addActionListener(new ProgrammingPanel_jStyleButton_actionAdapter(this));
+			jToolBar.add(jNewButton);
 			jToolBar.add(jOpenButton);
 			jToolBar.add(jSaveButton);
 			jToolBar.add(jCompileButton);
@@ -246,6 +251,15 @@ public class ProgrammingPanel extends JPanel{
 		}
 	}
 
+	public void jNewButton_actionPerformed(ActionEvent actionEvent) {
+		fileName = machine.message(Language.NONAME);
+		if( jProgram.getText().length()>0 && jCommand.getText().length()>0 && JOptionPane.showConfirmDialog(this, machine.message(Language.CLEAN)) == JOptionPane.YES_OPTION ){
+			jProgram.setText("");
+			jCommand.setText("");
+		}
+		title_component.setTitle(title + " [" + fileName + "]");
+	}
+	
 	public void jOpenButton_actionPerformed(ActionEvent actionEvent) {
 		String QMP = QuiltMachine.QMP;
 		FileFilter filter = new FileFilter( machine.message(Language.FILE)+" (*"+QMP+")" );
@@ -272,27 +286,35 @@ public class ProgrammingPanel extends JPanel{
 	}
 
 	public void jSaveButton_actionPerformed(ActionEvent actionEvent) {
-		String QMP = QuiltMachine.QMP;
-		FileFilter filter = new FileFilter( machine.message(Language.FILE)+" (*"+QMP+")" );
-		filter.add(QMP.substring(1));
-		JFileChooser file = new JFileChooser( fileDir );
-		file.setFileFilter(filter);
-		if( file.showSaveDialog(this) == JFileChooser.APPROVE_OPTION ){
+		if( fileName.equals(machine.message(Language.NONAME)) ){
+			String QMP = QuiltMachine.QMP;
+			FileFilter filter = new FileFilter( machine.message(Language.FILE)+" (*"+QMP+")" );
+			filter.add(QMP.substring(1));
+			JFileChooser file = new JFileChooser( fileDir );
+			file.setFileFilter(filter);
+			if( file.showSaveDialog(this) == JFileChooser.APPROVE_OPTION ){
+				try{
+					String fileExt = QMP;  
+					fileDir = file.getSelectedFile().getAbsolutePath();
+					fileName = file.getSelectedFile().getName();
+					int pos = fileName.lastIndexOf(fileExt);
+					if( pos == -1 || pos != fileName.length()-fileExt.length() ){
+						fileDir += fileExt;
+						fileName += fileExt;
+					}
+					FileWriter writer = new FileWriter(fileDir);
+					writer.write(jProgram.getText());
+					writer.close();
+					title_component.setTitle(title + " [" + fileName + "]");
+				}catch( Exception e ){ e.printStackTrace(); }
+			}
+		}else{
 			try{
-				String fileExt = QMP;  
-				fileDir = file.getSelectedFile().getAbsolutePath();
-				fileName = file.getSelectedFile().getName();
-				int pos = fileName.lastIndexOf(fileExt);
-				if( pos == -1 || pos != fileName.length()-fileExt.length() ){
-					fileDir += fileExt;
-					fileName += fileExt;
-				}
 				FileWriter writer = new FileWriter(fileDir);
 				writer.write(jProgram.getText());
 				writer.close();
-				title_component.setTitle(title + " [" + fileName + "]");
 			}catch( Exception e ){ e.printStackTrace(); }
-		}
+		}	
 	}
 
 	public void jPrimitiveButton_actionPerformed(ActionEvent actionEvent) {
@@ -442,6 +464,18 @@ class ProgrammingPanel_jSaveButton_actionAdapter implements ActionListener {
 	public void actionPerformed(ActionEvent actionEvent) {
 		adaptee.jSaveButton_actionPerformed(actionEvent);
 	}
+}
+
+class ProgrammingPanel_jNewButton_actionAdapter implements ActionListener {
+	private ProgrammingPanel adaptee;
+	
+	ProgrammingPanel_jNewButton_actionAdapter(ProgrammingPanel adaptee) {
+		this.adaptee = adaptee;
+	}
+
+	public void actionPerformed(ActionEvent actionEvent) {
+		adaptee.jNewButton_actionPerformed(actionEvent);
+	}	
 }
 
 class ProgrammingPanel_jOpenButton_actionAdapter implements ActionListener {

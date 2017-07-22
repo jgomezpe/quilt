@@ -6,7 +6,7 @@ package quilt.util;
 * <P>Language used by the GUI.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/Language.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/util/Language.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -61,6 +61,9 @@ public class Language{
 	public static final String MISMATCH = "mismatch";
 	public static final String UNDEFINED = "undefined";
 	public static final String REDEFINED = "redefined";
+	public static final String NONAME = "noname";
+	public static final String CLEAN = "clean";
+	public static final String NEW = "new";
 	public static final String OPEN = "open";
 	public static final String SAVE = "save";
 	public static final String COMPILE = "compile";

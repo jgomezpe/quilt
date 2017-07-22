@@ -14,10 +14,10 @@ import unalcol.gui.editor.Position;
 /**
 *
 * QuiltMachine
-* <P>Abstract definition of a sewer of quilts
+* <P>Definition of a sewer of quilts
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/QuiltMachine.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/QuiltMachine.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>

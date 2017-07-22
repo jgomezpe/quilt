@@ -9,7 +9,7 @@ import unalcol.gui.paint.Color;
 * <P>Minimal Remnant used by a Quilt.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/MinRemnant.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/MinRemnant.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>

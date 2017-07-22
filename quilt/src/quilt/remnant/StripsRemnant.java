@@ -2,6 +2,7 @@ package quilt.remnant;
 
 import quilt.Remnant;
 import quilt.gui.Drawer;
+import quilt.gui.Strip;
 import quilt.operation.Rotatable;
 import quilt.operation.Rotate;
 import quilt.util.Util;
@@ -14,7 +15,7 @@ import unalcol.gui.paint.Color;
 * <P>A remnant with some strips.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/strips/StripsRemnant.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/strips/StripsRemnant.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>

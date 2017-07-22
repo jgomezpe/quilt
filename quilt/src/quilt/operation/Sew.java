@@ -11,7 +11,7 @@ import quilt.util.Language;
 * <P>Sews two quilts (vertical direction) if the quilts have the same number of rows (high).
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/Sew.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/Sew.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>

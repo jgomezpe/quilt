@@ -10,16 +10,16 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
-import quilt.remnant.Strip;
+import quilt.gui.Strip;
 import unalcol.gui.editor.ErrorManager;
 
 /**
 *
-* Strips
-* <P>Utility for strips based Remnants.
+* Util
+* <P>Utility for the Quilt environment.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/strips/Strips.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/util/Util.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
