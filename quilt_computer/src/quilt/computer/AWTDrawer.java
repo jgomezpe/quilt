@@ -17,7 +17,7 @@ import unalcol.gui.paint.Color;
 * <P>Simple GUI for drawing quilts.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/gui/AWTDrawer.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt_computer/src/quilt/computer/AWTDrawer.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>

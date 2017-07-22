@@ -8,17 +8,13 @@ import quilt.QuiltMachine;
 import unalcol.gui.util.ObjectParser;
 import quilt.util.Util;
 
-//
-//Quilt Sewer Machine 1.0 by Jonatan Gomez-Perdomo
-//https://github.com/jgomezpe/quilt/tree/master/quilt/
-//
 /**
 *
 * ProgrammingFrame
 * <P>GUI for the sewer machine.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/gui/ProgrammingFrame.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt_computer/src/quilt/computer/ProgrammingFrame.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>

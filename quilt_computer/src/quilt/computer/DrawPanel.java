@@ -14,7 +14,7 @@ import java.awt.Dimension;
 * <P>Panel of the Frame window for drawing quilts.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/unalcol/blob/master/quilt/src/quilt/gui/DrawPanel.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt_computer/src/quilt/computer/DrawPanel.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
