@@ -6,7 +6,7 @@ import unalcol.gui.util.Instance;
 
 /**
 *
-* EmptyRemnantInstance
+* ImageRemnantInstance
 * <P>Load and Store mechanism of ImageRemnants (Persistent methods)
 *
 * <P>
