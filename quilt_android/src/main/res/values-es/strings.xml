@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Decodificador Alienígena</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="hello_world">Hola Mundo!</string>
+    <string name="program_area">Área de Programa</string>
+    <string name="command_area">Área de Comando</string>
+    <string name="file">Archivo</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+    <string name="select_file">Seleccione un archivo</string>
+    <string name="language">spanish</string>
+</resources>

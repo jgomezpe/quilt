@@ -1,0 +1,61 @@
+package com.example.jgomez.textedittest;
+
+import android.text.SpannableStringBuilder;
+
+import java.util.Vector;
+
+import unalcol.gui.editor.Tokenizer;
+
+/**
+ * Created by jgomez on 2/07/17.
+ */
+
+public class SpannableParagraph {
+    private Vector<SpannableLine> lines = new Vector<SpannableLine>();
+    private Tokenizer tokenizer;
+    private SpanFactory factory;
+
+    public SpannableParagraph(SpannableStringBuilder str, Tokenizer tokenizer, SpanFactory factory){
+        this.tokenizer = tokenizer;
+        this.factory = factory;
+        int offset = 0;
+        while(offset<str.length()){
+            SpannableLine line = new SpannableLine(offset,str,tokenizer,factory);
+            offset = line.end();
+        }
+    }
+
+    public int index( int offset ){
+        int i=0;
+        while( i<lines.size() && offset>lines.get(i).end() ) i++;
+        return i;
+    }
+
+    public int offset( int row, int column ){ return lines.get(row).start()+column; }
+
+    public void update( int start, int before, int count, SpannableStringBuilder str ){
+        int start_line = index(start);
+        int end_line = index(start+before);
+        int i=start_line+1;
+        while( i<=end_line ) {
+            lines.get(i).removeSpans(str);
+            lines.remove(i);
+            end_line--;
+        }
+        if( start_line < lines.size() ){
+            SpannableLine line = lines.get(start_line);
+            line.updateSpans(str);
+        }else{
+            SpannableLine line = new SpannableLine(lines.size()>0?lines.get(lines.size()-1).end():0, str, tokenizer,factory);
+            lines.add(line);
+        }
+        while( lines.get(start_line).end()<count ){
+            SpannableLine line = new SpannableLine(lines.get(start_line).end(), str, tokenizer,factory);
+            if( start_line == lines.size()-1 )
+                lines.add(line);
+            else
+                lines.add(start_line+1,line);
+            start_line++;
+        }
+    }
+}

@@ -1,0 +1,55 @@
+package com.aliensdecoder;
+import android.text.SpannableStringBuilder;
+
+import java.util.Vector;
+
+import unalcol.gui.editor.Token;
+import unalcol.gui.editor.Tokenizer;
+
+/**
+ * Created by jgomez on 2/07/17.
+ */
+
+public class SpannableLine {
+    private int offset;
+    private int length;
+    private Vector<Object> spans = new Vector<Object>();
+    private Tokenizer tokenizer;
+    private SpanFactory factory;
+
+    public SpannableLine(int offset, SpannableStringBuilder str, Tokenizer tokenizer, SpanFactory factory){
+        this.offset=offset;
+        this.tokenizer = tokenizer;
+        this.factory = factory;
+        updateSpans(str);
+    }
+
+    public void removeSpans( SpannableStringBuilder str ){
+        for( Object span:spans ) str.removeSpan(span);
+        spans.clear();
+    }
+
+    public void updateSpans( SpannableStringBuilder str ){
+        removeSpans(str);
+        int i=offset;
+        while(i<str.length()&&str.charAt(i)!='\n') i++;
+        length = i-offset+(i<str.length()?1:0);
+        String line = str.subSequence(offset,i).toString();
+        Token[] tokens = tokenizer.tokens(line);
+        if( line.length() > 0 && tokens!=null ) {
+            for (Token t : tokens) {
+                Object[] spans = factory.get(t.type());
+                for (Object span : spans) {
+                    str.setSpan(span, offset + t.offset(), offset + t.endOffset(), 0);
+                    this.spans.add(span);
+                }
+            }
+        }
+    }
+
+    public int start(){ return offset; }
+    public int end(){ return offset+length; }
+
+    public void shift( int s ){ offset+=s; }
+
+}

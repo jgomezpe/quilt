@@ -1,0 +1,9 @@
+package com.aliensdecoder;
+
+/**
+ * Created by jgomez on 2/07/17.
+ */
+
+public interface SpanFactory {
+    public Object[] get(int index);
+}
