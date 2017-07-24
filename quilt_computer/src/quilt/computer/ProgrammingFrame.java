@@ -4,10 +4,6 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import quilt.QuiltMachine;
-import unalcol.gui.util.ObjectParser;
-import quilt.util.Util;
-
 /**
 *
 * ProgrammingFrame
@@ -65,28 +61,14 @@ public class ProgrammingFrame extends JFrame implements TitleComponent {
 	BorderLayout windowPaneLayout = new BorderLayout();
 
 	public ProgrammingFrame(String machine_txt, String language, String styles){
-		try{
-			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-			int width = (int)screenSize.getWidth();
-			int height = (int)screenSize.getHeight();
-			this.setSize(new Dimension(width*4/5, height*4/5));
-			System.out.println(machine_txt);
-			QuiltMachineInstanceForComputer qm = new QuiltMachineInstanceForComputer(Util.i18n(language));
-			QuiltMachine machine;
-			try{
-				machine = qm.load(ObjectParser.parse(machine_txt));
-			}catch(Exception e){
-				e.printStackTrace();
-				machine = null;
-			}
-			windowPanel = new ProgrammingPanel(this, width, height, styles, machine, language);
-			this.getContentPane().setLayout(windowLayout);
-			this.getContentPane().add(windowPanel, java.awt.BorderLayout.CENTER);
-			// Closing the window
-			this.addWindowListener( new WindowAdapter(){
-				public void windowClosing( WindowEvent e ){
-					System.exit(0);
-				} } );
-		}catch(Exception e){ e.printStackTrace();  }
+		windowPanel = new ProgrammingPanel(this, machine_txt, language, styles);
+		this.getContentPane().setLayout(windowLayout);
+		this.getContentPane().add(windowPanel, java.awt.BorderLayout.CENTER);
+		// Closing the window
+		this.addWindowListener( new WindowAdapter(){
+			public void windowClosing( WindowEvent e ){
+				System.exit(0);
+			} 
+		} );
 	}
 }

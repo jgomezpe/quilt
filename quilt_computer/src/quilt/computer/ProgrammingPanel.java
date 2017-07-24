@@ -3,6 +3,7 @@ package quilt.computer;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -133,8 +134,30 @@ public class ProgrammingPanel extends JPanel{
 	
 	public LogPanel getLogPanel(){ return log; }
 
+	public ProgrammingPanel(TitleComponent parent, String machine_txt, String language, String styles){
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int width = (int)screenSize.getWidth();
+		int height = (int)screenSize.getHeight();
+		this.setSize(new Dimension(width*4/5, height*4/5));
+		System.out.println(machine_txt);
+		QuiltMachineInstanceForComputer qm = new QuiltMachineInstanceForComputer(Util.i18n(language));
+		QuiltMachine machine;
+		try{
+			machine = qm.load(ObjectParser.parse(machine_txt));
+		}catch(Exception e){
+			e.printStackTrace();
+			machine = null;
+		}
+		build(parent, width, height, styles, machine, language);
+	}
+	
 	public ProgrammingPanel( TitleComponent parent, int width, int height, String styles,
-							 QuiltMachine machine, String language ){
+			 QuiltMachine machine, String language ){
+		build( parent, width, height, styles, machine, language );
+	}
+	
+	public void build( TitleComponent parent, int width, int height, String styles,
+					   QuiltMachine machine, String language ){
 		this.machine = machine;
 		this.title_component = parent;
 		this.language=language;
