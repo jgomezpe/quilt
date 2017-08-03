@@ -1,11 +1,14 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent" >
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".MainActivity" >
     <RelativeLayout
@@ -87,8 +90,8 @@
         />
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="0.53">
+        android:layout_height="250dp"
+        >
 
         <EditText
             android:layout_width="match_parent"
@@ -104,8 +107,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="0.12"
+        android:layout_height="wrap_content"
         android:id="@+id/commandPane">
 
         <Button
@@ -127,8 +129,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="0.2">
+        android:layout_height="100dp"
+        >
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -136,4 +138,5 @@
             android:background="@drawable/back"
             />
     </RelativeLayout>
-</LinearLayout>
+    </LinearLayout>
+    </ScrollView>

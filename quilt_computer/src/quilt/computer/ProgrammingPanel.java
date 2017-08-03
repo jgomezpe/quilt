@@ -249,6 +249,8 @@ public class ProgrammingPanel extends JPanel{
 			windowPanel.setMinimumSize(minimumSize);
 			drawPanel.setMinimumSize(minimumSize);		
 			this.add(splitPane, java.awt.BorderLayout.CENTER);
+			((ProgrammingFrame)parent).setIconImage( Util.image("quilt.png"));
+			
 		}catch(Exception e){ e.printStackTrace();  }
 	}
 	
