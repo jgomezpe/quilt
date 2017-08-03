@@ -61,6 +61,10 @@ public class ProgrammingFrame extends JFrame implements TitleComponent {
 	BorderLayout windowPaneLayout = new BorderLayout();
 
 	public ProgrammingFrame(String machine_txt, String language, String styles){
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int width = (int)screenSize.getWidth();
+		int height = (int)screenSize.getHeight();
+		this.setSize(new Dimension(width*4/5, height*4/5));
 		windowPanel = new ProgrammingPanel(this, machine_txt, language, styles);
 		this.getContentPane().setLayout(windowLayout);
 		this.getContentPane().add(windowPanel, java.awt.BorderLayout.CENTER);

@@ -139,7 +139,6 @@ public class ProgrammingPanel extends JPanel{
 		int width = (int)screenSize.getWidth();
 		int height = (int)screenSize.getHeight();
 		this.setSize(new Dimension(width*4/5, height*4/5));
-		System.out.println(machine_txt);
 		QuiltMachineInstanceForComputer qm = new QuiltMachineInstanceForComputer(Util.i18n(language));
 		QuiltMachine machine;
 		try{
