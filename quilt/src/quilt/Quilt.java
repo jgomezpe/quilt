@@ -159,7 +159,7 @@ public class Quilt extends Remnant implements Rotatable<Remnant>{
 		MinRemnant[][] r = new MinRemnant[columns()][rows()];
 		for( int i=0; i<r.length; i++ ){
 			for( int j=0; j<r[0].length; j++ ){
-				r[i][j] = (MinRemnant)command.execute(get(rows()-j-1,i));
+				r[i][j] = (MinRemnant)command.execute(get(j, columns()-1-i));
 			}
 		}
 		return new Quilt(r);
