@@ -51,6 +51,7 @@ public class QuiltSymbols{
 	protected static final char COMMA=',';
 	protected static final char STITCH='|';
 	protected static final char LEFTSTITCH='#';
+	protected static final char CR='\r';  // Just for windows compatibility
 	protected static final char EOL='\n';
 	protected static final char SPACE=' ';
 	protected static final char TAB='\t';
@@ -59,7 +60,7 @@ public class QuiltSymbols{
 	protected static final char RIGHT=')';
 	protected static final char DOLLAR='$';
 
-	public boolean is_space( char c ){ return c==SPACE || c==TAB || c==EOL; }
+	public boolean is_space( char c ){ return c==SPACE || c==TAB || c==CR || c==EOL; }
 	public boolean is_eol( char c ){ return c==EOL; }
 	public boolean is_name(char c){ return Character.isLetterOrDigit(c) || c==DOLLAR; };
 	public boolean is_special(char c){ return c==COMMA || c==ASSIGN || c==LEFT || c==RIGHT; };
