@@ -69,6 +69,7 @@ import unalcol.gui.util.Instance;
 public class QuiltMachineInstance implements Instance<QuiltMachine> {
 	public static final String MACHINE="machine";
 	
+	protected QuiltMachineParserInstance parser = new QuiltMachineParserInstance();
 	protected QuiltCommandInstance commands = new QuiltCommandInstance();
 	protected Factory<Remnant> remnants = new Factory<Remnant>();
 	protected ErrorManager language;
@@ -95,7 +96,10 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 			Object[] pair = (Object[])robj[i];
 			r.put((String)pair[0], remnants.load((Object[])pair[1]));
 		}
-		return new QuiltMachine(c, r, new QuiltMachineParser(), language);
+		QuiltMachineParser p;
+		if( args.length==4 ) p=parser.load((Object[])args[3]);
+		else p = new QuiltMachineParser();
+		return new QuiltMachine(c, r, p, language);
 	}
 
 	@Override
@@ -103,6 +107,8 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 		String[] keys = obj.remnants();
 		Object[] r = new Object[keys.length];
 		for( int i=0; i<r.length; i++ ) r[i] = new Object[]{keys[i],obj.remnant(keys[i])};
-		return new Object[]{MACHINE,commands.store(obj.primitives()),r};
+		Object[] p = parser.store(obj.parser());
+		if( p.length > 1 ) return new Object[]{MACHINE,commands.store(obj.primitives()),r, p};
+		else return new Object[]{MACHINE,commands.store(obj.primitives()),r};
 	}
 }

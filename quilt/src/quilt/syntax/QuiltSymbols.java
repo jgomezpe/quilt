@@ -59,10 +59,16 @@ public class QuiltSymbols{
 	protected static final char LEFT='(';
 	protected static final char RIGHT=')';
 	protected static final char DOLLAR='$';
+	
+	protected String extra_name;
+	
+	public QuiltSymbols(){ this(""); }
+	public QuiltSymbols( String extra_name ){ this.extra_name = extra_name; }
 
 	public boolean is_space( char c ){ return c==SPACE || c==TAB || c==CR || c==EOL; }
 	public boolean is_eol( char c ){ return c==EOL; }
-	public boolean is_name(char c){ return Character.isLetterOrDigit(c) || c==DOLLAR; };
+	public boolean is_extra_name(char c){ return extra_name.indexOf(c)>=0; }
+	public boolean is_name(char c){ return Character.isLetterOrDigit(c) || c==DOLLAR || is_extra_name(c); };
 	public boolean is_special(char c){ return c==COMMA || c==ASSIGN || c==LEFT || c==RIGHT; };
 	public boolean is_stitch(char c){ return c==STITCH; };
 	public boolean is_leftstitch(char c){ return c==LEFTSTITCH; };
@@ -84,5 +90,6 @@ public class QuiltSymbols{
 	public static char dollar(){ return DOLLAR; }
 	public char assign(){ return ASSIGN; }
 	public char underscore(){ return UNDER_SCORE; }
+	public String extra_name(){ return extra_name; }
 	
 }

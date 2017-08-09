@@ -311,4 +311,6 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 	}
 	
 	public QuiltSymbols symbols(){ return symbols; }
+	
+	public int stitchs(){ return MAX_STITCHS; }
 }
