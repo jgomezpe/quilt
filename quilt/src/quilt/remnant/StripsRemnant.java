@@ -87,7 +87,7 @@ public class StripsRemnant extends ColoredRemnant implements Rotatable<Remnant>{
 		r = check(r);
 		if( r!=null && r instanceof StripsRemnant ){
 			StripsRemnant other = (StripsRemnant)r;
-			return super.equals(other) && Util.compare(strips, other.strips);
+			return super.equals(r) && Util.compare(strips, other.strips);
 		}
 		return false;
 	}

@@ -93,6 +93,8 @@ public class ProgrammingPanel extends JPanel{
 	String title;
 	String fileName = null;
 	String fileDir = ".";
+	String fileDirStyle = ".";
+	String fileDirMachine = ".";
 	TitleComponent title_component;
 	
 	JSplitPane splitPane;
@@ -272,13 +274,12 @@ public class ProgrammingPanel extends JPanel{
 		String QMS = Util.QMS;
 		FileFilter filter = new FileFilter( machine.message(Language.FILE)+" (*"+QMS+")" );
 		filter.add(QMS.substring(1));
-		JFileChooser file = new JFileChooser( fileDir );
+		JFileChooser file = new JFileChooser( fileDirStyle );
 		file.setFileFilter(filter);
 		if( file.showOpenDialog(this) == JFileChooser.APPROVE_OPTION ){
 			try {
-				fileDir = file.getSelectedFile().getAbsolutePath();
-				fileName = file.getSelectedFile().getName();
-				BufferedReader reader = new BufferedReader( new FileReader(fileDir) );
+				fileDirStyle = file.getSelectedFile().getAbsolutePath();
+				BufferedReader reader = new BufferedReader( new FileReader(fileDirStyle) );
 				StringBuffer sb = new StringBuffer();
 				String s = reader.readLine();
 				while( s != null ){
@@ -297,13 +298,12 @@ public class ProgrammingPanel extends JPanel{
 		String QMC = QuiltMachine.QMC;
 		FileFilter filter = new FileFilter( machine.message(Language.FILE)+" (*"+QMC+")" );
 		filter.add(QMC.substring(1));
-		JFileChooser file = new JFileChooser( fileDir );
+		JFileChooser file = new JFileChooser( fileDirMachine );
 		file.setFileFilter(filter);
 		if( file.showOpenDialog(this) == JFileChooser.APPROVE_OPTION ){
 			try {
-				fileDir = file.getSelectedFile().getAbsolutePath();
-				fileName = file.getSelectedFile().getName();
-				BufferedReader reader = new BufferedReader( new FileReader(fileDir) );
+				fileDirMachine = file.getSelectedFile().getAbsolutePath();
+				BufferedReader reader = new BufferedReader( new FileReader(fileDirMachine) );
 				StringBuffer sb = new StringBuffer();
 				String s = reader.readLine();
 				while( s != null ){
