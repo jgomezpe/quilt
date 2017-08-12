@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 
 
-import quilt.Remnant;
-
 /**
  *
  * QuiltScreen

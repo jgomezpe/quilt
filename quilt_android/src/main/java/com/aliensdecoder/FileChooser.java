@@ -7,7 +7,6 @@ package com.aliensdecoder;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Environment;
-import android.text.Layout;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;

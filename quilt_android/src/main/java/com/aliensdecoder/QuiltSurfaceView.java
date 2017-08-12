@@ -2,7 +2,6 @@ package com.aliensdecoder;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -76,13 +75,14 @@ public class QuiltSurfaceView extends SurfaceView{
 
     @Override
     protected void onDraw( Canvas canvas ) {
-       // super.draw(canvas);
         this.setBackgroundColor(0Xffffffff);
         if (canvas != null) {
-            //canvas.set
-            AndroidDrawer drawer = new AndroidDrawer(canvas,100);
+            int height = canvas.getHeight();
+            int width = canvas.getWidth();
+            int w = Math.min(width, height);
+            int wr = Math.max(Store.remnant.columns(), Store.remnant.rows());
+            AndroidDrawer drawer = new AndroidDrawer(canvas,w/wr);
             Store.remnant.draw(drawer,0,0);
-//            canvas.drawLine(10,10,100,100,new Paint());
         }
     }
 }

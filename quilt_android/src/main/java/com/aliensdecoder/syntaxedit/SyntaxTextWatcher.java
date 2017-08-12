@@ -1,11 +1,7 @@
 package com.aliensdecoder.syntaxedit;
 
 import android.text.Editable;
-import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
-import android.widget.EditText;
-
-import unalcol.gui.editor.Tokenizer;
 
 /**
  *

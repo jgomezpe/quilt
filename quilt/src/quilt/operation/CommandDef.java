@@ -78,6 +78,15 @@ public class CommandDef extends Position{
 	public String name(){ return name; }
 	public int arity(){ return args.length; }
 	
+	public void put(ErrorManager error_manager, Hashtable<String,Remnant> vars, String v, Remnant r ) throws Exception{
+		Remnant sr = vars.get(v);
+		if(sr!=null){
+			if(!sr.equals(r)) throw error_manager.error(this, error_manager.get(Language.MISMATCH)+" "+name());
+		}else{
+			vars.put(v, r);
+		}			
+	}
+	
 	public Remnant execute( QuiltMachine machine, Remnant[] value ) throws Exception{
 		ErrorManager error_manager = machine.language();
 		if( value.length != args.length ) throw error_manager.error(this, error_manager.get(Language.ARGS)+" "+name());
@@ -92,7 +101,7 @@ public class CommandDef extends Position{
 					int pos = name.indexOf(QuiltSymbols.leftstitch()); 
 					while(pos>0){
 						Remnant[] divided = last.leftunstitch();
-						vars.put(name.substring(0, pos), divided[0]);
+						put( error_manager, vars, name.substring(0, pos), divided[0]);
 						last=divided[1];
 						name = name.substring(pos+1);
 						pos = name.indexOf(QuiltSymbols.leftstitch());
@@ -100,21 +109,21 @@ public class CommandDef extends Position{
 					parts = name.split("\\"+QuiltSymbols.stitch());
 					for( int k=parts.length-1; k>0; k--){
 						Remnant[] divided = last.unstitch();
-						vars.put(parts[k], divided[1]);
+						put( error_manager, vars, parts[k], divided[1]);
 						last=divided[0];
 					}
-					vars.put(parts[0], last);					
+					put( error_manager, vars, parts[0], last);
 				}else{
 					if( args[i].primitive(machine.parser().symbols()) ){
 						if( value[i].rows()>1 || value[i].columns()>1 ) throw error_manager.error(this, error_manager.get(Language.QUILT)+" "+name());
-						vars.put(args[i].name(), value[i].get(0, 0));
+						put(error_manager, vars, args[i].name(), value[i].get(0, 0));
 					}else{
 						Remnant r;
 						try{
 							r = args[i].execute(machine, new Hashtable<String, Remnant>());
 						}catch(Exception e){
 							r = null;
-							vars.put(args[i].name(), value[i]);
+							put(error_manager, vars, args[i].name(), value[i]);
 						}	
 						if( r!=null && !r.equals(value[i]) ) throw error_manager.error(this, error_manager.get(Language.MISMATCH)+" "+name());
 					}
