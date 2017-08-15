@@ -60,10 +60,10 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 	protected QuiltSymbols symbols = null;
 	protected String program="";
 	protected int offset;
-	protected int MAX_STITCHS;
+	protected int MAX_STITCHS=Integer.MAX_VALUE;
 	
 	public QuiltMachineParser(){
-		this(null, 1, new QuiltSymbols());
+		this(null, Integer.MAX_VALUE, new QuiltSymbols());
 	}
 	
 	public QuiltMachineParser( QuiltMachine machine, int max_stitchs, QuiltSymbols symbols ){
@@ -72,6 +72,7 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 		this.machine = machine;
 		this.symbols = symbols;
 		this.MAX_STITCHS = max_stitchs;
+		System.out.println(MAX_STITCHS);
 	}
 
 	public QuiltMachineParser( QuiltMachine machine, int max_stitchs ){
@@ -79,7 +80,7 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 	}
 
 	public QuiltMachineParser( QuiltMachine machine ){
-		this(machine, 1, new QuiltSymbols());
+		this(machine, Integer.MAX_VALUE, new QuiltSymbols());
 	}
 	
 	public void setMachine( QuiltMachine machine ){
@@ -254,6 +255,7 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 			sb.append(c);
 			c = advance();
 			sb.append(name());
+			c = current();
 		}
 		count_stitchs=0;
 		while( count_stitchs<MAX_STITCHS && symbols.is_stitch(c) ){
@@ -261,6 +263,7 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 			sb.append(c);
 			c = advance();
 			sb.append(name());
+			c = current();
 		}
 		return sb.toString();
 	}	
