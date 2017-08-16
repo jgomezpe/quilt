@@ -173,8 +173,10 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 	public CommandCall command() throws Exception{
 		Position pos = new Position(this);
 		String name = variable();
-		if( name.indexOf(QuiltSymbols.stitch())>=0 ) return new CommandCall( pos, name ); 
+		System.out.println("command:"+name);
+		if( name.indexOf(QuiltSymbols.stitch())>0 || name.indexOf(QuiltSymbols.leftstitch())>0 ) return new CommandCall( pos, name ); 
 		char c = next();
+		System.out.println("command:"+c);
 		if(symbols.is_left(c)) return new CommandCall(pos, name,values());
 		else return new CommandCall(pos, name );
 	}
@@ -217,7 +219,10 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 	public CommandDef[] apply() throws Exception{
 		next();
 		Vector<CommandDef> commands = new Vector<CommandDef>();
-		while( !eof() )	commands.add( command_def() );
+		while( !eof() ){
+			commands.add( command_def() );
+			next();
+		}
 		CommandDef[] cargs = new CommandDef[commands.size()];
 		for( int i=0;i<cargs.length; i++ ) cargs[i] = commands.get(i); 
 		return cargs;
@@ -265,6 +270,7 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 			sb.append(name());
 			c = current();
 		}
+		System.out.println(sb.toString());
 		return sb.toString();
 	}	
 	
