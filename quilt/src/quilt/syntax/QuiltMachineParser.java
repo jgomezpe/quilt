@@ -72,7 +72,6 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 		this.machine = machine;
 		this.symbols = symbols;
 		this.MAX_STITCHS = max_stitchs;
-		System.out.println(MAX_STITCHS);
 	}
 
 	public QuiltMachineParser( QuiltMachine machine, int max_stitchs ){
@@ -173,10 +172,8 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 	public CommandCall command() throws Exception{
 		Position pos = new Position(this);
 		String name = variable();
-		System.out.println("command:"+name);
 		if( name.indexOf(QuiltSymbols.stitch())>0 || name.indexOf(QuiltSymbols.leftstitch())>0 ) return new CommandCall( pos, name ); 
 		char c = next();
-		System.out.println("command:"+c);
 		if(symbols.is_left(c)) return new CommandCall(pos, name,values());
 		else return new CommandCall(pos, name );
 	}
@@ -270,7 +267,6 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 			sb.append(name());
 			c = current();
 		}
-		System.out.println(sb.toString());
 		return sb.toString();
 	}	
 	
