@@ -154,6 +154,7 @@ public class Util {
 	public static final String images="imgs/";
 	public static final String i18n="I18N/";
 	
+	
 	public static String resource( String name, boolean asResource ){
 		return asResource?"/"+images+name:resources+images+name;
 	}
