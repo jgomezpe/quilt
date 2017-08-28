@@ -2,7 +2,6 @@ package quilt.computer;
 
 import java.awt.Color;
 import java.awt.Image;
-import java.awt.Toolkit;
 
 import quilt.QuiltMachine;
 import quilt.util.Language;

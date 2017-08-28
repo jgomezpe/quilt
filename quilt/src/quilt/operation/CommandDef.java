@@ -83,6 +83,8 @@ public class CommandDef extends Position{
 		if(sr!=null){
 			if(!sr.equals(r)) throw error_manager.error(this, error_manager.get(Language.MISMATCH)+" "+name());
 		}else{
+			if(QuiltSymbols.dollar()==v.charAt(0) && (r.rows()>1 || r.columns()>1 )) throw error_manager.error(this, error_manager.get(Language.QUILT)+" "+name());
+			if(r.rows()==1 && r.columns()==0) r = r.get(0, 0);
 			vars.put(v, r);
 		}			
 	}
@@ -115,8 +117,7 @@ public class CommandDef extends Position{
 					put( error_manager, vars, parts[0], last);
 				}else{
 					if( args[i].primitive(machine.parser().symbols()) ){
-						if( value[i].rows()>1 || value[i].columns()>1 ) throw error_manager.error(this, error_manager.get(Language.QUILT)+" "+name());
-						put(error_manager, vars, args[i].name(), value[i].get(0, 0));
+						put(error_manager, vars, args[i].name(), value[i]);
 					}else{
 						Remnant r;
 						try{
