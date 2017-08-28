@@ -1,6 +1,8 @@
 package quilt.computer;
 
 import java.awt.Color;
+import java.awt.Image;
+import java.awt.Toolkit;
 
 import quilt.QuiltMachine;
 import quilt.util.Language;
@@ -63,6 +65,9 @@ public class SewingMachineProgrammer {
 		conf_file = args.length==3?args[2]:"default"+Util.QMS;
 		String styles = Util.config(conf_file);
 		ProgrammingFrame frame = new ProgrammingFrame(machine_txt, language, styles);
+		Image img = Util.image("remnant.png");
+		if( img==null) System.out.println("What the hell");
+		frame.setIconImage(img);
 		frame.setVisible(true);
 	}
 }

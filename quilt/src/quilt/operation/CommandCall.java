@@ -130,6 +130,7 @@ public class CommandCall extends Position{
 			r = machine.remnant( name() ); 
 			if( r!=null ) return r; 
 			// Checking variables with the given name
+			System.out.println("Variable..."+name());
 			r = values.get(name());
 			if( r!=null ) return r;
 			// Checking the list of defined commands
