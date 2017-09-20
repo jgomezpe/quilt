@@ -102,6 +102,12 @@ public class QuiltMachine {
 	
 	public Command[] primitives(){ return primitives; }
 	
+	public Command primitive( String command ){
+		int i=0;
+		while( i<primitives.length && !primitives[i].name().equals(command) ) i++;
+		return (i<primitives.length)?primitives[i]:null;
+	}
+	
 	public boolean is_primitive( String command ){
 		int i=0;
 		while( i<primitives.length && !primitives[i].name().equals(command) ) i++;

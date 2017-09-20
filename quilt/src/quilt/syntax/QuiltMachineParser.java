@@ -3,6 +3,8 @@ package quilt.syntax;
 import java.util.Vector;
 
 import quilt.QuiltMachine;
+import quilt.Remnant;
+import quilt.operation.Command;
 import quilt.operation.CommandCall;
 import quilt.operation.CommandDef;
 import quilt.util.Language;
@@ -54,12 +56,11 @@ import unalcol.gui.editor.Tokenizer;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class QuiltMachineParser extends Position implements Tokenizer{
+public class QuiltMachineParser extends ParserPos implements Tokenizer{
 
 	protected QuiltMachine machine=null;
 	protected QuiltSymbols symbols = null;
 	protected String program="";
-	protected int offset;
 	protected int MAX_STITCHS=Integer.MAX_VALUE;
 	
 	public QuiltMachineParser(){
@@ -67,9 +68,8 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 	}
 	
 	public QuiltMachineParser( QuiltMachine machine, int max_stitchs, QuiltSymbols symbols ){
-		super(0,0);
-		offset = 0;
-		this.machine = machine;
+		super();
+		setMachine(machine);
 		this.symbols = symbols;
 		this.MAX_STITCHS = max_stitchs;
 	}
@@ -84,17 +84,16 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 	
 	public void setMachine( QuiltMachine machine ){
 		this.machine = machine;
+		if( this.machine != null ){
+			
+		}
 	}
 	
-	public void init(){
-		row=0;
-		column=0;
-		offset=0;
-	}
 
 	public void init(String program){
 		init();
 		this.program = program;
+		next();
 	}
 	
 	public boolean eof(){ return offset >= program.length(); }
@@ -106,9 +105,7 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 		if( symbols.is_eol(c) ){
 			row++;
 			column=0;
-		}else{
-			column++;
-		}
+		}else column++;
 		offset++;
 		return current();
 	}
@@ -118,9 +115,151 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 		while( symbols.is_space(c) || symbols.is_comment(c) ){
 			comment();
 			c = advance();
-		};
+		}
 		return c;
 	}
+	
+	public char comment(){
+		while( symbols.is_comment(current()) ){
+			while(!eof() && !symbols.is_eol(advance())){};
+		}
+		return current();
+	}	
+
+	/**
+	 * Determines if the next component  is a name. A name is defined as name :- [name_symbol]+
+	 * @return  A string with the name component.
+	 * @throws Exception if a name component cannot be obtained from the source  
+	 */
+	public String name() throws Exception{
+		StringBuilder sb = new StringBuilder();
+		char c = next();
+		while( symbols.is_name(c) ){
+			sb.append(c);
+			c = advance();
+		}
+		String txt = sb.toString();
+		if(txt.length()>0) return txt;
+		throw error_message("Not a valid symbol for a variables name");
+	}
+
+	/**
+	 * Determines if the next component is a variable. A variable is defined as var :- start_variable_symbol [follows_variable_symbol]*
+	 * @return  A string with the variable component.
+	 * @throws Exception if a variable component cannot be obtained from the source  
+	 */
+	public String variable() throws Exception{
+		StringBuilder sb = new StringBuilder();
+		char c = next();
+		if( !symbols.is_starts_variable(c) ){ throw new Exception("Not a letter or "+symbols.dollar()); }
+		c = advance();
+		while( symbols.is_follows_variable(c) ){
+			sb.append(c);
+			c = advance();
+		}
+		return sb.toString();
+	}
+
+	public CommandCall prim_remnant() throws Exception{
+		String[] remnants = machine.remnants();
+		int[] index = new int[remnants.length];
+		for( int i=0; i<index.length; i++ ){ index[i]=i; }
+		int count = index.length;
+		int pos=0;
+		char c = next();
+		Position p = new Position(this);
+		while( count>0 ){
+			int i=0; 
+			while( i<count ){
+				if( pos==remnants[index[i]].length() ){
+					advance();
+					return new CommandCall(p, remnants[index[i]]);
+				}	
+				if( remnants[index[i]].charAt(pos) != c ){
+					System.arraycopy(index, i+1, index, i, count-i-1);
+					count--;
+				}else{
+					i++;
+				}
+			}
+			if( count>0 ){
+				c = advance();
+				pos++;
+			}
+		}
+		throw new Exception("No primitive remnant");
+	}
+
+	public CommandCall prim_quilt() throws Exception{
+		CommandCall r = null;
+		try{
+			r=prim_remnant();
+			while(r!=null){
+				CommandCall r1 = prim_remnant();
+				r = new CommandCall( r, QuiltMachine.SEW, new CommandCall[]{r, r1});
+			}	
+		}catch(Exception e){}
+		if( r != null )	return r;
+		throw new Exception("Invalid prim quilt");
+	}
+	
+	public CommandCall command() throws Exception{
+		next();
+		ParserPos pos = new ParserPos(this);
+
+		// Trying a function call
+		String fmessage = null;
+		CommandCall f = null;
+		try{
+			f = function();
+			if( f.arity()>0 ){ return f; }
+		}catch(Exception e){ fmessage = e.getMessage(); }
+		ParserPos fpos = new ParserPos(this);		
+		
+		// Trying a primitive quilt (a quilt built using primitive remnant names)
+		this.set(pos);
+		
+		String pqmessage = null;
+		CommandCall pq = null;
+		try{ pq = prim_quilt(); }catch(Exception e){ pqmessage = e.getMessage(); }
+
+		CommandCall c=f;
+		String message =fmessage;
+		if( fpos.offset() < offset ){
+			c = pq;
+			message=pqmessage;
+			fpos = new ParserPos(this);
+		}
+		
+		// Trying a variable
+		this.set(pos);
+		String vmessage=null;
+		CommandCall var = null;
+		try{ 
+			String var_name = variable();
+			var = new CommandCall(pos, var_name);
+		}catch(Exception e){ vmessage = e.getMessage(); }
+		
+		if( fpos.offset() < offset ){
+			c = var;
+			message = vmessage;
+			fpos = new ParserPos(this);
+		}
+		
+		if( c!=null ) return c;		
+		throw new Exception(message);
+	}
+
+	public CommandCall function() throws Exception{
+		next();
+		Position pos = new Position(this);
+		String name = name();
+		CommandCall[] args = null;
+		char c = next();
+		if(symbols.is_left(c)) args = params();
+		return new CommandCall(pos, name,args);
+	}
+
 	
 	public char advance_next(){
 		advance();
@@ -142,16 +281,9 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 		return machine.error(this,sb.toString());
 	}
 	
-	public char comment(){
-		while( symbols.is_comment(current()) ){
-			while(!eof() && !symbols.is_eol(advance())){};
-		}
-		return current();
-	}	
-	
 	public CommandCall[] values() throws Exception{
 		char c = next();
-		if( !symbols.is_left(c)) throw error_message(QuiltSymbols.left());
+		if( !symbols.is_left(c)) throw error_message(symbols.left());
 
 		Vector<CommandCall> args = new Vector<CommandCall>();
 		c = advance_next();
@@ -169,19 +301,11 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 		return s_args;
 	}
 	
-	public CommandCall command() throws Exception{
-		Position pos = new Position(this);
-		String name = variable();
-		if( name.indexOf(QuiltSymbols.stitch())>0 || name.indexOf(QuiltSymbols.leftstitch())>0 ) return new CommandCall( pos, name ); 
-		char c = next();
-		if(symbols.is_left(c)) return new CommandCall(pos, name,values());
-		else return new CommandCall(pos, name );
-	}
 
 	
 	public CommandCall[] params() throws Exception{
 		char c = next();
-		if(!symbols.is_left(c)) throw error_message(QuiltSymbols.left());
+		if(!symbols.is_left(c)) throw error_message(symbols.left());
 
 		Vector<CommandCall> args = new Vector<CommandCall>();
 		c = advance_next();
@@ -199,8 +323,29 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 		return s_args;
 	}
 
+	public CommandCall command_exp() throws Exception{
+		CommandCall c = command();		
+		while( symbols.is_leftstitch(current()) ){
+			advance();
+			CommandCall c2 = command();
+			c = new CommandCall(new Position(this), ""+symbols.leftstitch(), new CommandCall[]{c,c2});
+		}
+		while( symbols.is_stitch(current()) ){
+			advance();
+			CommandCall c2 = command();
+			c = new CommandCall(new Position(this), ""+symbols.stitch(), new CommandCall[]{c,c2});
+		}	
+		return c;
+	}
+	
 	public CommandDef command_def() throws Exception{
 		Position pos = new Position(this);
+		CommandCall left = function();
+		if( !symbols.is_assign(current()) ) throw new Exception("Assign expected");
+		char c = advance();
+		CommandCall right = command_exp();
+	}	
+/*		
 		String name = name();
 		if( machine.is_primitive(name) || machine.composed(name).length > 0 ) throw machine.error(this,machine.message(Language.REDEFINED));
 		CommandCall[] args = null;
@@ -211,6 +356,7 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 		if( !symbols.is_assign(c)) throw error_message(symbols.assign());
 		advance_next();
 		return new CommandDef(pos,name, args, command());
+*/		
 	}
 		
 	public CommandDef[] apply() throws Exception{
@@ -234,20 +380,9 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 		init(program);
 		return apply();
 	}
-
-	public String name() throws Exception{
-		StringBuilder sb = new StringBuilder();
-		char c = current();
-		while( symbols.is_name(c) ){
-			sb.append(c);
-			c = advance();
-		}
-		String txt = sb.toString();
-		if(txt.length()>0) return txt;
-		throw error_message(machine.message(Language.LETTER_DIGIT));
-	}
-
-	public String variable() throws Exception{
+	
+/*
+  	public String variable() throws Exception{
 		StringBuilder sb = new StringBuilder();
 		sb.append(name());
 		char c = current();
@@ -269,7 +404,7 @@ public class QuiltMachineParser extends Position implements Tokenizer{
 		}
 		return sb.toString();
 	}	
-	
+*/	
 	public static final int UNDEFINED = 0;
 	public static final int SPACE = 1;
 	public static final int COMMENT = 2;
