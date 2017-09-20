@@ -261,11 +261,6 @@ public class QuiltMachineParser extends ParserPos implements Tokenizer{
 	}
 
 	
-	public char advance_next(){
-		advance();
-		return next();
-	}
-	
 	public Exception error_message( char c ){ return error_message(""+c); }
 	
 	public Exception error_message( String c ){
