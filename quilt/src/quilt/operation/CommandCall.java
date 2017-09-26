@@ -64,6 +64,7 @@ public class CommandCall extends Position{
 	public CommandCall( Position pos, String name ){
 		super( pos );
 		this.name = name;
+		/*
 		stitch = name.indexOf(QuiltSymbols.stitch())>=0 || name.indexOf(QuiltSymbols.leftstitch())>=0 ;
 		if(stitch){
 			String[] parts = name.split("[\\"+QuiltSymbols.stitch()+"\\"+QuiltSymbols.leftstitch()+"]");
@@ -78,7 +79,7 @@ public class CommandCall extends Position{
 				l=parts[i].length()+1;
 			}
 			args = new CommandCall[]{last};
-		}
+		}*/
 	}
 	
 	public CommandCall( Position pos, String name, CommandCall[] args ){

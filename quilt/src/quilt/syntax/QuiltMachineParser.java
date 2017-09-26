@@ -260,60 +260,22 @@ public class QuiltMachineParser extends ParserPos implements Tokenizer{
 		return new CommandCall(pos, name,args);
 	}
 
-	// Working here...
-	
-	public Exception error_message( char c ){ return error_message(""+c); }
-	
-	public Exception error_message( String c ){
-		StringBuilder sb = new StringBuilder();
-		sb.append(machine.message(Language.UNSYMBOL));
-		sb.append(" [");
-		sb.append(current());
-		sb.append(']');
-		sb.append(", ");
-		sb.append(machine.message(Language.EXPECTING));
-		sb.append(' ');
-		sb.append(c);
-		return machine.error(this,sb.toString());
-	}
-	
-	public CommandCall[] values() throws Exception{
-		char c = next();
-		if( !symbols.is_left(c)) throw error_message(symbols.left());
-
-		Vector<CommandCall> args = new Vector<CommandCall>();
-		c = advance_next();
-		while( !symbols.is_right(c) ){
-			args.add(command());
-			c = next();
-			if( symbols.is_comma(c) ){
-				c = advance_next();
-				if( symbols.is_right(c) ) throw error_message(machine.message(Language.LETTER_DIGIT)); 
-			}
-		}
-		advance_next();
-		CommandCall[] s_args = new CommandCall[args.size()];
-		for( int i=0; i<s_args.length; i++ ) s_args[i] = args.get(i);
-		return s_args;
-	}
-	
-
-	
 	public CommandCall[] params() throws Exception{
 		char c = next();
 		if(!symbols.is_left(c)) throw error_message(symbols.left());
-
+		advance();
 		Vector<CommandCall> args = new Vector<CommandCall>();
-		c = advance_next();
+		c = next();
 		while( !symbols.is_right(c) ){
-			args.add(command());
+			args.add(command_exp());
 			c = next();
 			if( symbols.is_comma(c) ){
-				c = advance_next();
+				advance();
+				c = next();
 				if( symbols.is_right(c) ) throw error_message(machine.message(Language.LETTER_DIGIT));
 			}
 		}
-		advance_next();
+		advance();
 		CommandCall[] s_args = new CommandCall[args.size()];
 		for( int i=0; i<s_args.length; i++ ) s_args[i] = args.get(i);
 		return s_args;
@@ -333,28 +295,32 @@ public class QuiltMachineParser extends ParserPos implements Tokenizer{
 		}	
 		return c;
 	}
-	
+
 	public CommandDef command_def() throws Exception{
-		Position pos = new Position(this);
 		CommandCall left = function();
 		if( !symbols.is_assign(current()) ) throw new Exception("Assign expected");
-		char c = advance();
+		advance();
 		CommandCall right = command_exp();
+		return new CommandDef(left,right);
 	}	
-/*		
-		String name = name();
-		if( machine.is_primitive(name) || machine.composed(name).length > 0 ) throw machine.error(this,machine.message(Language.REDEFINED));
-		CommandCall[] args = null;
-		char c = next();
-		if(symbols.is_left(c)) args = params();
-		else args = new CommandCall[0];		
-		c=next();
-		if( !symbols.is_assign(c)) throw error_message(symbols.assign());
-		advance_next();
-		return new CommandDef(pos,name, args, command());
-*/		
+
+	// Working here...
+	
+	public Exception error_message( char c ){ return error_message(""+c); }
+	
+	public Exception error_message( String c ){
+		StringBuilder sb = new StringBuilder();
+		sb.append(machine.message(Language.UNSYMBOL));
+		sb.append(" [");
+		sb.append(current());
+		sb.append(']');
+		sb.append(", ");
+		sb.append(machine.message(Language.EXPECTING));
+		sb.append(' ');
+		sb.append(c);
+		return machine.error(this,sb.toString());
 	}
-		
+	
 	public CommandDef[] apply() throws Exception{
 		next();
 		Vector<CommandDef> commands = new Vector<CommandDef>();
