@@ -16,7 +16,7 @@ public class FunLexer implements Lexer{
 	public static final int VARIABLE = 20;
 	public static final int VALUE = 64;
 	public static final int PRIM_VALUE = 22;
-	public static final int PRIM_FUNCTION = 23;
+	public static final int PRIM_COMMAND = 23;
 	
 	protected int offset;
 	protected ShortTermMemoryReader reader;

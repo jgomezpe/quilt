@@ -1,5 +1,6 @@
 package fun_pl.syntax;
 
+import fun_pl.basic.BasicFunLexer;
 import unalcol.io.CharReader;
 import unalcol.io.ShortTermMemoryReader;
 import unalcol.language.LanguageException;
@@ -14,15 +15,15 @@ import unalcol.types.collection.vector.Vector;
 import unalcol.util.I18N;
 
 public class FunParser implements Parser{
-	public static final int COMMAND=100;
+	public static final int COMMAND_CALL=100;
 	public static final int COMMAND_EXP=105;
 	public static final int COMMAND_DEF=110;
 	public static final int COMMAND_DEF_LIST=120;
-	public static final int FUNCTION=130;
+	public static final int COMMAND=130;
 	
 	public static final String unexpected="unexpected";
 	public static final String noargs="noargs";
-	public static final String nofunction="nofunction";
+	public static final String nocommand="nocommand";
 	public static final String norule="norule";
 	
 	protected int main;
@@ -42,10 +43,10 @@ public class FunParser implements Parser{
 		return get(); 
 	}
 
-	protected Typed command() throws LanguageException {
+	protected Typed command_call() throws LanguageException {
 		LanguageException le = null;
 		int off = offset;
-		try{ return function();	}catch(LanguageException e){ le=e; }
+		try{ return command();	}catch(LanguageException e){ le=e; }
 		offset=off;
 		Token t = get();
 		if( t.type()==FunLexer.VARIABLE || t.type()==FunLexer.PRIM_VALUE || (t.type()&FunLexer.VALUE)==FunLexer.VALUE ){
@@ -57,19 +58,19 @@ public class FunParser implements Parser{
 	
 	protected Typed command_exp() throws LanguageException {
 		Vector<Typed> v = new Vector<Typed>();
-		Typed c = command();
+		Typed c = command_call();
 		v.add(c);
 		Token t = get();
 		while(t.type()==FunEncoder.LEFT_LINK){
 			v.add(t);
 			t = next();
-			v.add(command());
+			v.add(command_call());
 			t=get();
 		}
 		while(t.type()==FunEncoder.RIGHT_LINK){
 			v.add(t);
 			t = next();
-			v.add(command());
+			v.add(command_call());
 			t=get();
 		}
 		return new TypedValue<Vector<Typed>>(COMMAND_EXP, v);
@@ -77,7 +78,6 @@ public class FunParser implements Parser{
 	
 	protected void args(Vector<Typed> v) throws LanguageException{
 		Token t = get();
-		System.out.println("Args..."+t.type());
 		if( t.type()==FunEncoder.OPEN ){
 			next();
 			v.add(command_exp());
@@ -94,24 +94,22 @@ public class FunParser implements Parser{
 		throw new LanguageException(noargs,((RCToken)t).row(),((RCToken)t).column());
 	}
 	
-	protected Typed function() throws LanguageException{
+	protected Typed command() throws LanguageException{
 		Token t = get();
-		if( t.type()==FunLexer.PRIM_FUNCTION || (t.type()&FunLexer.VALUE)==FunLexer.VALUE ){
-			System.out.println("Function...");
+		if( t.type()==FunLexer.PRIM_COMMAND || (t.type()&FunLexer.VALUE)==FunLexer.VALUE ){
 			Vector<Typed> v = new Vector<Typed>();
 			v.add(t);
 			t = next();
-			System.out.println("Function..."+t.type());
 			if( t.type()==FunEncoder.OPEN ){
 				args(v);
 			}
-			return new TypedValue<Vector<Typed>>(FUNCTION, v);
+			return new TypedValue<Vector<Typed>>(COMMAND, v);
 		}
-		throw new LanguageException(nofunction,((RCToken)t).row(),((RCToken)t).column());
+		throw new LanguageException(nocommand,((RCToken)t).row(),((RCToken)t).column());
 	} 
 	
 	protected Typed command_def() throws LanguageException {
-		Typed f = function(); 
+		Typed f = command(); 
 		if( get().type()!=FunEncoder.ASSIGN ) throw new LanguageException(unexpected, (char)get().lexeme()[0], ((RCToken)get()).row(),((RCToken)get()).column(), '=');
 		next();
 		Typed c = command_exp();
@@ -132,21 +130,21 @@ public class FunParser implements Parser{
 		this.tokens = tokens;
 		this.offset=offset;
 		switch( main ){
-			case COMMAND: return command();
+			case COMMAND_CALL: return command_call();
 			case COMMAND_EXP: return command_exp();
 			case COMMAND_DEF: return command_def();
 			case COMMAND_DEF_LIST: return command_def_list();
-			case FUNCTION: return function();
+			case COMMAND: return command();
 		}
 		throw new LanguageException(norule,0,0);
 	}
 	
 	public static void i18n(){
 		HTKeyMap<String, String> x = new HTKeyMap<String,String>();
-		x.add(nofunction, "Not valid definition of a function is defined at row %d, column %d");
+		x.add(nocommand, "Not valid definition of a command at row %d, column %d");
 		x.add(noargs, "Not valid definition of arguments at row %d, column %d");
 		x.add(unexpected, "Unexpected symbol %c at row %d, column %d. Expecting %c");
-		x.add(norule, "Undefined fun component %s.");
+		x.add(norule, "Undefined fun language component %s.");
 		I18N.add("english",x);
 		I18N.use("english");
 	}

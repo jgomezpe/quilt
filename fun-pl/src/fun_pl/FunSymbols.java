@@ -1,4 +1,4 @@
-package fun_pl.syntax;
+package fun_pl;
 
 public class FunSymbols {
 	public static final String ALL = "all";

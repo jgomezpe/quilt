@@ -39,4 +39,9 @@ public class FunEncoder implements Encoder{
 		if(c=='\n') return EOL;
 		return EXTRA;
 	}
+	
+	public char symbol( int index ){
+		if( 0<=index && index <symbols.length() ) return symbols.charAt(index);
+		return (char)-1;
+	}
 }

@@ -1,5 +1,7 @@
-package fun_pl.syntax;
+package fun_pl.basic;
 
+import fun_pl.syntax.FunEncoder;
+import fun_pl.syntax.FunLexer;
 import unalcol.io.CharReader;
 import unalcol.io.ShortTermMemoryReader;
 import unalcol.language.programming.lexer.Token;
@@ -20,7 +22,7 @@ public class BasicFunLexer extends FunLexer{
 			int i=0;
 			while(i<prim_function.length && !lexeme.equals(prim_function[i])) i++;
 			if( i<prim_function.length ){
-				t.setType(PRIM_FUNCTION);
+				t.setType(PRIM_COMMAND);
 				return t;
 			}
 		}
