@@ -37,6 +37,12 @@ public class FunCommandCall extends FunCommand {
 			sb.append(encoder.symbol(FunEncoder.CLOSE));
 		}
 		return sb.toString();
-	}	
+	}
 
+	@Override
+	public int arity() { return (args!=null)?args.length:0; }	
+
+	public int type(FunMachine machine){ 
+	    if(arity()>0){}
+	}
 }
