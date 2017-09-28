@@ -1,26 +1,34 @@
 package fun_pl.semantic;
 
-public interface FunMachine{
-	public String left_link();
-	public String right_link();
-	
-	public String[] values();
-	public FunCommand[] primitives();
-	
-	public default int primitive_index( String command ){
-		FunCommand[] prims = primitives();
-		int i=0;
-		while( i<prims.length && !prims[i].name().equals(command) ) i++;
-		return (i<prims.length)?i:-1;
+public abstract class FunMachine{
+	protected FunProgram program = new FunProgram(this);
+
+	public FunMachine(){}
+	public FunMachine(FunProgram program ){
+		this.program = program;
+		program.machine = this;
 	}
+	public FunProgram get(){ return program; }
+	public void setProgram( FunProgram program ){ this.program = program; }
+
+	public abstract String left_link();
+	public abstract String right_link();
+	public abstract Object[] left_unlink(Object obj);
+	public abstract Object[] right_unlink(Object obj);
+	public abstract Object value(String value);
+	public abstract String[] values(String value);
+	public abstract FunCommand primitive(String command);
 	
-	public default FunCommand primitive( String command ){
-		FunCommand[] prims = primitives();
-		int i=primitive_index(command);
-		return (i<prims.length)?prims[i]:null;
-	}
-	
-	public default boolean is_primitive( String command ){
-		return primitive_index(command)<primitives().length;
+	public Object execute( String command, Object... args ) throws Exception{
+		FunCommand c = primitive(command);
+		if( c != null )	return c.execute(args);
+
+		Object obj = value(command);
+		if( obj != null ){
+			if( args.length > 0 ) throw new Exception("Unnecesary arguments...");
+			return obj;
+		}
+		
+		return program.execute(command, args);
 	}
 }

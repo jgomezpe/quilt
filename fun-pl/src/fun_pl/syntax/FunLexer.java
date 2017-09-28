@@ -2,6 +2,8 @@ package fun_pl.syntax;
 
 import java.io.IOException;
 
+import fun_pl.semantic.FunCommand;
+import fun_pl.semantic.FunMachine;
 import unalcol.io.ShortTermMemoryReader;
 import unalcol.language.LanguageException;
 import unalcol.language.programming.lexer.Lexer;
@@ -22,13 +24,37 @@ public class FunLexer implements Lexer{
 	protected ShortTermMemoryReader reader;
 	protected Encoder encoder;
 	
-	protected String get( int[] lexeme ){
+	protected FunMachine machine;
+	
+	public FunLexer( FunMachine machine ){ this.machine = machine; }
+	
+	public static String get( int[] lexeme ){
 		StringBuilder sb = new StringBuilder();
 		for(int i:lexeme) sb.append((char)i);
 		return sb.toString();
 	}
 
-	protected Token check_primitive(Token t){ return t; };
+	protected RCToken check_primitive(RCToken t){
+		int[] tlexeme = t.lexeme();
+		String lexeme = get(tlexeme);
+		String[] values = machine.values(lexeme);
+		if( values != null ){
+			Vector<Integer> nlexeme = new Vector<Integer>();
+			int j=values[0].length();
+			for( int k=0; k<j; k++ ) nlexeme.add(tlexeme[k]);
+			for(int i=0;i<values.length;i++){
+				nlexeme.add((int)' ');
+				for( int k=0; k<values[i].length(); k++ ){
+					nlexeme.add(tlexeme[j]);
+					j++;
+				}
+			}
+			return new RCToken(PRIM_VALUE, t.offset(), nlexeme, t.row(), t.column());
+		}
+		FunCommand c = machine.primitive(lexeme);
+		if( c != null ){ t.setType(PRIM_COMMAND); }
+		return t; 
+	}
 	
 	protected int original;
 	protected int next(){
@@ -64,7 +90,7 @@ public class FunLexer implements Lexer{
 		return new RCToken(VARIABLE, off, v, reader.row(), reader.column());
 	}
 	
-	protected Token value() throws LanguageException {
+	protected RCToken value() throws LanguageException {
 		int off = offset-1;
 		Vector<Integer> v = new Vector<Integer>();
 		v.add(original);

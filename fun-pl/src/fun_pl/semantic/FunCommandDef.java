@@ -2,17 +2,21 @@ package fun_pl.semantic;
 
 import unalcol.io.Position;
 
-public abstract class FunCommandDef extends FunObject{
-	protected FunCommand left;
-	protected FunCommand right=null;
+public class FunCommandDef extends FunCommand{
+	protected FunCommandCall left;
+	protected FunCommandCall right;
 
-	public FunCommandDef( Position pos, FunCommand left, FunCommand right ){
-		super( pos );
+	public FunCommandDef( Position pos, FunMachine machine, FunCommandCall left, FunCommandCall right ){
+		super( pos, machine );
 		this.left = left;
 		this.right = right;
 	}
 
-	public abstract Object execute( FunMachine machine, Object[] value ) throws Exception;
+	@Override
+	public Object execute( Object... values ) throws Exception{ return right.execute(left.match(values)); }
 
 	public String name(){ return left.name(); }
+
+	@Override
+	public int arity(){ return left.arity(); }
 }
