@@ -1,7 +1,9 @@
 package fun_pl.semantic;
 
 import fun_pl.syntax.FunEncoder;
+import fun_pl.util.Constants;
 import unalcol.io.Position;
+import unalcol.language.LanguageException;
 import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.keymap.KeyMap;
 import unalcol.types.collection.vector.Vector;
@@ -32,8 +34,12 @@ public class FunCommandCall extends FunCommand {
 	
 	public KeyMap<String, Object> match( KeyMap<String, Object> variables, Object... values ) throws Exception{
 		int arity = arity();
-		if( arity == 0 ) throw new Exception("Command call cannot be matched with some parameters...");
-		if( values.length != arity() ) throw new Exception("Mistmatch number of parameters...");
+		if( arity == 0 ){
+			Object obj=machine.execute(name);
+			if(obj==null || values.length!=1 || !obj.equals(values[0])) throw new LanguageException(Constants.argmismatch,name(),row()+1,column()+1, values[0].toString());
+			return variables;
+		}
+		if( values.length != arity ) throw new LanguageException(Constants.argnumbermismatch,name(),row(),column(),values.length,arity);
 		Exception ex = null;
 		Vector<Integer> index = new Vector<Integer>();
 		for( int i=0; i<arity; i++ ) index.add(i);
@@ -46,28 +52,29 @@ public class FunCommandCall extends FunCommand {
 			while( i<index.size() ){
 				int k = index.get(i);
 				String aname = args[k].name();
-				if( args[k].variable ){
-					Object obj = variables.get(aname);
-					if( obj == null ){ 
-						if(machine.can_assign(aname, values[k])) variables.set(aname,values[k]);
-						else throw new Exception("Cannot assign to variable..");
-					}else{
-						if( !obj.equals(values[k]) ) throw new Exception("Mismatch variable..");
-					}
+				if( args[k] instanceof FunVariable ){
+					((FunVariable)args[k]).match(variables,values[k]);
 					index.remove(i);
 				}else{
-					try{
-						Object[] objs = machine.symbol_command(aname).reverse(values[k]);
-						if(objs==null){
-							Object obj = args[i].execute(variables);
-							if( obj==null || !obj.equals(values[index.get(i)]) )  throw new Exception("Mismatch parameter..");
-						}else{
-							args[i].match(variables, objs);
-						}
+					if( args[k] instanceof FunValue ){
+						Object obj = args[k].execute(variables);
+						if( obj==null || !obj.equals(values[k]) ) throw new LanguageException(Constants.argmismatch,name(),row()+1,column()+1, values[k].toString());
 						index.remove(i);
-					}catch( Exception e ){
-						ex = e;
-						i++;
+					}else{					
+						try{
+							FunCommand c = machine.primitive(aname);
+							if(c instanceof FunSymbolCommand){
+								Object[] objs = ((FunSymbolCommand)c).reverse(values[k]);
+								args[k].match(variables, objs);
+							}else{
+								Object obj = args[k].execute(variables);
+								if( obj==null || !obj.equals(values[k]) )  throw new LanguageException(Constants.argmismatch,name(),row()+1,column()+1, values[k].toString());
+							}
+							index.remove(i);
+						}catch( Exception e ){
+							ex = e;
+							i++;
+						}
 					}
 				}
 			}	
@@ -79,7 +86,6 @@ public class FunCommandCall extends FunCommand {
 	public KeyMap<String, Object> match( Object... values ) throws Exception{ return match( new HTKeyMap<String,Object>(), values ); }
 	
 	public Object execute( KeyMap<String,Object> variables ) throws Exception{
-		if( variable ) return variables.get(name());
 		int a = arity();
 		Object[] obj = new Object[a];
 		for( int i=0; i<a; i++ ) obj[i] = args[i].execute(variables);
@@ -93,13 +99,13 @@ public class FunCommandCall extends FunCommand {
 		sb.append(I18N.get(name));
 		sb.append(name);
 		if( args!=null && args.length>0 ){
-			sb.append(encoder.symbol(FunEncoder.OPEN));
+			sb.append(encoder.symbol(Constants.OPEN));
 			sb.append(args[0]);
 			for( int i=1; i<args.length; i++ ){
-				sb.append(encoder.symbol(FunEncoder.COMMA));
+				sb.append(encoder.symbol(Constants.COMMA));
 				sb.append(args[i]);
 			}
-			sb.append(encoder.symbol(FunEncoder.CLOSE));
+			sb.append(encoder.symbol(Constants.CLOSE));
 		}
 		return sb.toString();
 	}
@@ -112,13 +118,13 @@ public class FunCommandCall extends FunCommand {
 		sb.append(name());
 		int n = arity();
 		if( n>0 ){
-			sb.append(I18N.get(FunEncoder.code).charAt(FunEncoder.OPEN));
+			sb.append(FunEncoder.get_symbol(Constants.OPEN));
 			sb.append(args[0]);
 			for( int i=1; i<n;i++ ){
-				sb.append(I18N.get(FunEncoder.code).charAt(FunEncoder.COMMA));			
+				sb.append(FunEncoder.get_symbol(Constants.COMMA));			
 				sb.append(args[i]);
 			}
-			sb.append(I18N.get(FunEncoder.code).charAt(FunEncoder.CLOSE));			
+			sb.append(FunEncoder.get_symbol(Constants.CLOSE));			
 		}
 		return sb.toString();
 	}

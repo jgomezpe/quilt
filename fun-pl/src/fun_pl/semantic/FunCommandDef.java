@@ -1,7 +1,7 @@
 package fun_pl.semantic;
 
 import fun_pl.syntax.FunEncoder;
-import unalcol.util.I18N;
+import fun_pl.util.Constants;
 
 public class FunCommandDef extends FunCommand{
 	protected FunCommandCall left;
@@ -24,7 +24,7 @@ public class FunCommandDef extends FunCommand{
 	public String toString(){
 		StringBuilder sb=new StringBuilder();
 		sb.append(left);
-		sb.append(I18N.get(FunEncoder.code).charAt(FunEncoder.ASSIGN));
+		sb.append(FunEncoder.get_symbol(Constants.ASSIGN));
 		sb.append(right);
 		return sb.toString();
 	}

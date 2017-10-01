@@ -3,8 +3,6 @@ package fun_pl.semantic;
 import unalcol.language.LanguageException;
 
 public abstract class FunMachine{
-	public static final String novalue = "novalue";
-	public static final String nocommand = "nocommand";
 
 	protected FunProgram program = new FunProgram(this);
 

@@ -3,7 +3,7 @@ package fun_pl.demo;
 import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
-import fun_pl.syntax.FunEncoder;
+import fun_pl.util.Constants;
 import unalcol.language.LanguageException;
 
 public class FunDemoMachine extends FunMachine{
@@ -18,13 +18,13 @@ public class FunDemoMachine extends FunMachine{
 
 	@Override
 	public String[] values(String value) throws LanguageException{
-		try{ return new String[]{""+this.value(value)}; }catch(Exception e){ throw new LanguageException(FunMachine.novalue, value); }
+		try{ return new String[]{""+this.value(value)}; }catch(Exception e){ throw new LanguageException(Constants.novalue, value); }
 	}
 
 	@Override
 	public FunCommand primitive(String command) throws LanguageException{
 		if(plus.name().equals(command)) return plus;
-		throw new LanguageException(FunMachine.nocommand,command);
+		throw new LanguageException(Constants.nocommand,command);
 	}
 
 	@Override
@@ -39,6 +39,6 @@ public class FunDemoMachine extends FunMachine{
 
 	@Override
 	public boolean can_assign(String variable, Object value) {
-		return (variable.charAt(0)!=FunEncoder.get_symbol(FunEncoder.DOLLAR) || (Integer)value == 1);
+		return true; // (variable.charAt(0)!=FunEncoder.get_symbol(FunEncoder.DOLLAR) || (Integer)value == 1);
 	}
 }

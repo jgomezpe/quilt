@@ -1,5 +1,6 @@
 package fun_pl.semantic;
 
+import fun_pl.util.Constants;
 import unalcol.io.SimplePosition;
 import unalcol.language.LanguageException;
 import unalcol.types.collection.keymap.HTKeyMap;
@@ -34,10 +35,11 @@ public class FunProgram extends FunCommand{
 	public void clear(){ commands.clear(); }
 	
 	public Object execute( String command, Object... values ) throws Exception{
+		Exception e=null;
 		Vector<FunCommandDef> v = commands.get(command);
-		if( v==null ) throw new Exception("Undefined command");
-		for( FunCommandDef c:v ) try{ return c.execute(values); }catch(Exception e){}
-		throw new Exception("Mistmatch parameters..");
+		if( v==null ) throw new LanguageException(Constants.nocommand,command);
+		for( FunCommandDef c:v ) try{ return c.execute(values); }catch(Exception ex){e=ex;}
+		throw e;
 	}
 
 	@Override

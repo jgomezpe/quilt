@@ -2,7 +2,7 @@ package fun_pl.semantic;
 
 import fun_pl.syntax.FunEncoder;
 import fun_pl.syntax.FunLexer;
-import fun_pl.syntax.FunParser;
+import fun_pl.util.Constants;
 import unalcol.language.LanguageException;
 import unalcol.language.Typed;
 import unalcol.language.TypedValue;
@@ -12,8 +12,6 @@ import unalcol.language.programming.meaner.Meaner;
 import unalcol.types.collection.vector.Vector;
 
 public class FunMeaner implements Meaner<FunCommand>{
-	public static final String nocommand="nocommand";
-
 	protected FunMachine machine;
 	protected FunEncoder encoder;
 	
@@ -24,9 +22,9 @@ public class FunMeaner implements Meaner<FunCommand>{
 	
 	protected FunCommandCall prim(RCToken t) throws LanguageException{
 		String[] compose = machine.values(FunLexer.get(t.lexeme()));
-		FunCommandCall c = new FunCommandCall(t, machine, compose[0]);
+		FunCommandCall c = new FunValue(t, machine, compose[0]);
 		for( int i=1; i<compose.length; i++ )
-			c = new FunCommandCall(c, machine, machine.symbol_command().name(), new FunCommandCall[]{c, new FunCommandCall(t, machine, compose[i])} );
+			c = new FunCommandCall(c, machine, machine.symbol_command().name(), new FunCommandCall[]{c, new FunValue(t, machine, compose[i])} );
 		return c;
 	}
 
@@ -65,15 +63,15 @@ public class FunMeaner implements Meaner<FunCommand>{
 	@Override
 	public FunCommand apply(Typed rule) throws LanguageException {
 		switch( rule.type() ){
-			case FunLexer.VARIABLE:
+			case Constants.VARIABLE:
 				RCToken t = (RCToken)rule;
-				return new FunCommandCall(t, machine, FunLexer.get(t.lexeme()), true);
+				return new FunVariable(t, machine, FunLexer.get(t.lexeme()));
 			//case FunLexer.VALUE: throw new LanguageException("Don't know to deal with values");
-			case FunLexer.PRIM_VALUE: return prim((RCToken)rule);
-			case FunParser.COMMAND_EXP: return command_exp((TypedValue<Vector<Typed>>)rule);
-			case FunParser.COMMAND_DEF: return command_def((TypedValue<Vector<Typed>>)rule);
-			case FunParser.COMMAND_DEF_LIST: return command_def_list((TypedValue<Vector<Typed>>)rule);
-			case FunParser.COMMAND: return command((TypedValue<Vector<Typed>>)rule);
+			case Constants.PRIM_VALUE: return prim((RCToken)rule);
+			case Constants.COMMAND_EXP: return command_exp((TypedValue<Vector<Typed>>)rule);
+			case Constants.COMMAND_DEF: return command_def((TypedValue<Vector<Typed>>)rule);
+			case Constants.COMMAND_DEF_LIST: return command_def_list((TypedValue<Vector<Typed>>)rule);
+			case Constants.COMMAND: return command((TypedValue<Vector<Typed>>)rule);
 		}
 		return null;
 	}

@@ -7,6 +7,7 @@ import unalcol.util.I18N;
 
 public class FunDemoCommand extends FunSymbolCommand{
 	public static final String plus="plus";
+	public static final String invalid="invalid";
 	public FunDemoCommand(FunMachine machine) {
 		super(new SimplePosition(), machine);
 	}
@@ -25,6 +26,7 @@ public class FunDemoCommand extends FunSymbolCommand{
 	@Override
 	public Object[] reverse(Object obj) throws Exception {
 		Integer i = (Integer)obj;
+		if( i<= 0 ) throw new Exception("Number cannot be reduced.."+i);
 		return new Integer[]{i-1,1};
 	}
 }
