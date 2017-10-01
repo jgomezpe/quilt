@@ -1,13 +1,14 @@
 package fun_pl.semantic;
 
-import unalcol.io.Position;
+import fun_pl.syntax.FunEncoder;
+import unalcol.util.I18N;
 
 public class FunCommandDef extends FunCommand{
 	protected FunCommandCall left;
 	protected FunCommandCall right;
 
-	public FunCommandDef( Position pos, FunMachine machine, FunCommandCall left, FunCommandCall right ){
-		super( pos, machine );
+	public FunCommandDef(FunMachine machine, FunCommandCall left, FunCommandCall right ){
+		super( left, machine );
 		this.left = left;
 		this.right = right;
 	}
@@ -19,4 +20,13 @@ public class FunCommandDef extends FunCommand{
 
 	@Override
 	public int arity(){ return left.arity(); }
+	
+	public String toString(){
+		StringBuilder sb=new StringBuilder();
+		sb.append(left);
+		sb.append(I18N.get(FunEncoder.code).charAt(FunEncoder.ASSIGN));
+		sb.append(right);
+		return sb.toString();
+	}
+	
 }

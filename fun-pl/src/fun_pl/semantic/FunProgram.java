@@ -1,14 +1,18 @@
 package fun_pl.semantic;
 
 import unalcol.io.SimplePosition;
+import unalcol.language.LanguageException;
 import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.vector.Vector;
 
 public class FunProgram extends FunCommand{
 	public static String MAIN="main";
 	
-	public FunProgram(FunMachine machine) {
-		super(new SimplePosition(), machine);
+	public FunProgram(FunMachine machine){ super(new SimplePosition(), machine); }
+
+	public FunProgram(FunMachine machine, Vector<FunCommandDef> commands) throws LanguageException{
+		this(machine);
+		add(commands);
 	}
 
 	protected HTKeyMap<String, Vector<FunCommandDef>> commands = new HTKeyMap<String,Vector<FunCommandDef>>();
@@ -23,7 +27,9 @@ public class FunProgram extends FunCommand{
 		vdef.add(def);
 	}
 
-	public void add(Vector<FunCommandDef> def){ for( FunCommandDef d:def ) add(d); }
+	public void add(Vector<FunCommandDef> def) throws LanguageException{ 
+		for( FunCommandDef d:def ) add(d);
+	}
 	
 	public void clear(){ commands.clear(); }
 	
@@ -42,4 +48,11 @@ public class FunProgram extends FunCommand{
 
 	@Override
 	public String name() { return MAIN; }
+	
+	public String toString(){
+		StringBuilder sb=new StringBuilder();
+		for( Vector<FunCommandDef> d:this.commands )
+			for( FunCommandDef c:d ) sb.append(c+"\n");		
+		return sb.toString();
+	}	
 }

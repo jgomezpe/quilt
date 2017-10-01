@@ -1,34 +1,33 @@
 package fun_pl.semantic;
 
+import unalcol.language.LanguageException;
+
 public abstract class FunMachine{
+	public static final String novalue = "novalue";
+	public static final String nocommand = "nocommand";
+
 	protected FunProgram program = new FunProgram(this);
 
 	public FunMachine(){}
-	public FunMachine(FunProgram program ){
+	public FunMachine(FunProgram program){
 		this.program = program;
 		program.machine = this;
 	}
 	public FunProgram get(){ return program; }
 	public void setProgram( FunProgram program ){ this.program = program; }
 
-	public abstract String left_link();
-	public abstract String right_link();
-	public abstract Object[] left_unlink(Object obj);
-	public abstract Object[] right_unlink(Object obj);
-	public abstract Object value(String value);
-	public abstract String[] values(String value);
-	public abstract FunCommand primitive(String command);
+	public abstract FunCommand primitive(String command) throws LanguageException;
+	public abstract String[] values(String value) throws LanguageException;
+	
+	public abstract FunSymbolCommand symbol_command();
+	public abstract FunSymbolCommand symbol_command(String symbol);
+
+	public abstract Object value(String value)  throws Exception;
+	public abstract boolean can_assign( String variable, Object value );
 	
 	public Object execute( String command, Object... args ) throws Exception{
-		FunCommand c = primitive(command);
-		if( c != null )	return c.execute(args);
-
-		Object obj = value(command);
-		if( obj != null ){
-			if( args.length > 0 ) throw new Exception("Unnecesary arguments...");
-			return obj;
-		}
-		
+		if(args.length==0) try{ return value(command); }catch(Exception e){}
+		try{ return primitive(command).execute(args); }catch(Exception e ){} 
 		return program.execute(command, args);
 	}
 }

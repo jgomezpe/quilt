@@ -1,8 +1,5 @@
 package fun_pl.syntax;
 
-import fun_pl.basic.BasicFunLexer;
-import unalcol.io.CharReader;
-import unalcol.io.ShortTermMemoryReader;
 import unalcol.language.LanguageException;
 import unalcol.language.Typed;
 import unalcol.language.TypedValue;
@@ -10,20 +7,19 @@ import unalcol.language.programming.lexer.RCToken;
 import unalcol.language.programming.lexer.Token;
 import unalcol.language.programming.parser.Parser;
 import unalcol.types.collection.array.Array;
-import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.vector.Vector;
 import unalcol.util.I18N;
 
 public class FunParser implements Parser{
-	public static final int COMMAND_CALL=100;
-	public static final int COMMAND_EXP=105;
-	public static final int COMMAND_DEF=110;
-	public static final int COMMAND_DEF_LIST=120;
-	public static final int COMMAND=130;
+	public static final int COMMAND_CALL=50;
+	public static final int COMMAND_EXP=51;
+	public static final int COMMAND_DEF=52;
+	public static final int COMMAND_DEF_LIST=53;
+	public static final int COMMAND=54;
 	
 	public static final String unexpected="unexpected";
 	public static final String noargs="noargs";
-	public static final String nocommand="nocommand";
+	public static final String command="command";
 	public static final String norule="norule";
 	
 	protected int main;
@@ -32,12 +28,12 @@ public class FunParser implements Parser{
 	
 	public FunParser(int main){ this.main = main; }
 	
-	protected Token get(){
-		if( offset >= tokens.size() ) return new Token(offset); 
-		return tokens.get(offset); 
+	protected RCToken get(){
+		if( offset >= tokens.size() ) return new RCToken(offset,0,0); 
+		return (RCToken)tokens.get(offset); 
 	}
 	
-	protected Token next(){
+	protected RCToken next(){
 		if( get().type() == Token.EOF ) return get();
 		offset++;
 		return get(); 
@@ -77,7 +73,7 @@ public class FunParser implements Parser{
 	} 
 	
 	protected void args(Vector<Typed> v) throws LanguageException{
-		Token t = get();
+		RCToken t = get();
 		if( t.type()==FunEncoder.OPEN ){
 			next();
 			v.add(command_exp());
@@ -90,12 +86,13 @@ public class FunParser implements Parser{
 				next();
 				return;
 			}
+			throw new LanguageException(unexpected, FunLexer.get(t.lexeme()),t.row(),t.column(),""+(I18N.get(FunEncoder.code)).charAt(FunEncoder.CLOSE));
 		}
-		throw new LanguageException(noargs,((RCToken)t).row(),((RCToken)t).column());
+		throw new LanguageException(noargs,t.row(),t.column());
 	}
 	
 	protected Typed command() throws LanguageException{
-		Token t = get();
+		RCToken t = get();
 		if( t.type()==FunLexer.PRIM_COMMAND || (t.type()&FunLexer.VALUE)==FunLexer.VALUE ){
 			Vector<Typed> v = new Vector<Typed>();
 			v.add(t);
@@ -105,12 +102,12 @@ public class FunParser implements Parser{
 			}
 			return new TypedValue<Vector<Typed>>(COMMAND, v);
 		}
-		throw new LanguageException(nocommand,((RCToken)t).row(),((RCToken)t).column());
+		throw new LanguageException(unexpected, FunLexer.get(t.lexeme()),t.row(),t.column(),I18N.get(command));
 	} 
 	
 	protected Typed command_def() throws LanguageException {
 		Typed f = command(); 
-		if( get().type()!=FunEncoder.ASSIGN ) throw new LanguageException(unexpected, (char)get().lexeme()[0], ((RCToken)get()).row(),((RCToken)get()).column(), '=');
+		if( get().type()!=FunEncoder.ASSIGN ) throw new LanguageException(unexpected, FunLexer.get(get().lexeme()), get().row(),get().column(), ""+(I18N.get(FunEncoder.code)).charAt(FunEncoder.ASSIGN));
 		next();
 		Typed c = command_exp();
 		Vector<Typed> v = new Vector<Typed>();
@@ -137,37 +134,5 @@ public class FunParser implements Parser{
 			case COMMAND: return command();
 		}
 		throw new LanguageException(norule,0,0);
-	}
-	
-	public static void i18n(){
-		HTKeyMap<String, String> x = new HTKeyMap<String,String>();
-		x.add(nocommand, "Not valid definition of a command at row %d, column %d");
-		x.add(noargs, "Not valid definition of arguments at row %d, column %d");
-		x.add(unexpected, "Unexpected symbol %c at row %d, column %d. Expecting %c");
-		x.add(norule, "Undefined fun language component %s.");
-		I18N.add("english",x);
-		I18N.use("english");
-	}
-	
-	public static void main(String[] args){
-		i18n();
-		String code="+34.22(X1#$2|$3)=rot(horzdiag)diagdemo(Y#$)\n%commentX#1\r\n=Ave|cesar";
-		FunEncoder encoder = new FunEncoder();
-		ShortTermMemoryReader reader = new CharReader(code);
-		String[] prim_func = new String[]{"rot","sew"};
-		String[] prim_value = new String[]{"horz","diag"};
-		FunLexer lexer = new BasicFunLexer(prim_func,prim_value);
-		try {
-			Array<Token> tokens = lexer.apply(reader, 0, encoder);
-			reader.close();
-			for( Token t:tokens ){
-				System.out.println(t.type()+","+t.offset()+","+t.length());
-			}
-			Parser p = new FunParser(FunParser.COMMAND_DEF_LIST);
-			Typed t = p.apply(tokens, 0);
-			System.out.println(t);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}	
 }

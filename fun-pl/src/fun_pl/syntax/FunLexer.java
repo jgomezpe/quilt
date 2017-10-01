@@ -2,7 +2,6 @@ package fun_pl.syntax;
 
 import java.io.IOException;
 
-import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import unalcol.io.ShortTermMemoryReader;
 import unalcol.language.LanguageException;
@@ -15,10 +14,10 @@ import unalcol.types.collection.vector.Vector;
 
 public class FunLexer implements Lexer{
 	
-	public static final int VARIABLE = 20;
-	public static final int VALUE = 64;
-	public static final int PRIM_VALUE = 22;
-	public static final int PRIM_COMMAND = 23;
+	public static final int VARIABLE = 45;
+	public static final int VALUE = 128;
+	public static final int PRIM_VALUE = 64;
+	public static final int PRIM_COMMAND = 46;
 	
 	protected int offset;
 	protected ShortTermMemoryReader reader;
@@ -34,25 +33,18 @@ public class FunLexer implements Lexer{
 		return sb.toString();
 	}
 
-	protected RCToken check_primitive(RCToken t){
+	protected RCToken check_primitive(RCToken t) throws LanguageException{
 		int[] tlexeme = t.lexeme();
 		String lexeme = get(tlexeme);
-		String[] values = machine.values(lexeme);
-		if( values != null ){
-			Vector<Integer> nlexeme = new Vector<Integer>();
-			int j=values[0].length();
-			for( int k=0; k<j; k++ ) nlexeme.add(tlexeme[k]);
-			for(int i=0;i<values.length;i++){
-				nlexeme.add((int)' ');
-				for( int k=0; k<values[i].length(); k++ ){
-					nlexeme.add(tlexeme[j]);
-					j++;
-				}
-			}
-			return new RCToken(PRIM_VALUE, t.offset(), nlexeme, t.row(), t.column());
-		}
-		FunCommand c = machine.primitive(lexeme);
-		if( c != null ){ t.setType(PRIM_COMMAND); }
+		try{
+			machine.values(lexeme);
+			t.setType(PRIM_VALUE);
+			return t;
+		}catch(LanguageException e){}
+		try{ 
+			machine.primitive(lexeme);
+			t.setType(PRIM_COMMAND);			
+		}catch(LanguageException e){}
 		return t; 
 	}
 	
@@ -112,7 +104,7 @@ public class FunLexer implements Lexer{
 		Vector<Token> v = new Vector<Token>();
 		int c = next();
 		while(c!=FunEncoder.EOF){
-			if( c!=FunEncoder.COMMENT && c<FunEncoder.SPECIAL ){
+			if( FunEncoder.DOLLAR < c && c<=FunEncoder.SPECIAL ){
 				v.add(new RCToken(c, this.offset-1, new int[]{original}, reader.row(), reader.column()));
 				c = next();				
 			}else{

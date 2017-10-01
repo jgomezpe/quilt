@@ -48,20 +48,21 @@ public class FunCommandCall extends FunCommand {
 				String aname = args[k].name();
 				if( args[k].variable ){
 					Object obj = variables.get(aname);
-					if( obj == null ) variables.set(aname,values[k]);
-					else if( !obj.equals(values[k]) ) throw new Exception("Mismatch variable..");
+					if( obj == null ){ 
+						if(machine.can_assign(aname, values[k])) variables.set(aname,values[k]);
+						else throw new Exception("Cannot assign to variable..");
+					}else{
+						if( !obj.equals(values[k]) ) throw new Exception("Mismatch variable..");
+					}
 					index.remove(i);
 				}else{
 					try{
-						if(aname.equals(machine.left_link())){
-							Object[] objs = machine.left_unlink(values[k]);
-							args[k].match(variables,objs);
-						}else if( aname.equals(machine.right_link()) ){
-							Object[] objs = machine.right_unlink(values[k]);
-							args[k].match(variables,objs);
-						}else{
+						Object[] objs = machine.symbol_command(aname).reverse(values[k]);
+						if(objs==null){
 							Object obj = args[i].execute(variables);
 							if( obj==null || !obj.equals(values[index.get(i)]) )  throw new Exception("Mismatch parameter..");
+						}else{
+							args[i].match(variables, objs);
 						}
 						index.remove(i);
 					}catch( Exception e ){
@@ -78,8 +79,10 @@ public class FunCommandCall extends FunCommand {
 	public KeyMap<String, Object> match( Object... values ) throws Exception{ return match( new HTKeyMap<String,Object>(), values ); }
 	
 	public Object execute( KeyMap<String,Object> variables ) throws Exception{
-		Object[] obj = new Object[args.length];
-		for( int i=0; i<args.length; i++ ) obj[i] = args[i].execute(variables);
+		if( variable ) return variables.get(name());
+		int a = arity();
+		Object[] obj = new Object[a];
+		for( int i=0; i<a; i++ ) obj[i] = args[i].execute(variables);
 		return machine.execute(name, obj);
 	}
 
@@ -103,4 +106,20 @@ public class FunCommandCall extends FunCommand {
 
 	@Override
 	public int arity() { return (args!=null)?args.length:0; }	
+	
+	public String toString(){
+		StringBuilder sb=new StringBuilder();
+		sb.append(name());
+		int n = arity();
+		if( n>0 ){
+			sb.append(I18N.get(FunEncoder.code).charAt(FunEncoder.OPEN));
+			sb.append(args[0]);
+			for( int i=1; i<n;i++ ){
+				sb.append(I18N.get(FunEncoder.code).charAt(FunEncoder.COMMA));			
+				sb.append(args[i]);
+			}
+			sb.append(I18N.get(FunEncoder.code).charAt(FunEncoder.CLOSE));			
+		}
+		return sb.toString();
+	}
 }
