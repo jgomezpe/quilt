@@ -64,7 +64,10 @@ public class FunCommandCall extends FunCommand {
 						try{
 							FunCommand c = machine.primitive(aname);
 							if(c instanceof FunSymbolCommand){
-								Object[] objs = ((FunSymbolCommand)c).reverse(values[k]);
+								Object[] toMatch = new Object[]{null,null};
+								try{ toMatch[0]=args[k].args[0].execute(variables); }catch(Exception x){}
+								try{ toMatch[1]=args[k].args[1].execute(variables); }catch(Exception x){}
+								Object[] objs = ((FunSymbolCommand)c).reverse(values[k], toMatch);
 								args[k].match(variables, objs);
 							}else{
 								Object obj = args[k].execute(variables);

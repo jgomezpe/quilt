@@ -24,9 +24,25 @@ public class FunDemoCommand extends FunSymbolCommand{
 	public String name() { return I18N.get(plus); }
 
 	@Override
-	public Object[] reverse(Object obj) throws Exception {
+	public Object[] reverse(Object obj, Object[] toMatch) throws Exception {
 		Integer i = (Integer)obj;
-		if( i<= 0 ) throw new Exception("Number cannot be reduced.."+i);
-		return new Integer[]{i-1,1};
+		if( toMatch[0]==null && toMatch[1]==null ){
+			if( i<= 0 ) throw new Exception("Number cannot be reduced.."+i);
+			return new Integer[]{i-1,1};
+		}
+		if( toMatch[0]==null){
+			Integer j=(Integer)toMatch[1];
+			if(i-j<0) throw new Exception("Number cannot be reduced.."+i);
+			return new Integer[]{i-j,j};
+		}
+		if( toMatch[1]==null){
+			Integer j=(Integer)toMatch[0];
+			if(i-j<0) throw new Exception("Number cannot be reduced.."+i);
+			return new Integer[]{j,i-j};
+		}
+		Integer j=(Integer)toMatch[0];
+		Integer k=(Integer)toMatch[1];
+		if(j+k!=i) throw new Exception("Number cannot be reduced.."+i);
+		return new Integer[]{j,k};
 	}
 }

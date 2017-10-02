@@ -100,30 +100,34 @@ public class FunLexer implements Lexer{
 		Vector<Token> v = new Vector<Token>();
 		int c = next();
 		while(c!=Constants.EOF){
-			if( Constants.DOLLAR < c && c<=Constants.END_LINK_SYMBOLS ){
+			if( Constants.DOLLAR < c && c<Constants.START_LINK_SYMBOLS ){
 				v.add(new RCToken(c, this.offset-1, new int[]{original}, reader.row(), reader.column()));
 				c = next();				
-			}else{
-				switch(c){
-					case Constants.SPACE: // We do not care about spaces
-					case Constants.EOL:
-						c=next();
-					break;
-					case Constants.COMMENT: // It is a comment, we do not care until next EOL
-						c = next();
-						while( c != Constants.EOL && c!=Constants.EOF ){ c = next(); }
-						if( c==Constants.EOL ) c=next();
-					break;	
-					case Constants.UPPER_CASE: // It is a variable
-					case Constants.DOLLAR:
-						v.add(variable());
-						c=next();
-					break;	
-					default:
-						v.add(value());
-						c=next();
+			}else
+				if( Constants.START_LINK_SYMBOLS <= c && c<=Constants.END_LINK_SYMBOLS ){
+					v.add(new RCToken(c, this.offset-1, new int[]{original}, reader.row(), reader.column()));
+					c = next();				
+				}else{
+					switch(c){
+						case Constants.SPACE: // We do not care about spaces
+						case Constants.EOL:
+							c=next();
+						break;
+						case Constants.COMMENT: // It is a comment, we do not care until next EOL
+							c = next();
+							while( c != Constants.EOL && c!=Constants.EOF ){ c = next(); }
+							if( c==Constants.EOL ) c=next();
+						break;	
+						case Constants.UPPER_CASE: // It is a variable
+						case Constants.DOLLAR:
+							v.add(variable());
+							c=next();
+						break;	
+						default:
+							v.add(value());
+							c=next();
+					}
 				}
-			}
 		}
 		return v;
 	}	

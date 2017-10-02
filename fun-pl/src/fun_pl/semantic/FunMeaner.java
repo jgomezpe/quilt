@@ -38,13 +38,42 @@ public class FunMeaner implements Meaner<FunCommand>{
 	}
 	
 	protected FunCommandCall command_exp(TypedValue<Vector<Typed>> t) throws LanguageException{
-		Vector<Typed> v = t.value();
+		Vector<Typed> vo = t.value();
+		if( vo.size()==1 ) return (FunCommandCall)apply(vo.get(0));
+		Vector<Object> v = new Vector<Object>();
+		for(Typed c:vo) v.add(c);
+		for( int i=Constants.START_LINK_SYMBOLS; i<encoder.symbols_number() && v.size()>1; i++ ){
+			int k=1;
+			int pk=0;
+			int nk=2;
+			while(k<v.size()){
+				Token token = (Token)v.get(k); 
+				if(token.type()==i){
+					String name = machine.symbol_command(FunLexer.get(token.lexeme())).name();
+					FunCommandCall[] args = new FunCommandCall[2];
+					args[0]=(v.get(pk) instanceof Typed)?(FunCommandCall)apply((Typed)v.get(pk)):(FunCommandCall)v.get(pk);
+					args[1]=(v.get(nk) instanceof Typed)?(FunCommandCall)apply((Typed)v.get(nk)):(FunCommandCall)v.get(nk);
+					FunCommandCall c = new FunCommandCall(args[0], machine, name, args); 
+					v.set(pk,c);
+					v.remove(k);
+					v.remove(k);
+					
+				}else{
+					k+=2;
+					nk+=2;
+					pk+=2;
+				}
+			}
+		}
+		return (FunCommandCall)v.get(0);
+		/*
 		FunCommandCall c = (FunCommandCall)apply(v.get(v.size()-1));
 		for( int i=v.size()-2; i>0; i-=2 ){
 			String name = machine.symbol_command(FunLexer.get(((Token)v.get(i)).lexeme())).name();
 			c = new FunCommandCall(c, machine, name, new FunCommandCall[]{(FunCommandCall)apply(v.get(i-1)),c} );
 		}	
 		return c;
+		*/		
 	}
 	
 	protected FunCommand command_def(TypedValue<Vector<Typed>> t) throws LanguageException{

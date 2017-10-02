@@ -36,7 +36,7 @@ public class FunEncoder implements Encoder{
 		return (char)-1;
 	}
 	
-	public static char get_symbol(int index){
-		return I18N.get(Constants.code).charAt(index);
-	}
+	public int symbols_number(){ return symbols.length(); }
+	
+	public static char get_symbol(int index){ return I18N.get(Constants.code).charAt(index); }
 }

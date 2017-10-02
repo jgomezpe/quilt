@@ -5,5 +5,5 @@ import unalcol.io.Position;
 public abstract class FunSymbolCommand extends FunCommand{
 	public FunSymbolCommand(Position pos, FunMachine machine) { super(pos, machine); }
 
-	public abstract Object[] reverse(Object obj) throws Exception;
+	public abstract Object[] reverse(Object obj, Object[] toMatch) throws Exception;
 }

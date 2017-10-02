@@ -54,11 +54,11 @@ public class FunDemo {
 	}
 
 	public static String program(){
-		return "*(0,Y)=0\n*(X+1,Y)=*(X,Y)+Y";
+		return "*(0,Y)=0\n*(X+2,Y)=*(X,Y)+Y";
 	}
 
 	public static String command(){
-		return "*(5,10)";
+		return "*(6,10)";
 	}
 
 	public static void i18n(){
@@ -96,8 +96,8 @@ public class FunDemo {
 		i18n(); // Defining the language for error messages
 		FunMachine machine = new FunDemoMachine();
 		//String code=parser_error(); //Test the compiler using a program written with a grammar error
-		String code=meaner_error(); //Test the compiler using a program written with a semantic error
-		//String code=program(); //Test the compiler without errors
+		//String code=meaner_error(); //Test the compiler using a program written with a semantic error
+		String code=program(); //Test the compiler without errors
 		FunProgram program = (FunProgram)analize(machine, code, true);
 		machine.setProgram(program);
 		FunCommandCall command = (FunCommandCall)analize(machine,command(),false);
