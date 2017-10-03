@@ -9,6 +9,7 @@ import unalcol.language.TypedValue;
 import unalcol.language.programming.lexer.RCToken;
 import unalcol.language.programming.lexer.Token;
 import unalcol.language.programming.meaner.Meaner;
+import unalcol.types.collection.array.Array;
 import unalcol.types.collection.vector.Vector;
 
 public class FunMeaner implements Meaner<FunCommand>{
@@ -21,10 +22,10 @@ public class FunMeaner implements Meaner<FunCommand>{
 	}
 	
 	protected FunCommandCall prim(RCToken t) throws LanguageException{
-		String[] compose = machine.values(FunLexer.get(t.lexeme()));
-		FunCommandCall c = new FunValue(t, machine, compose[0]);
-		for( int i=1; i<compose.length; i++ )
-			c = new FunCommandCall(c, machine, machine.symbol_command().name(), new FunCommandCall[]{c, new FunValue(t, machine, compose[i])} );
+		Array<String> compose = machine.values(FunLexer.get(t.lexeme()));
+		FunCommandCall c = new FunValue(t, machine, compose.get(0));
+		for( int i=1; i<compose.size(); i++ )
+			c = new FunCommandCall(c, machine, machine.symbol_command().name(), new FunCommandCall[]{c, new FunValue(t, machine, compose.get(i))} );
 		return c;
 	}
 

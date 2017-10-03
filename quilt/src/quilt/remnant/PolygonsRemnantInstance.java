@@ -1,6 +1,6 @@
 package quilt.remnant;
 
-import quilt.Remnant;
+import quilt.Quilt;
 import quilt.gui.Polygon;
 import quilt.gui.PolygonInstance;
 import unalcol.gui.paint.ColorInstance;
@@ -50,13 +50,13 @@ import unalcol.gui.util.Instance;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class PolygonsRemnantInstance implements Instance<Remnant>{
+public class PolygonsRemnantInstance implements Instance<Quilt>{
 	public static final String POLYGONS="polygons";
 	protected ColorInstance c = new ColorInstance();
 	protected PolygonInstance p = new PolygonInstance(); 
 
 	@Override
-	public Remnant load(Object[] args) {
+	public Quilt load(Object[] args) {
 		if( args.length<2 || !POLYGONS.equals(args[0])) return null;
 		Polygon[] pol = new Polygon[args.length-2];
 		for( int i=0; i<pol.length; i++ ) pol[i] = p.load((Object[])args[i+2]); 
@@ -64,7 +64,7 @@ public class PolygonsRemnantInstance implements Instance<Remnant>{
 	}
 
 	@Override
-	public Object[] store(Remnant r) {
+	public Object[] store(Quilt r) {
 		if( !(r instanceof PolygonsRemnant)) return null;
 		PolygonsRemnant pol = (PolygonsRemnant)r;
 		Object[] obj = new Object[2+pol.p.length];

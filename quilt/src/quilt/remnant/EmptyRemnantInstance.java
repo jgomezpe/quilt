@@ -1,6 +1,6 @@
 package quilt.remnant;
 
-import quilt.Remnant;
+import quilt.Quilt;
 import unalcol.gui.util.Instance;
 
 /**
@@ -47,17 +47,17 @@ import unalcol.gui.util.Instance;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class EmptyRemnantInstance implements Instance<Remnant> {
+public class EmptyRemnantInstance implements Instance<Quilt> {
 	public static final String EMPTY="empty";
 
 	@Override
-	public Remnant load(Object[] args) {
+	public Quilt load(Object[] args) {
 		if( args.length!=1 || !EMPTY.equals(args[0]) ) return null;
 		return new EmptyRemnant();
 	}
 
 	@Override
-	public Object[] store(Remnant obj) {
+	public Object[] store(Quilt obj) {
 		if( !(obj instanceof EmptyRemnant) ) return null;
 		return new Object[]{EMPTY};
 	}

@@ -1,7 +1,7 @@
 package quilt.remnant;
 
-import quilt.MinRemnant;
 import quilt.Remnant;
+import quilt.Quilt;
 import quilt.gui.Drawer;
 import unalcol.gui.paint.Color;
 
@@ -49,7 +49,7 @@ import unalcol.gui.paint.Color;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class FilledRemnant extends MinRemnant{
+public class FilledRemnant extends Remnant{
 	protected Color color;
 	protected int side;
 
@@ -58,7 +58,7 @@ public class FilledRemnant extends MinRemnant{
 		this.side = side;
 	}
 
-	public Remnant clone(){	return new FilledRemnant(color(), side);	}
+	public Quilt clone(){	return new FilledRemnant(color(), side);	}
 	
 	public Color color(){ return color;	}
 	
@@ -74,7 +74,7 @@ public class FilledRemnant extends MinRemnant{
 		g.drawFill(column+(one-side)/2, row+(one-side)/2, side, side);
 	}
 
-	public boolean equals( Remnant r ){
+	public boolean equals( Quilt r ){
 		r = check(r);
 		if( r!=null && r instanceof FilledRemnant ){
 			FilledRemnant other = (FilledRemnant)r;

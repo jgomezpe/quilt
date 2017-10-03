@@ -1,6 +1,6 @@
 package quilt.remnant;
 
-import quilt.Remnant;
+import quilt.Quilt;
 import quilt.gui.Strip;
 import quilt.gui.StripInstance;
 import unalcol.gui.paint.Color;
@@ -51,14 +51,14 @@ import unalcol.gui.util.Instance;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class StripsRemnantInstance implements Instance<Remnant>{
+public class StripsRemnantInstance implements Instance<Quilt>{
 	public static final String STRIPS="strips";
 	
 	protected StripInstance s_instance = new StripInstance();
 	protected ColorInstance c_instance = new ColorInstance();
 	
 	@Override
-	public Remnant load(Object[] args) {
+	public Quilt load(Object[] args) {
 		if( args.length<2 || !STRIPS.equals(args[0]) ) return null;
 		Color c = c_instance.load((Object[])args[1]);
 		Strip[] grid = new Strip[args.length-1];
@@ -69,7 +69,7 @@ public class StripsRemnantInstance implements Instance<Remnant>{
 	}
 
 	@Override
-	public Object[] store(Remnant obj) {
+	public Object[] store(Quilt obj) {
 		if(!( obj instanceof StripsRemnant)) return null;
 		StripsRemnant q = (StripsRemnant)obj;
 		Object[] lines = new Object[q.rows()+2];

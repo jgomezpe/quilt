@@ -1,7 +1,7 @@
 package quilt.remnant;
 
-import quilt.MinRemnant;
 import quilt.Remnant;
+import quilt.Quilt;
 import quilt.operation.Rotatable;
 import quilt.operation.Rotate;
 
@@ -49,7 +49,7 @@ import quilt.operation.Rotate;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class EmptyRemnant extends MinRemnant implements Rotatable<Remnant>{
+public class EmptyRemnant extends Remnant implements Rotatable<Quilt>{
 
 	@Override
 	public Object clone() {
@@ -57,11 +57,11 @@ public class EmptyRemnant extends MinRemnant implements Rotatable<Remnant>{
 	}
 
 	@Override
-	public Remnant rotate(Rotate command) {
+	public Quilt rotate(Rotate command) {
 		return this;
 	}
 	
-	public boolean equals( Remnant r ){
+	public boolean equals( Quilt r ){
 		return (r!=null && r instanceof EmptyRemnant);
 	}
 }

@@ -1,7 +1,6 @@
 package fun_pl.semantic;
 
 import fun_pl.util.Constants;
-import unalcol.io.SimplePosition;
 import unalcol.language.LanguageException;
 import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.vector.Vector;
@@ -9,7 +8,7 @@ import unalcol.types.collection.vector.Vector;
 public class FunProgram extends FunCommand{
 	public static String MAIN="main";
 	
-	public FunProgram(FunMachine machine){ super(new SimplePosition(), machine); }
+	public FunProgram(FunMachine machine){ super(machine); }
 
 	public FunProgram(FunMachine machine, Vector<FunCommandDef> commands) throws LanguageException{
 		this(machine);

@@ -1,15 +1,19 @@
 package quilt;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.Iterator;
 
-import quilt.operation.Command;
-import quilt.operation.CommandCall;
-import quilt.operation.CommandDef;
-import quilt.syntax.QuiltMachineParser;
-import unalcol.gui.editor.ErrorManager;
-import unalcol.gui.editor.Position;
+import fun_pl.semantic.FunCommand;
+import fun_pl.semantic.FunMachine;
+import fun_pl.semantic.FunSymbolCommand;
+import fun_pl.util.Constants;
+import quilt.operation.Rotate;
+import quilt.operation.Sew;
+import unalcol.language.LanguageException;
+import unalcol.types.collection.array.Array;
+import unalcol.types.collection.keymap.HTKeyMap;
+import unalcol.types.collection.keymap.KeyMap;
+import unalcol.types.collection.keymap.KeyValue;
+import unalcol.types.collection.vector.Vector;
 
 /**
 *
@@ -55,129 +59,59 @@ import unalcol.gui.editor.Position;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class QuiltMachine {
-	protected Hashtable<String, Vector<CommandDef>> commands = new Hashtable<String,Vector<CommandDef>>();
-	protected Hashtable<String, Remnant> remnants = new Hashtable<String,Remnant>();
-	protected Command[] primitives;
-	protected QuiltMachineParser parser;
-	
-	public static final String SEW = "sew";
-	
-	public static final String QMP = ".qmp";	
-	public static final String QMC = ".qmc";	
-	
-	protected ErrorManager language;
-	
-	public QuiltMachine( Command[] primitives, Hashtable<String, Remnant> remnants, 
-						QuiltMachineParser parser, ErrorManager language ){
-		this.addPrimitives(primitives);
-		this.remnants.putAll(remnants);
-		this.parser = parser;
-		this.parser.setMachine(this);
-		this.language = language;
+public class QuiltMachine extends FunMachine{
+	protected FunSymbolCommand sew;
+	protected FunCommand rot;
+	protected KeyMap<String, Quilt> remnants = new HTKeyMap<String,Quilt>();
+
+	public QuiltMachine(){
+		sew = new Sew(this);
+		rot = new Rotate(this);
 	}
 	
-	public String message( String code ){ return language.get(code); }
-	public Exception error( Position pos, String message ){ return language.error(pos, message); }
-	
-	public ErrorManager language(){ return language; }
-	
-	public void add( CommandDef[] def ){
-		for( int i=0; i<def.length; i++ ){
-			Vector<CommandDef> comm = commands.get(def[i].name());
-			if( comm == null ){
-				comm = new Vector<CommandDef>();
-				commands.put(def[i].name(), comm);
-			}
-			comm.add(def[i]);
-		}
-	}
-	
-	public void addPrimitives(Command[] primitives){
-		CommandDef[] primitives_def = new CommandDef[primitives.length];
-		for( int i=0; i<primitives.length; i++ ) primitives_def[i] = new CommandDef(primitives[i]);
-		this.add(primitives_def);
-		this.primitives = primitives;
-	}
-	
-	public Command[] primitives(){ return primitives; }
-	
-	public Command primitive( String command ){
-		int i=0;
-		while( i<primitives.length && !primitives[i].name().equals(command) ) i++;
-		return (i<primitives.length)?primitives[i]:null;
-	}
-	
-	public boolean is_primitive( String command ){
-		int i=0;
-		while( i<primitives.length && !primitives[i].name().equals(command) ) i++;
-		return i<primitives.length;
-	}
-	
-	public void init(){
-		commands.clear();
-		addPrimitives(primitives);
-	}
-	
-	public Vector<CommandDef> get( String command ){
-		return commands.get(command);
+	@Override
+	public boolean can_assign(String variable, Object remnant) {
+		return true;
 	}
 
-	public Remnant remnant( String remnant ){
-		return remnants.get(remnant);
-	}	
-	
-	public String[] remnants(){
-		Enumeration<String> keys = remnants.keys();
+	@Override
+	public FunCommand primitive(String command) throws LanguageException {
+		if(sew.name().equals(command)) return sew;
+		if(rot.name().equals(command)) return rot;
+		throw new LanguageException(Constants.nocommand,command);
+	}
+
+	@Override
+	public FunSymbolCommand symbol_command() { return sew; }
+
+	@Override
+	public FunSymbolCommand symbol_command(String arg0){ return sew; }
+
+	@Override
+	public Object value(String remnant) throws Exception {
+		Quilt r = remnants.get(remnant);
+		if( r!=null ) return r;
+		throw new Exception("Unknown value...");
+	}
+
+	@Override
+	public Array<String> values(String compose) throws LanguageException {
 		Vector<String> v = new Vector<String>();
-		while( keys.hasMoreElements() ){
-			v.add(keys.nextElement());
+		boolean ok = true;
+		while(compose.length()>0 && ok){
+			Iterator<KeyValue<String,Quilt>> iter = remnants.pairs().iterator();
+			String r=null;
+			ok = false;
+			while(iter.hasNext() && !ok){
+				r = iter.next().key();
+				ok = compose.indexOf(r)==0;
+			}
+			if(ok){
+				v.add(r);
+				compose.substring(r.length());
+			}
 		}
-		String[] r = new String[v.size()];
-		for( int i=0; i<v.size(); i++ ) r[i] = v.get(i);
-		return r;
-	}
-	
-	public CommandCall command(String command) throws Exception{
-		return parser.command(command);
-	}
-	
-	public Remnant execute(CommandCall comm) throws Exception{
-		return comm.execute(this, new Hashtable<String,Remnant>());
-	}
-	
-	public void addDef( String program ) throws Exception{
-		this.add(parser.apply(program));
-	}
-	
-	public void setProgram( String program ) throws Exception{
-		init();
-		addDef(program);
-	}
-	
-	protected int pos(String str, String[] prim){
-		int k=0;
-		while( k<prim.length && str.indexOf(prim[k])!=0 ) k++;
-		if( k<prim.length ) return prim[k].length();
-		else return -1;
-	}
-		
-	public String[] composed( String name ){
-		String[] prim = this.remnants();
-		Vector<String> rs = new Vector<String>();
-		int k = pos(name, prim);
-		while( k>0 ){
-			rs.add(name.substring(0,k));
-			name = name.substring(k);
-			k = pos(name, prim);
-		}
-		int l=(name.length()==0)?rs.size():0;
-		String[] r = new String[l];
-		for(int i=0; i<l; i++ ) r[i] = rs.get(i);
-		return r;
-	}
-	
-	public QuiltMachineParser parser(){
-		return parser;
+		if( ok ) return v;
+		throw new LanguageException("Uknown value");
 	}
 }

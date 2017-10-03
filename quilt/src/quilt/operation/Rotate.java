@@ -1,8 +1,9 @@
 package quilt.operation;
 
-import quilt.QuiltMachine;
-import quilt.Remnant;
-import quilt.util.Language;
+import fun_pl.semantic.FunCommand;
+import fun_pl.semantic.FunMachine;
+import quilt.Quilt;
+import unalcol.util.I18N;
 
 /**
 *
@@ -48,26 +49,24 @@ import quilt.util.Language;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class Rotate extends Command{
-	public static final String ROTATE="rot";
-	public Rotate() {
-		super(ROTATE, new String[]{"X"});
+public class Rotate extends FunCommand{
+	public static final String name="rot";
+	public Rotate(FunMachine machine) {
+		super(machine);
 	}
 
 	@SuppressWarnings("unchecked")
-	public Remnant execute(Remnant value){
-		if( value instanceof Rotatable ){
-			return ((Rotatable<Remnant>)value).rotate(this);
-		}else{
-			return (Remnant)value.clone();
-		}		
+	public Quilt execute(Quilt quilt){
+		if( quilt instanceof Rotatable ) return ((Rotatable<Quilt>)quilt).rotate(this);
+		else return (Quilt)quilt.clone();
 	}
 	
 	@Override
-	public Remnant execute(QuiltMachine machine, Remnant[] value) throws Exception{
-		if( value.length == args.length ){
-			return execute(value[0]);
-		}
-		throw new Exception(machine.message(Language.ARGS)+" "+name());
-	}	
+	public int arity() { return 1; }
+
+	@Override
+	public Object execute(Object... args) throws Exception { return execute((Quilt)args[0]); }
+
+	@Override
+	public String name() { return I18N.get(name); }	
 }

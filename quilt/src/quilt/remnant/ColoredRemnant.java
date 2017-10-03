@@ -1,7 +1,7 @@
 package quilt.remnant;
 
-import quilt.MinRemnant;
 import quilt.Remnant;
+import quilt.Quilt;
 import quilt.util.Util;
 import unalcol.gui.paint.Color;
 
@@ -49,11 +49,11 @@ import unalcol.gui.paint.Color;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public abstract class ColoredRemnant extends MinRemnant{
+public abstract class ColoredRemnant extends Remnant{
 	protected Color color;
 	public ColoredRemnant( Color color ){ this.color = color; }
 	public Color color(){ return color;	}
-	public boolean equals(Remnant r){
+	public boolean equals(Quilt r){
 		r = check(r);
 		if( r!=null && r instanceof ColoredRemnant ){
 			ColoredRemnant other = (ColoredRemnant)r;

@@ -2,10 +2,10 @@ package quilt.factory;
 
 import java.util.Hashtable;
 
-import quilt.Quilt;
+import quilt.MatrixQuilt;
 import quilt.QuiltInstance;
 import quilt.QuiltMachine;
-import quilt.Remnant;
+import quilt.Quilt;
 import quilt.operation.Command;
 import quilt.operation.Rotate;
 import quilt.operation.Sew;
@@ -71,7 +71,7 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 	
 	protected QuiltMachineParserInstance parser = new QuiltMachineParserInstance();
 	protected QuiltCommandInstance commands = new QuiltCommandInstance();
-	protected Factory<Remnant> remnants = new Factory<Remnant>();
+	protected Factory<Quilt> remnants = new Factory<Quilt>();
 	protected ErrorManager language;
 	
 	public QuiltMachineInstance(ErrorManager language) {
@@ -80,7 +80,7 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 		commands.register(new Rotate());
 		
 		remnants.register(StripsRemnantInstance.STRIPS, StripsRemnant.class.getName(), new StripsRemnantInstance());	
-		remnants.register(QuiltInstance.QUILT, Quilt.class.getName(), new QuiltInstance(remnants));			
+		remnants.register(QuiltInstance.QUILT, MatrixQuilt.class.getName(), new QuiltInstance(remnants));			
 		remnants.register(FilledRemnantInstance.FILLED, FilledRemnant.class.getName(), new FilledRemnantInstance());
 		remnants.register(PolygonsRemnantInstance.POLYGONS, PolygonsRemnant.class.getName(), new PolygonsRemnantInstance());
 		remnants.register(EmptyRemnantInstance.EMPTY, EmptyRemnant.class.getName(), new EmptyRemnantInstance());
@@ -91,7 +91,7 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 		if( args.length<3 || args.length>4 || !MACHINE.equals(args[0]) ) return null;
 		Command[] c = commands.load((Object[])args[1]);
 		Object[] robj = (Object[])args[2];
-		Hashtable<String, Remnant> r = new Hashtable<String,Remnant>();
+		Hashtable<String, Quilt> r = new Hashtable<String,Quilt>();
 		for( int i=0; i<robj.length; i++){
 			Object[] pair = (Object[])robj[i];
 			r.put((String)pair[0], remnants.load((Object[])pair[1]));

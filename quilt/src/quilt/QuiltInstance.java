@@ -47,32 +47,32 @@ import unalcol.gui.util.Instance;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class QuiltInstance implements Instance<Remnant>{
+public class QuiltInstance implements Instance<Quilt>{
 	public static final String QUILT="quilt";
-	protected Factory<Remnant> remnants;
+	protected Factory<Quilt> remnants;
 	
-	public QuiltInstance(Factory<Remnant> remnants) {
+	public QuiltInstance(Factory<Quilt> remnants) {
 		this.remnants = remnants;
 	}
 	
 	@Override
-	public Remnant load(Object[] args) {
+	public Quilt load(Object[] args) {
 		if( args.length==0 || !QUILT.equals(args[0]) ) return null;
-		MinRemnant[][] grid = new MinRemnant[args.length-1][];
+		Remnant[][] grid = new Remnant[args.length-1][];
 		for( int i=0; i<grid.length; i++){
 			Object[] line = (Object[])args[i+1];
-			grid[i] = new MinRemnant[line.length];
+			grid[i] = new Remnant[line.length];
 			for( int j=0; j<grid[i].length; j++){
-				grid[i][j] = (MinRemnant)remnants.load((Object[])line[j]);
+				grid[i][j] = (Remnant)remnants.load((Object[])line[j]);
 			}
 		}
-		return new Quilt(grid);
+		return new MatrixQuilt(grid);
 	}
 
 	@Override
-	public Object[] store(Remnant obj) {
-		if(!( obj instanceof Quilt )) return null;
-		Quilt q = (Quilt)obj;
+	public Object[] store(Quilt obj) {
+		if(!( obj instanceof MatrixQuilt )) return null;
+		MatrixQuilt q = (MatrixQuilt)obj;
 		Object[] lines = new Object[q.rows()+1];
 		lines[0] = QUILT;
 		for( int i=0; i<q.rows();i++ ){

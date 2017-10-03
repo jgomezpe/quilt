@@ -1,6 +1,6 @@
 package quilt.remnant;
 
-import quilt.Remnant;
+import quilt.Quilt;
 import quilt.gui.Drawer;
 import quilt.gui.Strip;
 import quilt.operation.Rotatable;
@@ -53,7 +53,7 @@ import unalcol.gui.paint.Color;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class StripsRemnant extends ColoredRemnant implements Rotatable<Remnant>{
+public class StripsRemnant extends ColoredRemnant implements Rotatable<Quilt>{
 	protected Strip[] strips;
 
 	public StripsRemnant( Color color, int[][] strips ) {
@@ -69,7 +69,7 @@ public class StripsRemnant extends ColoredRemnant implements Rotatable<Remnant>{
 		Util.sort(this.strips);
 	}
 
-	public Remnant clone(){	return new StripsRemnant(color(), Strip.clone(strips));	}
+	public Quilt clone(){	return new StripsRemnant(color(), Strip.clone(strips));	}
 	
 	public Strip[] strips(){ return strips; }
 	
@@ -83,7 +83,7 @@ public class StripsRemnant extends ColoredRemnant implements Rotatable<Remnant>{
 		}
 	}
 	
-	public boolean equals( Remnant r ){
+	public boolean equals( Quilt r ){
 		r = check(r);
 		if( r!=null && r instanceof StripsRemnant ){
 			StripsRemnant other = (StripsRemnant)r;
@@ -93,9 +93,9 @@ public class StripsRemnant extends ColoredRemnant implements Rotatable<Remnant>{
 	}
 	
 	@Override
-	public Remnant rotate( Rotate command ) {
+	public Quilt rotate( Rotate command ) {
 		Strip[] _strips = Strip.clone(strips);
-		for( int i=0; i<_strips.length; i++ ) strips[i].rotate(Remnant.UNIT);
+		for( int i=0; i<_strips.length; i++ ) strips[i].rotate(Quilt.UNIT);
 		return new StripsRemnant(color(), strips);		
 	}	
 }

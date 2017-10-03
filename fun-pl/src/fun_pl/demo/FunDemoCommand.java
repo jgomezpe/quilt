@@ -2,15 +2,14 @@ package fun_pl.demo;
 
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
-import unalcol.io.SimplePosition;
 import unalcol.util.I18N;
 
 public class FunDemoCommand extends FunSymbolCommand{
 	public static final String plus="plus";
 	public static final String invalid="invalid";
-	public FunDemoCommand(FunMachine machine) {
-		super(new SimplePosition(), machine);
-	}
+	
+	public FunDemoCommand(FunMachine machine) { super(machine); }
+	
 	@Override
 	public Object execute(Object... value) throws Exception {
 		int s=(Integer)value[0];
@@ -18,8 +17,6 @@ public class FunDemoCommand extends FunSymbolCommand{
 		return s;
 	}
 	
-	@Override
-	public int arity() { return 2; }
 	@Override
 	public String name() { return I18N.get(plus); }
 

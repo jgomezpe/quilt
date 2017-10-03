@@ -1,6 +1,6 @@
 package quilt.remnant;
 
-import quilt.Remnant;
+import quilt.Quilt;
 import quilt.gui.Drawer;
 import quilt.gui.Polygon;
 import quilt.operation.Rotatable;
@@ -52,7 +52,7 @@ import unalcol.gui.paint.Color;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class PolygonsRemnant extends ColoredRemnant implements Rotatable<Remnant>{
+public class PolygonsRemnant extends ColoredRemnant implements Rotatable<Quilt>{
 	protected Polygon[] p;
 	public PolygonsRemnant(Color color, Polygon[] p) {
 		super(color);
@@ -69,7 +69,7 @@ public class PolygonsRemnant extends ColoredRemnant implements Rotatable<Remnant
 		for( Polygon pol:p ) pol.draw(g, column, row);
 	}
 
-	public boolean equals( Remnant r ){
+	public boolean equals( Quilt r ){
 		r = check(r);
 		if( r!=null && r instanceof PolygonsRemnant ){
 			PolygonsRemnant other = (PolygonsRemnant)r;
@@ -80,9 +80,9 @@ public class PolygonsRemnant extends ColoredRemnant implements Rotatable<Remnant
 	
 	
 	@Override
-	public Remnant rotate(Rotate command) {
+	public Quilt rotate(Rotate command) {
 		PolygonsRemnant pr = new PolygonsRemnant(color, p);
-		for( Polygon pol:pr.p ) pol.rotate(Remnant.UNIT);
+		for( Polygon pol:pr.p ) pol.rotate(Quilt.UNIT);
 		return pr;
 	}
 

@@ -1,9 +1,12 @@
 package quilt.operation;
 
-import quilt.Quilt;
-import quilt.QuiltMachine;
+import fun_pl.semantic.FunMachine;
+import fun_pl.semantic.FunSymbolCommand;
+import quilt.EmptyQuilt;
+import quilt.MatrixQuilt;
 import quilt.Remnant;
-import quilt.util.Language;
+import quilt.Quilt;
+import unalcol.util.I18N;
 
 /**
 *
@@ -49,23 +52,86 @@ import quilt.util.Language;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class Sew extends Command{
-	public Sew() {
-		super(QuiltMachine.SEW, new String[]{"X", "Y"});
+public class Sew extends FunSymbolCommand{
+	public static final String name="sew";
+	public Sew(FunMachine machine) { super( machine ); } //		super(QuiltMachine.SEW, new String[]{"X", "Y"});
+
+	public Quilt execute( Quilt left, Quilt right ) throws Exception{
+		if(left instanceof EmptyQuilt) return right;
+		if(right instanceof EmptyQuilt) return left;
+		if( left.rows() == right.rows() ) return new MatrixQuilt( left, right );
+		throw new Exception("Cannot stitch..");
 	}
 
-	public Remnant execute( Remnant left, Remnant right ){
-		if( left.rows() == right.rows() ){
-			return new Quilt( left, right );
-		}
-		return null;
+	public boolean check_right(Quilt quilt, Quilt right){
+		int c = quilt.columns();
+		int r = quilt.rows();
+		int rc = right.columns(); 
+		boolean nofail=(r==right.rows() && c>=rc);
+		int k=c-rc;
+		for( int i=0;i<r&&nofail;i++ )
+			for( int j=0; j<rc&&nofail; j++ )
+				nofail = quilt.get(i, j+k).equals(right.get(i, j));
+		return nofail;
 	}
 	
-	@Override
-	public Remnant execute(QuiltMachine machine, Remnant[] value)  throws Exception{
-		if( value.length == args.length ){
-			return execute( value[0], value[1] );
+	public boolean check_left(Quilt quilt, Quilt left){
+		int c = quilt.columns();
+		int r = quilt.rows();
+		int k = left.columns(); 
+		boolean nofail=(r==left.rows() && c>=k);
+		for( int i=0;i<r&&nofail;i++ )
+			for( int j=0; j<k&&nofail; j++ )
+				nofail = quilt.get(i, j).equals(left.get(i, j));
+		return nofail;
+	}
+	
+	public Quilt getRight( Quilt quilt, int k ){
+		int c = quilt.columns();
+		int r = quilt.rows();
+		int sc = c-k;
+		Remnant[][] right = new Remnant[r][k];
+		for( int i=0; i<r; i++ ) for( int j=0; j<k; j++) right[i][j] = quilt.get(i,j+sc);
+		return (r==1 && k==1)? right[0][0]: new MatrixQuilt(right);
+	}
+	
+	public Quilt getLeft( Quilt quilt, int k ){
+		int r = quilt.rows();
+		Remnant[][] left = new Remnant[r][k];
+		for( int i=0; i<r; i++ ) for( int j=0; j<k; j++) left[i][j] = quilt.get(i,j);
+		return (r==1 && k==1)? left[0][0]: new MatrixQuilt(left);
+	}
+	
+	public Quilt[] reverse(Quilt obj, Quilt left, Quilt right) throws Exception{		
+		int c = obj.columns();
+		if( c!=1 && ((left!=null && left instanceof EmptyQuilt) || (right!=null && right instanceof EmptyQuilt)) ) throw new Exception("Cannot unstitch"); 
+		if( c==1 && left!=null && left instanceof EmptyQuilt ) return new Quilt[]{left,obj}; 
+		if( c==1 && right!=null && right instanceof EmptyQuilt ) return new Quilt[]{obj,right};
+
+		if(left==null){
+			if( right==null ){
+				if(c<2) throw new Exception("Cannot unstitch");
+				return new Quilt[]{getLeft(obj, c-1),getRight(obj, 1)};
+			}else{
+				if( !check_right(obj, right) ) throw new Exception("Cannot unstitch");
+				return new Quilt[]{getLeft(obj, c-right.columns()), right};
+			}
 		}
-		throw new Exception(machine.message(Language.ARGS)+" "+name());
-	}	
+		if( right==null ){
+			if( !check_left(obj, left) ) throw new Exception("Cannot unstitch");
+			return new Quilt[]{left, getRight(obj, c-left.columns())};
+		}else{
+			if( !check_left(obj, left) || !check_right(obj,right) || c!=left.columns()+right.columns()) throw new Exception("Cannot unstitch");
+			return new Quilt[]{left,right};
+		}
+	}
+
+	@Override
+	public Object[] reverse(Object obj, Object[] args) throws Exception{ return reverse((Quilt)obj, (Quilt)args[0], (Quilt)args[1]); }
+
+	@Override
+	public Object execute(Object... args) throws Exception { return execute((Quilt)args[0], (Quilt)args[1]); }
+
+	@Override
+	public String name() { return I18N.get(name); }
 }

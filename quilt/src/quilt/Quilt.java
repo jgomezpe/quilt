@@ -1,16 +1,14 @@
 package quilt;
 
 import quilt.gui.Drawer;
-import quilt.operation.Rotatable;
-import quilt.operation.Rotate;
 
 /**
 *
-* Quilt
-* <P>A quilt: Matrix of Minimal Remnants
+* Remnant
+* <P>Abstract definition of a remnant
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/Quilt.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/Remnant.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -48,120 +46,38 @@ import quilt.operation.Rotate;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class Quilt extends Remnant implements Rotatable<Remnant>{
-	protected MinRemnant[][] remnant;
+public abstract class Quilt{
+	public static final int UNIT = 100;
 
-	public Quilt( Remnant left, Remnant right ){
-		int c = left.columns();
-		remnant = new MinRemnant[left.rows()][c+right.columns()];
-		for( int i=0; i<rows(); i++ ){
-			for( int j=0; j<left.columns(); j++ ) remnant[i][j] = left.get(i, j);
-			for( int j=0; j<right.columns(); j++ ) remnant[i][j+c] = right.get(i, j);
+	// Size
+	public abstract int rows();
+	public abstract int columns();
+	public int[] bounding_box(){ return new int[]{rows(), columns()}; }
+
+	// MinRemnant 
+	public abstract Remnant get( int r, int c );
+	
+	
+	public abstract Quilt[] unstitch() throws Exception;
+	
+	public abstract Object clone();
+	
+	public boolean equals(Object obj) {
+		if( obj==null || !(obj instanceof Quilt) ) return false;
+		Quilt r = (Quilt)obj;
+		if( r.rows()!=rows() || columns()!=r.columns() ) return false; 
+		boolean flag = true;
+		for( int i=0; i<rows() && flag; i++ ){
+			for( int j=0; j<columns() && flag; j++ ){
+				flag = get(i,j).equals(r.get(i, j));
+			}				
 		}
+		return flag;
 	}
 	
-	public Quilt( MinRemnant[][] remnant ){
-		this.remnant = remnant;
-	}
-
-	public Object clone(){
-		MinRemnant[][] r = new MinRemnant[rows()][columns()];
-		for( int i=0; i<r.length; i++ ){
-			for( int j=0; j<r[0].length; j++ ){
-				r[i][j] = (MinRemnant)get(i,j).clone();
-			}
-		}
-		return new Quilt(r);
-	}
+	// Drawing
+	public int unit(){ return UNIT; };
+	public int units( int value ){ return value*UNIT; }
+	public abstract void draw( Drawer g, int column, int row );
 	
-	public MinRemnant get( int r, int c ){
-		if( 0<=r && r<rows() && 0<=c && c<columns()){
-			return remnant[r][c];
-		}
-		return null;
-	}
-
-	@Override
-	public int rows() {
-		return remnant.length;
-	}
-
-	@Override
-	public int columns() {
-		return remnant[0].length;
-	}
-
-	@Override
-	public void draw(Drawer g, int column, int row) {
-		for( int i=0; i<rows(); i++ )
-			for( int j=0; j<columns(); j++ ) remnant[i][j].draw(g, column+j, row+i);
-	}	
-
-	public Remnant[] unstitch(){
-		int c = columns();
-		if( c>1 ){
-			int r = rows();
-			c--;
-			MinRemnant[][] left_m = new MinRemnant[r][c];
-			MinRemnant[][] right_m = new MinRemnant[r][1];
-			for( int i=0; i<r; i++ ){
-				for( int j=0; j<c; j++){
-					left_m[i][j] = remnant[i][j];
-				}
-				right_m[i][0] = remnant[i][c];
-			}
-			if( r==1 ){
-				if(c==1) return new Remnant[]{left_m[0][0],right_m[0][0]};
-				else return new Remnant[]{new Quilt(left_m),right_m[0][0]};
-			}else{
-				return new Remnant[]{new Quilt(left_m),new Quilt(right_m)};
-			}
-		}
-		return null;
-	}
-	
-	public Remnant[] leftunstitch(){
-		int c = columns();
-		if( c>1 ){
-			int r = rows();
-			c--;
-			MinRemnant[][] right_m = new MinRemnant[r][c];
-			MinRemnant[][] left_m = new MinRemnant[r][1];
-			for( int i=0; i<r; i++ ){
-				for( int j=0; j<c; j++){
-					right_m[i][j] = remnant[i][j+1];
-				}
-				left_m[i][0] = remnant[i][0];
-			}
-			if( r==1 ){
-				if(c==1) return new Remnant[]{left_m[0][0],right_m[0][0]};
-				else return new Remnant[]{left_m[0][0],new Quilt(right_m)};
-			}else{
-				return new Remnant[]{new Quilt(left_m),new Quilt(right_m)};
-			}
-		}
-		return null;
-	}
-	
-	public String toString(){
-		StringBuilder sb = new StringBuilder();
-		for( int i=0; i<rows(); i++ ){
-			for( int j=0; j<columns(); j++ ){
-				sb.append(get(i,j));
-			}
-			sb.append('\n');
-		}
-		return sb.toString();
-	}
-
-	@Override
-	public Remnant rotate( Rotate command ) {
-		MinRemnant[][] r = new MinRemnant[columns()][rows()];
-		for( int i=0; i<r.length; i++ ){
-			for( int j=0; j<r[0].length; j++ ){
-				r[i][j] = (MinRemnant)command.execute(get(j, columns()-1-i));
-			}
-		}
-		return new Quilt(r);
-	}
 }

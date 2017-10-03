@@ -5,6 +5,8 @@ import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
 import fun_pl.util.Constants;
 import unalcol.language.LanguageException;
+import unalcol.types.collection.array.Array;
+import unalcol.types.collection.vector.Vector;
 
 public class FunDemoMachine extends FunMachine{
 	protected FunDemoCommand plus;
@@ -17,8 +19,12 @@ public class FunDemoMachine extends FunMachine{
 	public Object value(String value) throws Exception{ return Integer.parseInt(value); }
 
 	@Override
-	public String[] values(String value) throws LanguageException{
-		try{ return new String[]{""+this.value(value)}; }catch(Exception e){ throw new LanguageException(Constants.novalue, value); }
+	public Array<String> values(String value) throws LanguageException{
+		try{ 
+			Vector<String> v = new Vector<String>();
+			v.add(""+this.value(value));
+			return v; 
+		}catch(Exception e){ throw new LanguageException(Constants.novalue, value); }
 	}
 
 	@Override

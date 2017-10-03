@@ -1,6 +1,6 @@
 package quilt.remnant;
 
-import quilt.Remnant;
+import quilt.Quilt;
 import unalcol.gui.paint.Color;
 import unalcol.gui.paint.ColorInstance;
 import unalcol.gui.util.Instance;
@@ -49,19 +49,19 @@ import unalcol.gui.util.Instance;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class FilledRemnantInstance implements Instance<Remnant>{
+public class FilledRemnantInstance implements Instance<Quilt>{
 	public static final String FILLED="filled";
 	protected ColorInstance c_instance = new ColorInstance();
 	
 	@Override
-	public Remnant load(Object[] args) {
+	public Quilt load(Object[] args) {
 		if( args.length!=3 || !FILLED.equals(args[0]) ) return null;
 		Color c = c_instance.load((Object[])args[1]);
 		return new FilledRemnant(c,(int)args[2]);
 	}
 
 	@Override
-	public Object[] store(Remnant obj) {
+	public Object[] store(Quilt obj) {
 		if(!( obj instanceof FilledRemnant)) return null;
 		FilledRemnant q = (FilledRemnant)obj;
 		Object[] lines = new Object[3];

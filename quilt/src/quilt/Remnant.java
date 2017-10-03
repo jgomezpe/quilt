@@ -1,14 +1,15 @@
 package quilt;
 
 import quilt.gui.Drawer;
+import unalcol.gui.paint.Color;
 
 /**
 *
-* Remnant
-* <P>Abstract definition of a remnant
+* MinRemnant
+* <P>Minimal Remnant used by a Quilt.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/Remnant.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/MinRemnant.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -46,26 +47,32 @@ import quilt.gui.Drawer;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public abstract class Remnant{
-	public static final int UNIT = 100;
-	public abstract int rows();
-	public abstract int columns();
-	public abstract MinRemnant get( int r, int c );
-	public abstract Remnant[] unstitch();
-	public abstract Remnant[] leftunstitch();
-	public int[] bounding_box(){ return new int[]{rows(), columns()}; }
-	public int unit(){ return UNIT; };
-	public int units( int value ){ return value*UNIT; }
-	public abstract void draw( Drawer g, int column, int row );
-	public abstract Object clone();
-	public boolean equals(Remnant r) {
-		if( r==null || r.rows()!=rows() || columns()!=r.columns() ) return false;
-		boolean flag = true;
-		for( int i=0; i<rows() && flag; i++ ){
-			for( int j=0; j<columns() && flag; j++ ){
-				flag = get(i,j).equals(r.get(i, j));
-			}				
-		}
-		return flag;
-	}	
+public abstract class Remnant extends Quilt{
+	public Quilt[] unstitch() throws Exception { throw new Exception("Unable to unstitch"); }	
+
+	public int rows(){ return 1; }
+
+	public int columns(){ return 1; }
+	
+	public Quilt check( Quilt r ){
+		if( r!=null && r.rows()==1 && r.columns()==1 && !(r instanceof Remnant) ) return r.get(0, 0);
+		return r;
+	}
+	
+	@Override
+	public Remnant get(int r, int c) {
+		if( 0<=r && r<rows() && 0<=c && c<columns()) return this;
+		return null;
+	}
+
+	public void draw( Drawer g, int column, int row ){
+		column = units(column);
+		row = units(row);
+		g.setColor(new Color(0,0,0,255));
+		int one = unit();
+		g.drawLine(column, row, column+one, row);		
+		g.drawLine(column+one, row, column+one, row+one);		
+		g.drawLine(column+one, row+one, column, row+one);		
+		g.drawLine(column, row+one, column, row);		
+	};	
 }

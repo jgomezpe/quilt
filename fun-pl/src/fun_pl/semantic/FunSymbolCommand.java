@@ -1,9 +1,12 @@
 package fun_pl.semantic;
 
-import unalcol.io.Position;
-
 public abstract class FunSymbolCommand extends FunCommand{
-	public FunSymbolCommand(Position pos, FunMachine machine) { super(pos, machine); }
+	public FunSymbolCommand(FunMachine machine) { super(machine); }
 
+	@Override
+	public int arity() {
+		return 2;
+	}
+	
 	public abstract Object[] reverse(Object obj, Object[] toMatch) throws Exception;
 }

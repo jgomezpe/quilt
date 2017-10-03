@@ -1,6 +1,7 @@
 package fun_pl.semantic;
 
 import unalcol.language.LanguageException;
+import unalcol.types.collection.array.Array;
 
 public abstract class FunMachine{
 
@@ -15,7 +16,7 @@ public abstract class FunMachine{
 	public void setProgram( FunProgram program ){ this.program = program; }
 
 	public abstract FunCommand primitive(String command) throws LanguageException;
-	public abstract String[] values(String value) throws LanguageException;
+	public abstract Array<String> values(String value) throws LanguageException;
 	
 	public abstract FunSymbolCommand symbol_command();
 	public abstract FunSymbolCommand symbol_command(String symbol);
