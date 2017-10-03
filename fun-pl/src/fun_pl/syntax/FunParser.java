@@ -1,10 +1,10 @@
 package fun_pl.syntax;
 
 import fun_pl.util.Constants;
+import unalcol.io.Position2D;
 import unalcol.language.LanguageException;
 import unalcol.language.Typed;
 import unalcol.language.TypedValue;
-import unalcol.language.programming.lexer.RCToken;
 import unalcol.language.programming.lexer.Token;
 import unalcol.language.programming.parser.Parser;
 import unalcol.types.collection.array.Array;
@@ -19,12 +19,12 @@ public class FunParser implements Parser{
 	
 	public FunParser(int main){ this.main = main; }
 	
-	protected RCToken get(){
-		if( offset >= tokens.size() ) return new RCToken(offset,0,0); 
-		return (RCToken)tokens.get(offset); 
+	protected Token get(){
+		if( offset >= tokens.size() ) return new Token(new Position2D(offset,0,0)); 
+		return tokens.get(offset); 
 	}
 	
-	protected RCToken next(){
+	protected Token next(){
 		if( get().type() == Token.EOF ) return get();
 		offset++;
 		return get(); 
@@ -43,14 +43,26 @@ public class FunParser implements Parser{
 		throw le;
 	}
 	
+	public static int[] pos( Token t ){
+	    Position2D pos = (Position2D)t.pos();
+	    return new int[]{pos.row(),pos.row()};
+	}
+	
+	public static int[] posf( Token t ){
+	    Position2D pos = (Position2D)t.pos();
+	    return new int[]{pos.row()+1,pos.row()+1};
+	}
+	
 	protected Typed wrap_command_exp() throws LanguageException{
-		RCToken t = get();
+		Token t = get();
 		if(t.type()==Constants.OPEN){
 			next();
 			Typed c = command_exp();
 			t = get();
-			if(t.type()!=Constants.CLOSE)
-				throw new LanguageException(Constants.unexpected, FunLexer.get(t.lexeme()),t.row()+1,t.column()+1,""+FunEncoder.get_symbol(Constants.CLOSE));
+			if(t.type()!=Constants.CLOSE){
+				int[] pos = posf(t);
+				throw new LanguageException(Constants.unexpected, FunLexer.get(t.lexeme()),pos[0],pos[1],""+FunEncoder.get_symbol(Constants.CLOSE));
+			}
 			next();
 			return c;
 		}else return command_call();
@@ -71,7 +83,8 @@ public class FunParser implements Parser{
 	} 
 	
 	protected void args(Vector<Typed> v) throws LanguageException{
-		RCToken t = get();
+		Token t = get();
+		int[] pos = posf(t);
 		if( t.type()==Constants.OPEN ){
 			next();
 			v.add(command_exp());
@@ -84,13 +97,13 @@ public class FunParser implements Parser{
 				next();
 				return;
 			}
-			throw new LanguageException(Constants.unexpected, FunLexer.get(t.lexeme()),t.row()+1,t.column()+1,""+FunEncoder.get_symbol(Constants.CLOSE));
+			throw new LanguageException(Constants.unexpected, FunLexer.get(t.lexeme()),pos[0],pos[1],""+FunEncoder.get_symbol(Constants.CLOSE));
 		}
-		throw new LanguageException(Constants.noargs,t.row(),t.column());
+		throw new LanguageException(Constants.noargs,pos[0],pos[1]);
 	}
 	
 	protected Typed command() throws LanguageException{
-		RCToken t = get();
+		Token t = get();
 		if( t.type()==Constants.PRIM_COMMAND || (t.type()&Constants.VALUE)==Constants.VALUE ){
 			Vector<Typed> v = new Vector<Typed>();
 			v.add(t);
@@ -100,13 +113,15 @@ public class FunParser implements Parser{
 			}
 			return new TypedValue<Vector<Typed>>(Constants.COMMAND, v);
 		}
-		throw new LanguageException(Constants.unexpected, FunLexer.get(t.lexeme()),t.row()+1,t.column()+1,I18N.get(Constants.command));
+		int[] pos = posf(t);
+		throw new LanguageException(Constants.unexpected, FunLexer.get(t.lexeme()),pos[0],pos[1],I18N.get(Constants.command));
 	} 
 	
 	protected Typed command_def() throws LanguageException {
 		Typed f = command(); 
-		RCToken t = get();
-		if( t.type()!=Constants.ASSIGN ) throw new LanguageException(Constants.unexpected, FunLexer.get(t.lexeme()), t.row()+1,t.column()+1, ""+FunEncoder.get_symbol(Constants.ASSIGN));
+		Token t = get();
+		int[] pos = posf(t); 
+		if( t.type()!=Constants.ASSIGN ) throw new LanguageException(Constants.unexpected, FunLexer.get(t.lexeme()), pos[0], pos[1], ""+FunEncoder.get_symbol(Constants.ASSIGN));
 		next();
 		Typed c = command_exp();
 		Vector<Typed> v = new Vector<Typed>();

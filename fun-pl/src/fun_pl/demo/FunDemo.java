@@ -28,7 +28,7 @@ public class FunDemo {
 		Array<Token> tokens = lexer.apply(reader, 0, encoder);
 		try{ reader.close(); }catch(Exception e){}
 		for( Token t:tokens ){
-			System.out.println(t.type()+","+t.offset()+","+t.length()+","+FunLexer.get(t.lexeme()));
+			System.out.println(t.type()+","+t.pos().offset()+","+t.length()+","+FunLexer.get(t.lexeme()));
 		}
 		return tokens;
 	}

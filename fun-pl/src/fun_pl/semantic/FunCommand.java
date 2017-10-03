@@ -1,7 +1,7 @@
 package fun_pl.semantic;
 
 import unalcol.io.Position;
-import unalcol.io.SimplePosition;
+import unalcol.io.Position2D;
 
 public abstract class FunCommand extends FunObject{
 	protected FunMachine machine;
@@ -11,7 +11,7 @@ public abstract class FunCommand extends FunObject{
 		this.machine = machine;
 	}
 	
-	public FunCommand( FunMachine machine ){ this( new SimplePosition(), machine); }
+	public FunCommand( FunMachine machine ){ this( new Position2D(), machine); }
 	
 	public abstract Object execute( Object... value ) throws Exception;
 	public abstract int arity();

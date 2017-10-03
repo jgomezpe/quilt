@@ -4,10 +4,10 @@ import java.io.IOException;
 
 import fun_pl.semantic.FunMachine;
 import fun_pl.util.Constants;
+import unalcol.io.Position2D;
 import unalcol.io.ShortTermMemoryReader;
 import unalcol.language.LanguageException;
 import unalcol.language.programming.lexer.Lexer;
-import unalcol.language.programming.lexer.RCToken;
 import unalcol.language.programming.lexer.Token;
 import unalcol.language.symbol.Encoder;
 import unalcol.types.collection.array.Array;
@@ -29,7 +29,7 @@ public class FunLexer implements Lexer{
 		return sb.toString();
 	}
 
-	protected RCToken check_primitive(RCToken t) throws LanguageException{
+	protected Token check_primitive(Token t) throws LanguageException{
 		int[] tlexeme = t.lexeme();
 		String lexeme = get(tlexeme);
 		try{
@@ -75,10 +75,10 @@ public class FunLexer implements Lexer{
 			c=next();
 		}
 		if( c!=Constants.EOF ) back();
-		return new RCToken(Constants.VARIABLE, off, v, reader.row(), reader.column());
+		return new Token(Constants.VARIABLE, new Position2D(off, reader.row(), reader.column()), v);
 	}
 	
-	protected RCToken value() throws LanguageException {
+	protected Token value() throws LanguageException {
 		int off = offset-1;
 		Vector<Integer> v = new Vector<Integer>();
 		v.add(original);
@@ -89,7 +89,7 @@ public class FunLexer implements Lexer{
 			c=next();
 		}
 		if( c!=Constants.EOF ) back();
-		return check_primitive(new RCToken(Constants.VALUE, off, v, reader.row(), reader.column()));
+		return check_primitive(new Token(Constants.VALUE, new Position2D(off, reader.row(), reader.column()), v));
 	}
 	
 	@Override
@@ -101,11 +101,11 @@ public class FunLexer implements Lexer{
 		int c = next();
 		while(c!=Constants.EOF){
 			if( Constants.DOLLAR < c && c<Constants.START_LINK_SYMBOLS ){
-				v.add(new RCToken(c, this.offset-1, new int[]{original}, reader.row(), reader.column()));
+				v.add(new Token(c, new Position2D(this.offset-1, reader.row(), reader.column()), new int[]{original}));
 				c = next();				
 			}else
 				if( Constants.START_LINK_SYMBOLS <= c && c<=Constants.END_LINK_SYMBOLS ){
-					v.add(new RCToken(c, this.offset-1, new int[]{original}, reader.row(), reader.column()));
+					v.add(new Token(c, new Position2D(this.offset-1, reader.row(), reader.column()), new int[]{original}));
 					c = next();				
 				}else{
 					switch(c){

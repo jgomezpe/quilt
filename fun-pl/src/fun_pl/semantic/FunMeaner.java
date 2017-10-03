@@ -6,7 +6,6 @@ import fun_pl.util.Constants;
 import unalcol.language.LanguageException;
 import unalcol.language.Typed;
 import unalcol.language.TypedValue;
-import unalcol.language.programming.lexer.RCToken;
 import unalcol.language.programming.lexer.Token;
 import unalcol.language.programming.meaner.Meaner;
 import unalcol.types.collection.array.Array;
@@ -21,11 +20,11 @@ public class FunMeaner implements Meaner<FunCommand>{
 		this.encoder = encoder;
 	}
 	
-	protected FunCommandCall prim(RCToken t) throws LanguageException{
+	protected FunCommandCall prim(Token t) throws LanguageException{
 		Array<String> compose = machine.values(FunLexer.get(t.lexeme()));
-		FunCommandCall c = new FunValue(t, machine, compose.get(0));
+		FunCommandCall c = new FunValue(t.pos(), machine, compose.get(0));
 		for( int i=1; i<compose.size(); i++ )
-			c = new FunCommandCall(c, machine, machine.symbol_command().name(), new FunCommandCall[]{c, new FunValue(t, machine, compose.get(i))} );
+			c = new FunCommandCall(c, machine, machine.symbol_command().name(), new FunCommandCall[]{c, new FunValue(t.pos(), machine, compose.get(i))} );
 		return c;
 	}
 
@@ -35,7 +34,7 @@ public class FunMeaner implements Meaner<FunCommand>{
 		String name = FunLexer.get(((Token)v.get(0)).lexeme());
 		FunCommandCall[] args = new FunCommandCall[v.size()-1];
 		for( int i=0; i<args.length; i++) args[i] = command_exp((TypedValue<Vector<Typed>>)v.get(i+1));
-		return new FunCommandCall((RCToken)v.get(0), machine, name, args);
+		return new FunCommandCall(((Token)v.get(0)).pos(), machine, name, args);
 	}
 	
 	protected FunCommandCall command_exp(TypedValue<Vector<Typed>> t) throws LanguageException{
@@ -94,10 +93,10 @@ public class FunMeaner implements Meaner<FunCommand>{
 	public FunCommand apply(Typed rule) throws LanguageException {
 		switch( rule.type() ){
 			case Constants.VARIABLE:
-				RCToken t = (RCToken)rule;
-				return new FunVariable(t, machine, FunLexer.get(t.lexeme()));
+				Token t = (Token)rule;
+				return new FunVariable(t.pos(), machine, FunLexer.get(t.lexeme()));
 			//case FunLexer.VALUE: throw new LanguageException("Don't know to deal with values");
-			case Constants.PRIM_VALUE: return prim((RCToken)rule);
+			case Constants.PRIM_VALUE: return prim((Token)rule);
 			case Constants.COMMAND_EXP: return command_exp((TypedValue<Vector<Typed>>)rule);
 			case Constants.COMMAND_DEF: return command_def((TypedValue<Vector<Typed>>)rule);
 			case Constants.COMMAND_DEF_LIST: return command_def_list((TypedValue<Vector<Typed>>)rule);
