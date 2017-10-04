@@ -71,10 +71,9 @@ public class QuiltMachine extends FunMachine{
 		primitives.set(rot.name(),rot);
 	}
 
-	public QuiltMachine( FunSymbolCommand sew, KeyMap<String, FunCommand> primitives){
+	public QuiltMachine(KeyMap<String, FunCommand> primitives){
 		this.primitives = primitives;
-		this.sew = sew;
-		this.primitives.set(sew.name(),sew);
+		for( FunCommand c:primitives) if( c instanceof FunSymbolCommand ) this.sew = (FunSymbolCommand)c;
 	}
 	
 	@Override

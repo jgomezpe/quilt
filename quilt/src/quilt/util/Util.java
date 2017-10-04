@@ -11,7 +11,6 @@ import java.net.URL;
 import javax.imageio.ImageIO;
 
 import quilt.gui.Strip;
-import unalcol.gui.editor.ErrorManager;
 
 /**
 *
@@ -167,24 +166,41 @@ public class Util {
 		return null;
 	}
 	
-	public static ErrorManager i18n(String language){
-		try{ return new ErrorManager(new FileInputStream(language)); }catch( Exception e ){}
-		try{ return new ErrorManager(new FileInputStream(resources+i18n+language+I18N)); }catch( Exception e ){}
-		try{ return new ErrorManager(Util.class.getResourceAsStream("/"+i18n+language+I18N)); }catch( Exception e ){}
-		return null;
-	}
-	
-	protected static String config( InputStream is ) throws Exception{
+	public static String plain_file_read( InputStream is, boolean write_eol ) throws Exception{
+		StringBuilder sb = new StringBuilder();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		String line = reader.readLine();
-		reader.close();
-		return line;
+		while( line != null ){ 
+			sb.append(line);
+			line = reader.readLine();
+			if( line != null && write_eol) sb.append('\n');
+		}
+		return sb.toString();
 	}
 	
+	protected static boolean set_i18n( String language, InputStream is ){
+		try{ 
+			String config = plain_file_read(is,true);
+			unalcol.util.I18N.add(language, unalcol.util.I18N.load(config));
+			unalcol.util.I18N.use(language);
+			return true;
+		}catch( Exception e ){}
+		return false;
+	}
+	
+	public static boolean i18n(String language){
+		try{
+			return set_i18n(language, new FileInputStream(language)) || set_i18n(language, new FileInputStream(resources+i18n+language+I18N)) ||		
+				 set_i18n(language, Util.class.getResourceAsStream("/"+i18n+language+I18N));
+			
+		}catch(Exception e){}	
+		return false;
+	}
+		
 	public static String config(String file){
-		try{ return config(new FileInputStream(file)); }catch( Exception e ){}
-		try{ return config(new FileInputStream(resources+CFG+file)); }catch( Exception e ){}
-		try{ return config(Util.class.getResourceAsStream("/"+CFG+file)); }catch( Exception e ){}
+		try{ return plain_file_read(new FileInputStream(file),false); }catch( Exception e ){}
+		try{ return plain_file_read(new FileInputStream(resources+CFG+file),false); }catch( Exception e ){}
+		try{ return plain_file_read(Util.class.getResourceAsStream("/"+CFG+file),false); }catch( Exception e ){}
 		return null;
 	}	
 }
