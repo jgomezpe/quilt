@@ -51,9 +51,8 @@ import unalcol.util.I18N;
 */
 public class Rotate extends FunCommand{
 	public static final String name="rot";
-	public Rotate(FunMachine machine) {
-		super(machine);
-	}
+	public Rotate() { super(); }
+	public Rotate(FunMachine machine) { super(machine); }
 
 	@SuppressWarnings("unchecked")
 	public Quilt execute(Quilt quilt){

@@ -2,6 +2,7 @@ package fun_pl.semantic;
 
 public abstract class FunSymbolCommand extends FunCommand{
 	public FunSymbolCommand(FunMachine machine) { super(machine); }
+	public FunSymbolCommand() { super(); }
 
 	@Override
 	public int arity() {

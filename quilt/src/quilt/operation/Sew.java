@@ -55,6 +55,7 @@ import unalcol.util.I18N;
 public class Sew extends FunSymbolCommand{
 	public static final String name="sew";
 	public Sew(FunMachine machine) { super( machine ); } //		super(QuiltMachine.SEW, new String[]{"X", "Y"});
+	public Sew(){ super(); } //		super(QuiltMachine.SEW, new String[]{"X", "Y"});
 
 	public Quilt execute( Quilt left, Quilt right ) throws Exception{
 		if(left instanceof EmptyQuilt) return right;

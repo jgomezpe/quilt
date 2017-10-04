@@ -1,9 +1,9 @@
 package quilt.factory;
 
-import java.util.Hashtable;
 
-import quilt.operation.Command;
+import fun_pl.semantic.FunCommand;
 import unalcol.gui.util.Instance;
+import unalcol.types.collection.keymap.HTKeyMap;
 
 /**
 *
@@ -49,24 +49,24 @@ import unalcol.gui.util.Instance;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class QuiltCommandInstance implements Instance<Command[]> {
-	protected Hashtable<String, Command> map = new Hashtable<String,Command>();
+public class QuiltCommandInstance implements Instance<FunCommand[]> {
+	protected HTKeyMap<String, FunCommand> map = new HTKeyMap<String,FunCommand>();
 	public static final String COMMANDS="commands";
 
-	public void register( Command c ){ map.put(c.name(), c); }
+	public void register( FunCommand c ){ map.set(c.name(), c); }
 	
 	public void clear(){ map.clear(); }
 	
 	@Override
-	public Command[] load(Object[] args) {
+	public FunCommand[] load(Object[] args) {
 		if( args.length<2 || !COMMANDS.equals(args[0]) ) return null;
-		Command[] c = new Command[args.length-1];
-		for( int i=0;i<c.length; i++) c[i] = map.get(args[i+1]); 
+		FunCommand[] c = new FunCommand[args.length-1];
+		for( int i=0;i<c.length; i++) c[i] = map.get((String)args[i+1]); 
 		return c;
 	}
 
 	@Override
-	public Object[] store(Command[] obj) {
+	public Object[] store(FunCommand[] obj) {
 		Object[] code = new Object[obj.length+1];
 		code[0] = COMMANDS;
 		for( int i=0; i<obj.length; i++ ) code[i+1] = obj[i].name();

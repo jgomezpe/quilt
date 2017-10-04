@@ -2,11 +2,11 @@ package quilt.factory;
 
 import java.util.Hashtable;
 
+import fun_pl.semantic.FunCommand;
 import quilt.MatrixQuilt;
 import quilt.QuiltInstance;
 import quilt.QuiltMachine;
 import quilt.Quilt;
-import quilt.operation.Command;
 import quilt.operation.Rotate;
 import quilt.operation.Sew;
 import quilt.remnant.EmptyRemnant;
@@ -17,8 +17,6 @@ import quilt.remnant.PolygonsRemnant;
 import quilt.remnant.PolygonsRemnantInstance;
 import quilt.remnant.StripsRemnant;
 import quilt.remnant.StripsRemnantInstance;
-import quilt.syntax.QuiltMachineParser;
-import unalcol.gui.editor.ErrorManager;
 import unalcol.gui.util.Factory;
 import unalcol.gui.util.Instance;
 
@@ -72,10 +70,7 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 	protected QuiltMachineParserInstance parser = new QuiltMachineParserInstance();
 	protected QuiltCommandInstance commands = new QuiltCommandInstance();
 	protected Factory<Quilt> remnants = new Factory<Quilt>();
-	protected ErrorManager language;
-	
-	public QuiltMachineInstance(ErrorManager language) {
-		this.language = language;
+	public QuiltMachineInstance() {
 		commands.register(new Sew());
 		commands.register(new Rotate());
 		
@@ -89,7 +84,7 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 	@Override
 	public QuiltMachine load(Object[] args) {
 		if( args.length<3 || args.length>4 || !MACHINE.equals(args[0]) ) return null;
-		Command[] c = commands.load((Object[])args[1]);
+		FunCommand[] c = commands.load((Object[])args[1]);
 		Object[] robj = (Object[])args[2];
 		Hashtable<String, Quilt> r = new Hashtable<String,Quilt>();
 		for( int i=0; i<robj.length; i++){
