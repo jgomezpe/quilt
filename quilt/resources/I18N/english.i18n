@@ -1,5 +1,16 @@
 remnant=Remnant
 primitive=Primitive Function
+novalue=Undefined value %s.
+code=%$=,()+
+extra=Number of stitch operands %s not admissible, expecting at most %d stitch operand
+unexpected=Unexpected %s at row %d, column %d. Expecting %s
+noargs=Not valid definition of arguments at row %d, column %d
+command=command
+norule=Undefined component %s.
+nocommand=Undefined command %s.
+argmismatch=Mismatch in arguments calling command %s at row %d, column %d. Receiving %s.
+argnumbermismatch=Mismatch in the number of arguments calling command %s at row %d, column %d. Expecting %d but receiving %d.
+novar=Undefined variable %s at row %d, column %d.
 out=Error
 error=Error
 at=at

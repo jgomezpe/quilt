@@ -39,4 +39,6 @@ public class QuiltValuesInstance  implements Instance<ImmutableKeyMap<String,Qui
 		for( Quilt q:remnants ) obj[i++]=this.remnants.store(q); 
 		return null;
 	}
+	
+	public Factory<Quilt> factory(){ return remnants; }
 }

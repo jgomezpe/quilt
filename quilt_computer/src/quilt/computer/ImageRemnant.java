@@ -2,7 +2,6 @@ package quilt.computer;
 
 import java.awt.Image;
 
-import quilt.MinRemnant;
 import quilt.Remnant;
 import quilt.gui.Drawer;
 import quilt.operation.Rotatable;
@@ -52,7 +51,7 @@ import quilt.operation.Rotate;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class ImageRemnant extends MinRemnant implements Rotatable<Remnant>{
+public class ImageRemnant extends Remnant implements Rotatable<Remnant>{
 	protected String name;
 	
 	protected Image image;

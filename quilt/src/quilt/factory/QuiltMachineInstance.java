@@ -1,7 +1,5 @@
 package quilt.factory;
 
-import java.util.Hashtable;
-
 import fun_pl.semantic.FunCommand;
 import quilt.MatrixQuilt;
 import quilt.QuiltInstance;
@@ -17,13 +15,10 @@ import quilt.remnant.PolygonsRemnant;
 import quilt.remnant.PolygonsRemnantInstance;
 import quilt.remnant.StripsRemnant;
 import quilt.remnant.StripsRemnantInstance;
-import unalcol.gui.util.Factory;
 import unalcol.gui.util.Instance;
 import unalcol.types.collection.Collection;
 import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.keymap.ImmutableKeyMap;
-import unalcol.types.collection.keymap.KeyMap;
-import unalcol.types.collection.vector.Vector;
 
 /**
 *
@@ -72,14 +67,13 @@ import unalcol.types.collection.vector.Vector;
 public class QuiltMachineInstance implements Instance<QuiltMachine> {
 	public static final String MACHINE="machine";
 	
-	protected QuiltMachineParserInstance parser = new QuiltMachineParserInstance();
 	protected QuiltCommandInstance commands = new QuiltCommandInstance();
 	protected QuiltValuesInstance remnants = new QuiltValuesInstance();
 	public QuiltMachineInstance() {
 		commands.register(new Sew());
 		commands.register(new Rotate());		
 		remnants.register(StripsRemnantInstance.STRIPS, StripsRemnant.class.getName(), new StripsRemnantInstance());	
-		remnants.register(QuiltInstance.QUILT, MatrixQuilt.class.getName(), new QuiltInstance(remnants));			
+		remnants.register(QuiltInstance.QUILT, MatrixQuilt.class.getName(), new QuiltInstance(remnants.factory()));			
 		remnants.register(FilledRemnantInstance.FILLED, FilledRemnant.class.getName(), new FilledRemnantInstance());
 		remnants.register(PolygonsRemnantInstance.POLYGONS, PolygonsRemnant.class.getName(), new PolygonsRemnantInstance());
 		remnants.register(EmptyRemnantInstance.EMPTY, EmptyRemnant.class.getName(), new EmptyRemnantInstance());

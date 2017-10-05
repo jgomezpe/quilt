@@ -26,12 +26,7 @@ import javax.swing.text.JTextComponent;
 import quilt.QuiltMachine;
 import quilt.Remnant;
 import quilt.factory.QuiltMachineInstance;
-import quilt.operation.Command;
-import quilt.operation.CommandCall;
 import quilt.util.Language;
-import unalcol.gui.I18N.I18NManager;
-import unalcol.gui.editor.ErrorManager;
-import unalcol.gui.editor.Position;
 import unalcol.gui.editor.SyntaxEditPanel;
 import unalcol.gui.editor.SyntaxStyle;
 import unalcol.gui.io.FileFilter;
@@ -141,7 +136,8 @@ public class ProgrammingPanel extends JPanel{
 		int width = (int)screenSize.getWidth();
 		int height = (int)screenSize.getHeight();
 		this.setSize(new Dimension(width*4/5, height*4/5));
-		QuiltMachineInstanceForComputer qm = new QuiltMachineInstanceForComputer(Util.i18n(language));
+		// @TODO: Load language i18n
+		QuiltMachineInstanceForComputer qm = new QuiltMachineInstanceForComputer();
 		QuiltMachine machine;
 		try{
 			machine = qm.load(ObjectParser.parse(machine_txt));
@@ -163,8 +159,8 @@ public class ProgrammingPanel extends JPanel{
 		this.title_component = parent;
 		this.language=language;
 		try{		
-			title = machine.message(Language.TITLE);
-			fileName = machine.message(Language.NONAME);
+			title =unalcol.util.I18N.get(Language.TITLE);
+			fileName = unalcol.util.I18N.get(Language.NONAME);
 			parent.setTitle(title + " [" + fileName + "]");
 			this.setSize(new Dimension(width*4/5, height*4/5));
 			this.setLayout(windowLayout);
