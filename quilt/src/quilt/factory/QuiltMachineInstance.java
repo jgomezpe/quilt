@@ -19,6 +19,11 @@ import quilt.remnant.StripsRemnant;
 import quilt.remnant.StripsRemnantInstance;
 import unalcol.gui.util.Factory;
 import unalcol.gui.util.Instance;
+import unalcol.types.collection.Collection;
+import unalcol.types.collection.keymap.HTKeyMap;
+import unalcol.types.collection.keymap.ImmutableKeyMap;
+import unalcol.types.collection.keymap.KeyMap;
+import unalcol.types.collection.vector.Vector;
 
 /**
 *
@@ -69,11 +74,10 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 	
 	protected QuiltMachineParserInstance parser = new QuiltMachineParserInstance();
 	protected QuiltCommandInstance commands = new QuiltCommandInstance();
-	protected Factory<Quilt> remnants = new Factory<Quilt>();
+	protected QuiltValuesInstance remnants = new QuiltValuesInstance();
 	public QuiltMachineInstance() {
 		commands.register(new Sew());
-		commands.register(new Rotate());
-		
+		commands.register(new Rotate());		
 		remnants.register(StripsRemnantInstance.STRIPS, StripsRemnant.class.getName(), new StripsRemnantInstance());	
 		remnants.register(QuiltInstance.QUILT, MatrixQuilt.class.getName(), new QuiltInstance(remnants));			
 		remnants.register(FilledRemnantInstance.FILLED, FilledRemnant.class.getName(), new FilledRemnantInstance());
@@ -83,27 +87,19 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 	
 	@Override
 	public QuiltMachine load(Object[] args) {
-		if( args.length<3 || args.length>4 || !MACHINE.equals(args[0]) ) return null;
-		FunCommand[] c = commands.load((Object[])args[1]);
-		Object[] robj = (Object[])args[2];
-		Hashtable<String, Quilt> r = new Hashtable<String,Quilt>();
-		for( int i=0; i<robj.length; i++){
-			Object[] pair = (Object[])robj[i];
-			r.put((String)pair[0], remnants.load((Object[])pair[1]));
-		}
-		QuiltMachineParser p;
-		if( args.length==4 ) p=parser.load((Object[])args[3]);
-		else p = new QuiltMachineParser();
-		return new QuiltMachine(c, r, p, language);
+		if( args.length!=3 || !MACHINE.equals(args[0]) ) return null;
+		ImmutableKeyMap<String, FunCommand> c = commands.load((Object[])args[1]);
+		ImmutableKeyMap<String, Quilt> r = remnants.load((Object[])args[2]);
+		return new QuiltMachine(c, r);
 	}
 
 	@Override
 	public Object[] store(QuiltMachine obj) {
-		String[] keys = obj.remnants();
-		Object[] r = new Object[keys.length];
-		for( int i=0; i<r.length; i++ ) r[i] = new Object[]{keys[i],obj.remnant(keys[i])};
-		Object[] p = parser.store(obj.parser());
-		if( p.length > 1 ) return new Object[]{MACHINE,commands.store(obj.primitives()),r, p};
-		else return new Object[]{MACHINE,commands.store(obj.primitives()),r};
+		Collection<String> keys = obj.values();
+		HTKeyMap<String,Quilt> r = new HTKeyMap<String,Quilt>();
+		if( keys!=null ) for( String val:keys ) try{ r.set(val, (Quilt)obj.value(val)); }catch(Exception e){}
+		HTKeyMap<String,FunCommand> c = new HTKeyMap<String,FunCommand>();
+		for( String name:obj.primitives() ) try{ c.set(name, obj.primitive(name)); }catch(Exception e){}
+		return new Object[]{MACHINE,commands.store(c),remnants.store(r)};
 	}
 }

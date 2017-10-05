@@ -5,7 +5,9 @@ import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
 import fun_pl.util.Constants;
 import unalcol.language.LanguageException;
+import unalcol.types.collection.Collection;
 import unalcol.types.collection.array.Array;
+import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.vector.Vector;
 
 public class FunDemoMachine extends FunMachine{
@@ -47,4 +49,14 @@ public class FunDemoMachine extends FunMachine{
 	public boolean can_assign(String variable, Object value) {
 		return true; // (variable.charAt(0)!=FunEncoder.get_symbol(FunEncoder.DOLLAR) || (Integer)value == 1);
 	}
+
+	@Override
+	public Collection<String> primitives() {
+		HTKeyMap<String,String> v = new HTKeyMap<String,String>();
+		v.set(plus.name(),plus.name());
+		return v;
+	}
+
+	@Override
+	public Collection<String> values() { return null; }
 }

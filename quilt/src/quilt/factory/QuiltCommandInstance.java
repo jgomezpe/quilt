@@ -4,6 +4,8 @@ package quilt.factory;
 import fun_pl.semantic.FunCommand;
 import unalcol.gui.util.Instance;
 import unalcol.types.collection.keymap.HTKeyMap;
+import unalcol.types.collection.keymap.ImmutableKeyMap;
+import unalcol.types.collection.keymap.KeyMap;
 
 /**
 *
@@ -49,7 +51,7 @@ import unalcol.types.collection.keymap.HTKeyMap;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class QuiltCommandInstance implements Instance<FunCommand[]> {
+public class QuiltCommandInstance implements Instance<ImmutableKeyMap<String,FunCommand>> {
 	protected HTKeyMap<String, FunCommand> map = new HTKeyMap<String,FunCommand>();
 	public static final String COMMANDS="commands";
 
@@ -58,18 +60,22 @@ public class QuiltCommandInstance implements Instance<FunCommand[]> {
 	public void clear(){ map.clear(); }
 	
 	@Override
-	public FunCommand[] load(Object[] args) {
+	public ImmutableKeyMap<String,FunCommand> load(Object[] args) {
 		if( args.length<2 || !COMMANDS.equals(args[0]) ) return null;
-		FunCommand[] c = new FunCommand[args.length-1];
-		for( int i=0;i<c.length; i++) c[i] = map.get((String)args[i+1]); 
+		KeyMap<String, FunCommand> c = new HTKeyMap<String,FunCommand>();
+		for( int i=1; i<args.length; i++) c.set( (String)args[i], map.get((String)args[i]) ); 
 		return c;
 	}
 
 	@Override
-	public Object[] store(FunCommand[] obj) {
-		Object[] code = new Object[obj.length+1];
+	public Object[] store(ImmutableKeyMap<String,FunCommand> obj) {
+		Object[] code = new Object[obj.size()+1];
 		code[0] = COMMANDS;
-		for( int i=0; i<obj.length; i++ ) code[i+1] = obj[i].name();
+		int i=1;
+		for( FunCommand c:obj ){
+			code[i] = c.name();
+			i++;
+		}
 		return code;
 	}
 }

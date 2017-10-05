@@ -9,9 +9,10 @@ import fun_pl.util.Constants;
 import quilt.operation.Rotate;
 import quilt.operation.Sew;
 import unalcol.language.LanguageException;
+import unalcol.types.collection.Collection;
 import unalcol.types.collection.array.Array;
 import unalcol.types.collection.keymap.HTKeyMap;
-import unalcol.types.collection.keymap.KeyMap;
+import unalcol.types.collection.keymap.ImmutableKeyMap;
 import unalcol.types.collection.keymap.KeyValue;
 import unalcol.types.collection.vector.Vector;
 
@@ -61,17 +62,23 @@ import unalcol.types.collection.vector.Vector;
 */
 public class QuiltMachine extends FunMachine{
 	protected FunSymbolCommand sew;
-	protected KeyMap<String, Quilt> remnants = new HTKeyMap<String,Quilt>();
-	protected KeyMap<String, FunCommand> primitives = new HTKeyMap<String,FunCommand>();
+	protected ImmutableKeyMap<String, Quilt> remnants;
+	protected ImmutableKeyMap<String, FunCommand> primitives;
 
 	public QuiltMachine(){
 		sew = new Sew(this);
 		FunCommand rot = new Rotate(this);
-		primitives.set(sew.name(),sew);
-		primitives.set(rot.name(),rot);
+		HTKeyMap<String,FunCommand> prims = new HTKeyMap<String,FunCommand>();		
+		prims.set(sew.name(),sew);
+		prims.set(rot.name(),rot);
+		primitives = prims;
+		HTKeyMap<String,Quilt> rems = new HTKeyMap<String,Quilt>();
+		// @TODO: Put the classic remnants 
+		remnants = rems;
 	}
 
-	public QuiltMachine(KeyMap<String, FunCommand> primitives){
+	public QuiltMachine(ImmutableKeyMap<String, FunCommand> primitives, ImmutableKeyMap<String,Quilt> remnants){
+		this.remnants = remnants;
 		this.primitives = primitives;
 		for( FunCommand c:primitives) if( c instanceof FunSymbolCommand ) this.sew = (FunSymbolCommand)c;
 	}
@@ -121,4 +128,10 @@ public class QuiltMachine extends FunMachine{
 		if( ok ) return v;
 		throw new LanguageException("Uknown value");
 	}
+
+	@Override
+	public Collection<String> primitives() { return primitives.keys(); }
+
+	@Override
+	public Collection<String> values() { return (remnants!=null)?remnants.keys():null; }
 }
