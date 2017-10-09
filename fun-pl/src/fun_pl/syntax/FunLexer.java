@@ -36,11 +36,11 @@ public class FunLexer implements Lexer{
 			machine.values(lexeme);
 			t.setType(Constants.PRIM_VALUE);
 			return t;
-		}catch(LanguageException e){}
+		}catch(Exception e){}
 		try{ 
 			machine.primitive(lexeme);
 			t.setType(Constants.PRIM_COMMAND);			
-		}catch(LanguageException e){}
+		}catch(Exception e){}
 		return t; 
 	}
 	

@@ -3,6 +3,7 @@ package fun_pl.semantic;
 import fun_pl.syntax.FunEncoder;
 import fun_pl.syntax.FunLexer;
 import fun_pl.util.Constants;
+import unalcol.io.Position2D;
 import unalcol.language.LanguageException;
 import unalcol.language.Typed;
 import unalcol.language.TypedValue;
@@ -21,7 +22,13 @@ public class FunMeaner implements Meaner<FunCommand>{
 	}
 	
 	protected FunCommandCall prim(Token t) throws LanguageException{
-		Array<String> compose = machine.values(FunLexer.get(t.lexeme()));
+		String value = FunLexer.get(t.lexeme());
+		Array<String> compose = null;
+		try{ compose = machine.values(value); }
+		catch(Exception e){
+			Position2D pos = (Position2D)t.pos();
+			throw new LanguageException(pos, Constants.novalue, pos.row()+1,pos.column()+1, value);
+		}
 		FunCommandCall c = new FunValue(t.pos(), machine, compose.get(0));
 		for( int i=1; i<compose.size(); i++ )
 			c = new FunCommandCall(c, machine, machine.symbol_command().name(), new FunCommandCall[]{c, new FunValue(t.pos(), machine, compose.get(i))} );

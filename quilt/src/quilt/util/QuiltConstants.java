@@ -44,9 +44,10 @@ package quilt.util;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class Language{
+public class QuiltConstants{
 	public static final String SPANISH = "spanish";
 	public static final String ENGLISH = "english";
+	public static final String ERROR = "error";
 	public static final String OUT = "out";
 	public static final String UNSYMBOL = "unsymbol";
 	public static final String EXPECTING = "expecting";
@@ -76,4 +77,7 @@ public class Language{
 	public static final String AUTHOR = "author";	
 	public static final String MACHINE = "machine";
 	public static final String STYLE = "style";		
+	public static final String QMC = "qmc";		
+	public static final String QMP = "qmp";		
+	public static final String QMS = "qms";		
 }

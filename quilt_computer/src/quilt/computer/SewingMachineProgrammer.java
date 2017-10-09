@@ -3,8 +3,7 @@ package quilt.computer;
 import java.awt.Color;
 import java.awt.Image;
 
-import quilt.QuiltMachine;
-import quilt.util.Language;
+import quilt.util.QuiltConstants;
 import quilt.util.Util;
 import unalcol.gui.util.ObjectParser;
 
@@ -58,8 +57,8 @@ public class SewingMachineProgrammer {
 	}
     
 	public static void main( String[] args ){
-		String language = args.length>=1?args[0]:Language.SPANISH;
-		String conf_file = args.length>=2?args[1]:"default"+QuiltMachine.QMC;
+		String language = args.length>=1?args[0]:QuiltConstants.SPANISH;
+		String conf_file = args.length>=2?args[1]:"default"+QuiltConstants.QMC;
 		String machine_txt = Util.config(conf_file);
 		conf_file = args.length==3?args[2]:"default"+Util.QMS;
 		String styles = Util.config(conf_file);

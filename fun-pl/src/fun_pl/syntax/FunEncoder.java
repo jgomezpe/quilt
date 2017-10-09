@@ -1,9 +1,9 @@
 package fun_pl.syntax;
 
 import fun_pl.util.Constants;
-import unalcol.language.LanguageException;
 import unalcol.language.symbol.Encoder;
 import unalcol.util.I18N;
+import unalcol.util.I18NException;
 
 public class FunEncoder implements Encoder{
 
@@ -11,10 +11,10 @@ public class FunEncoder implements Encoder{
 	protected String space=" \t\r";
 	
 	public FunEncoder(){ this.symbols = "%$=,()|#"; }
-	public FunEncoder( String symbols ) throws LanguageException{
+	public FunEncoder( String symbols ) throws Exception{
 		this.symbols = symbols;
 		if(symbols.length()>Constants.END_LINK_SYMBOLS) 
-			throw new LanguageException(Constants.extra, symbols.substring(Constants.START_LINK_SYMBOLS), 
+			throw new I18NException(Constants.extra, symbols.substring(Constants.START_LINK_SYMBOLS), 
 					(Constants.END_LINK_SYMBOLS-Constants.START_LINK_SYMBOLS));
 	} 
 	

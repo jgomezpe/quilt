@@ -1,5 +1,7 @@
 package fun_pl.semantic;
 
+import unalcol.language.LanguageException;
+
 public abstract class FunSymbolCommand extends FunCommand{
 	public FunSymbolCommand(FunMachine machine) { super(machine); }
 	public FunSymbolCommand() { super(); }
@@ -9,5 +11,5 @@ public abstract class FunSymbolCommand extends FunCommand{
 		return 2;
 	}
 	
-	public abstract Object[] reverse(Object obj, Object[] toMatch) throws Exception;
+	public abstract Object[] reverse(Object obj, Object[] toMatch) throws LanguageException;
 }

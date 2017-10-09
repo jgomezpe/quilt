@@ -1,7 +1,10 @@
 package fun_pl.semantic;
 
 import fun_pl.util.Constants;
+import unalcol.io.Position;
+import unalcol.io.Position2D;
 import unalcol.language.LanguageException;
+import unalcol.language.LanguageMultiException;
 import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.vector.Vector;
 
@@ -33,16 +36,38 @@ public class FunProgram extends FunCommand{
 	
 	public void clear(){ commands.clear(); }
 	
-	public Object execute( String command, Object... values ) throws Exception{
-		Exception e=null;
+	public Object execute( Position pos, String command, Object... values ) throws LanguageException{
 		Vector<FunCommandDef> v = commands.get(command);
-		if( v==null ) throw new LanguageException(Constants.nocommand,command);
-		for( FunCommandDef c:v ) try{ return c.execute(values); }catch(Exception ex){e=ex;}
+		if( v==null ) throw new LanguageException(pos, Constants.nocommand, command);
+		Vector<FunCommandDef> candidates = new Vector<FunCommandDef>();
+		for( FunCommandDef c:v ) if( c.arity()==values.length ) candidates.add(c);
+		if(candidates.size()==0) throw new LanguageException(pos, Constants.argnumbermismatch, command);
+		LanguageMultiException e=null;
+		int i=0; 
+		while( i<candidates.size() ){ 
+			try{ 
+				candidates.get(i).match(values);
+				i++;
+			}catch(LanguageException ex){
+				if( e!=null ){
+					e.add(ex);
+				}else e = new LanguageMultiException(ex);
+				candidates.remove(i);
+			}
+		}	
+		if( candidates.size() == 0 ) throw e;
+		e = null;
+		for( FunCommandDef c:candidates ){
+			try{ return c.execute(values); }
+			catch(LanguageException ex){
+				if( e != null ) e.add(ex); else e = new LanguageMultiException(ex);
+			}
+		}	
 		throw e;
 	}
-
+	
 	@Override
-	public Object execute(Object... args) throws Exception { return execute(MAIN,args); }
+	public Object execute(Object... args) throws LanguageException { return execute(new Position2D(), MAIN,args); }
 
 	@Override
 	public int arity(){ return 0; }

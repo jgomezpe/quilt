@@ -23,15 +23,19 @@ import javax.swing.JToolBar;
 import javax.swing.border.EtchedBorder;
 import javax.swing.text.JTextComponent;
 
+import fun_pl.semantic.FunCommand;
+import fun_pl.semantic.FunCommandCall;
+import quilt.Quilt;
 import quilt.QuiltMachine;
 import quilt.Remnant;
 import quilt.factory.QuiltMachineInstance;
-import quilt.util.Language;
+import quilt.util.QuiltConstants;
 import unalcol.gui.editor.SyntaxEditPanel;
 import unalcol.gui.editor.SyntaxStyle;
 import unalcol.gui.io.FileFilter;
 import unalcol.gui.log.LogPanel;
 import unalcol.gui.util.ObjectParser;
+import unalcol.types.collection.Collection;
 import quilt.util.Util;
 
 /**
@@ -84,7 +88,7 @@ public class ProgrammingPanel extends JPanel{
 	 */
 	private static final long serialVersionUID = -3339559167222155206L;
 
-	String language="spanish";
+	String Constants="spanish";
 	String title;
 	String fileName = null;
 	String fileDir = ".";
@@ -131,12 +135,12 @@ public class ProgrammingPanel extends JPanel{
 	
 	public LogPanel getLogPanel(){ return log; }
 
-	public ProgrammingPanel(TitleComponent parent, String machine_txt, String language, String styles){
+	public ProgrammingPanel(TitleComponent parent, String machine_txt, String Constants, String styles){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
 		int height = (int)screenSize.getHeight();
 		this.setSize(new Dimension(width*4/5, height*4/5));
-		// @TODO: Load language i18n
+		// @TODO: Load Constants i18n
 		QuiltMachineInstanceForComputer qm = new QuiltMachineInstanceForComputer();
 		QuiltMachine machine;
 		try{
@@ -145,28 +149,29 @@ public class ProgrammingPanel extends JPanel{
 			e.printStackTrace();
 			machine = null;
 		}
-		build(parent, width, height, styles, machine, language);
+		build(parent, width, height, styles, machine, Constants);
 	}
 	
 	public ProgrammingPanel( TitleComponent parent, int width, int height, String styles,
-			 QuiltMachine machine, String language ){
-		build( parent, width, height, styles, machine, language );
+			 QuiltMachine machine, String Constants ){
+		build( parent, width, height, styles, machine, Constants );
 	}
 	
+	public static String i18n(String code){ return unalcol.util.I18N.get(code); }
+	
 	public void build( TitleComponent parent, int width, int height, String styles,
-					   QuiltMachine machine, String language ){
-		this.machine = machine;
+					   QuiltMachine machine, String Constants ){
+		this.setMachine(machine);
 		this.title_component = parent;
-		this.language=language;
+		this.Constants=Constants;
 		try{		
-			title =unalcol.util.I18N.get(Language.TITLE);
-			fileName = unalcol.util.I18N.get(Language.NONAME);
+			title =i18n(QuiltConstants.TITLE);
+			fileName = i18n(QuiltConstants.NONAME);
 			parent.setTitle(title + " [" + fileName + "]");
 			this.setSize(new Dimension(width*4/5, height*4/5));
 			this.setLayout(windowLayout);
 
 			// Program area
-			jProgram.setTokenizer(machine.parser(), tokens);
 			jProgram.setStyle(SyntaxStyle.get(styles));
 			jProgram.setToolTipText("");
 			jProgram.setVerifyInputWhenFocusTarget(true);
@@ -180,21 +185,21 @@ public class ProgrammingPanel extends JPanel{
 			
 			
 			// Tool bar 
-			initButton(jNewButton, "new.png", machine.message(Language.NEW));
+			initButton(jNewButton, "new.png", i18n(QuiltConstants.NEW));
 			jNewButton.addActionListener(new ProgrammingPanel_jNewButton_actionAdapter(this));
-			initButton(jOpenButton, "open.png", machine.message(Language.OPEN));
+			initButton(jOpenButton, "open.png", i18n(QuiltConstants.OPEN));
 			jOpenButton.addActionListener(new ProgrammingPanel_jOpenButton_actionAdapter(this));
-			initButton(jSaveButton, "save.png", machine.message(Language.SAVE));
+			initButton(jSaveButton, "save.png", i18n(QuiltConstants.SAVE));
 			jSaveButton.addActionListener(new ProgrammingPanel_jSaveButton_actionAdapter(this));
-			initButton(jCompileButton, "compile.png", machine.message(Language.COMPILE));
+			initButton(jCompileButton, "compile.png", i18n(QuiltConstants.COMPILE));
 			jCompileButton.addActionListener(new ProgrammingPanel_jCompileButton_actionAdapter(this));
-			initButton(jRemnantButton, "remnant.png", machine.message(Language.REMNANT));
+			initButton(jRemnantButton, "remnant.png", i18n(QuiltConstants.REMNANT));
 			jRemnantButton.addActionListener(new ProgrammingPanel_jRemnantButton_actionAdapter(this));
-			initButton(jPrimitiveButton, "tools.png", machine.message(Language.PRIMITIVE));
+			initButton(jPrimitiveButton, "tools.png", i18n(QuiltConstants.PRIMITIVE));
 			jPrimitiveButton.addActionListener(new ProgrammingPanel_jPrimitiveButton_actionAdapter(this));
-			initButton(jMachineButton, "machine.png", machine.message(Language.MACHINE));
+			initButton(jMachineButton, "machine.png", i18n(QuiltConstants.MACHINE));
 			jMachineButton.addActionListener(new ProgrammingPanel_jMachineButton_actionAdapter(this));
-			initButton(jStyleButton, "style.png", machine.message(Language.STYLE));
+			initButton(jStyleButton, "style.png", i18n(QuiltConstants.STYLE));
 			jStyleButton.addActionListener(new ProgrammingPanel_jStyleButton_actionAdapter(this));
 			jToolBar.add(jNewButton);
 			jToolBar.add(jOpenButton);
@@ -208,14 +213,13 @@ public class ProgrammingPanel extends JPanel{
 			// Command area
 			jCommandBar.setLayout(commandLayout);
 			jCommandBar.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-			jCommandLabel.setText(machine.message(Language.COMMAND));
-			jCommand.setTokenizer(machine.parser(), tokens);
+			jCommandLabel.setText(i18n(QuiltConstants.COMMAND));
 			jCommand.setStyle(SyntaxStyle.get(styles));
 			jCommand.setToolTipText("");
 			jCommand.setVerifyInputWhenFocusTarget(true);
 			jCommand.setText("");
 			
-			initButton(jCommandButton, "quilt-run.png", machine.message(Language.EXECUTE));
+			initButton(jCommandButton, "quilt-run.png", i18n(QuiltConstants.EXECUTE));
 			jCommandButton.addActionListener(new ProgrammingPanel_jCommandButton_actionAdapter(this));
 			jCommandBar.add(jCommandLabel, java.awt.BorderLayout.WEST);
 			jCommandBar.add(jCommand, java.awt.BorderLayout.CENTER);
@@ -227,8 +231,8 @@ public class ProgrammingPanel extends JPanel{
 			jLogPanel.add(jCommandBar, java.awt.BorderLayout.NORTH);
 			jLogPanel.setMinimumSize(new Dimension(width/5, height/5));
 			jLogPanel.setPreferredSize(new Dimension(width/5, height/5));
-			log.setLanguage(machine.message(Language.OUT), machine.message(ErrorManager.ERROR));
-			log.getOutArea().setText(machine.message(Language.AUTHOR));
+			log.setLanguage(i18n(QuiltConstants.OUT), i18n(QuiltConstants.ERROR));
+			log.getOutArea().setText(i18n(QuiltConstants.AUTHOR));
 
 			// Window area
 			windowPanel.setLayout(windowPaneLayout);
@@ -268,7 +272,7 @@ public class ProgrammingPanel extends JPanel{
     
 	public void jStyleButton_actionPerformed(ActionEvent actionEvent) {
 		String QMS = Util.QMS;
-		FileFilter filter = new FileFilter( machine.message(Language.FILE)+" (*"+QMS+")" );
+		FileFilter filter = new FileFilter( i18n(QuiltConstants.FILE)+" (*"+QMS+")" );
 		filter.add(QMS.substring(1));
 		JFileChooser file = new JFileChooser( fileDirStyle );
 		file.setFileFilter(filter);
@@ -291,8 +295,8 @@ public class ProgrammingPanel extends JPanel{
 	}
 
 	public void jMachineButton_actionPerformed(ActionEvent actionEvent) {
-		String QMC = QuiltMachine.QMC;
-		FileFilter filter = new FileFilter( machine.message(Language.FILE)+" (*"+QMC+")" );
+		String QMC = QuiltConstants.QMC;
+		FileFilter filter = new FileFilter( i18n(QuiltConstants.FILE)+" (*"+QMC+")" );
 		filter.add(QMC.substring(1));
 		JFileChooser file = new JFileChooser( fileDirMachine );
 		file.setFileFilter(filter);
@@ -307,17 +311,16 @@ public class ProgrammingPanel extends JPanel{
 					s = reader.readLine();
 				}
 				reader.close();
-				QuiltMachineInstance qm = new QuiltMachineInstanceForComputer(machine.language());
+				QuiltMachineInstance qm = new QuiltMachineInstanceForComputer();
 				machine = qm.load(ObjectParser.parse(sb.toString()));
-				jProgram.setTokenizer(machine.parser(), tokens);
-				jCommand.setTokenizer(machine.parser(), tokens);
+				setMachine(machine);
 			}catch (Exception e){ e.printStackTrace(); }
 		}
 	}
 
 	public void jNewButton_actionPerformed(ActionEvent actionEvent) {
-		fileName = machine.message(Language.NONAME);
-		if( (jProgram.getText().length()>0 || jCommand.getText().length()>0) && JOptionPane.showConfirmDialog(this, machine.message(Language.CLEAN)) == JOptionPane.YES_OPTION ){
+		fileName = i18n(QuiltConstants.NONAME);
+		if( (jProgram.getText().length()>0 || jCommand.getText().length()>0) && JOptionPane.showConfirmDialog(this, i18n(QuiltConstants.CLEAN)) == JOptionPane.YES_OPTION ){
 			jProgram.setText("");
 			jCommand.setText("");
 		}
@@ -325,8 +328,8 @@ public class ProgrammingPanel extends JPanel{
 	}
 	
 	public void jOpenButton_actionPerformed(ActionEvent actionEvent) {
-		String QMP = QuiltMachine.QMP;
-		FileFilter filter = new FileFilter( machine.message(Language.FILE)+" (*"+QMP+")" );
+		String QMP = QuiltConstants.QMP;
+		FileFilter filter = new FileFilter( i18n(QuiltConstants.FILE)+" (*"+QMP+")" );
 		filter.add(QMP.substring(1));
 		JFileChooser file = new JFileChooser( fileDir );
 		file.setFileFilter(filter);
@@ -350,9 +353,9 @@ public class ProgrammingPanel extends JPanel{
 	}
 
 	public void jSaveButton_actionPerformed(ActionEvent actionEvent) {
-		if( fileName.equals(machine.message(Language.NONAME)) ){
-			String QMP = QuiltMachine.QMP;
-			FileFilter filter = new FileFilter( machine.message(Language.FILE)+" (*"+QMP+")" );
+		if( fileName.equals(i18n(QuiltConstants.NONAME)) ){
+			String QMP = QuiltConstants.QMP;
+			FileFilter filter = new FileFilter( i18n(QuiltConstants.FILE)+" (*"+QMP+")" );
 			filter.add(QMP.substring(1));
 			JFileChooser file = new JFileChooser( fileDir );
 			file.setFileFilter(filter);
@@ -382,18 +385,20 @@ public class ProgrammingPanel extends JPanel{
 	}
 
 	public void jPrimitiveButton_actionPerformed(ActionEvent actionEvent) {
-		Command[] commands = machine.primitives();
+		Collection<String> commands = machine.primitives();
 		StringBuilder sb = new StringBuilder();
-		for( Command c:commands ){
-			sb.append(c.toString(machine.language()));
-			sb.append('\n');
+		for( String c:commands ){
+			try{
+				sb.append(machine.primitive(c).toString());
+				sb.append('\n');
+			}catch(Exception e){}
 		}
 		this.log.getOutArea().setText(sb.toString());
 		this.log.getErrorArea().setText("");
 	}
 
 	public void jRemnantButton_actionPerformed(ActionEvent actionEvent) {
-		String[] remnants = machine.remnants();
+		Collection<String> remnants = machine.values();
 		StringBuilder sb = new StringBuilder();
 		for( String r:remnants ){
 			sb.append(r);
@@ -404,12 +409,14 @@ public class ProgrammingPanel extends JPanel{
 	}
 	
 	public void show_error_message( JTextComponent code_area, Exception e ){
+		// @TODO: Getting the error's position 
+		/*
 		if( frame != null ) frame.setVisible(false);
 		String msg = e.getMessage();	
 		System.out.println(msg);
-		int k = msg.indexOf(I18NManager.MSG_SEPARATOR);
-		JOptionPane.showMessageDialog(this, machine.message(Language.ERRORS));
-		this.log.getOutArea().setText(machine.message(Language.ERRORS));
+		int k = msg.indexOf(unalcol.util.I18N.MSG_SEPARATOR);
+		JOptionPane.showMessageDialog(this, i18n(QuiltConstants.ERRORS));
+		this.log.getOutArea().setText(i18n(QuiltConstants.ERRORS));
 		this.log.getErrorArea().setText(msg.substring(k+1));
 		this.log.select(false);
 		Position pos = new Position(msg.substring(0, k));
@@ -427,13 +434,14 @@ public class ProgrammingPanel extends JPanel{
 		}
 		code_area.setCaretPosition(caret+pos.column());
 		code_area.requestFocusInWindow();
+		*/
 	}
 
 	public void jCompileButton_actionPerformed(ActionEvent actionEvent) {
 		String program = jProgram.getText();
 		try{
 			machine.setProgram(program);
-			this.log.getOutArea().setText(machine.message(Language.NO_ERRORS));
+			this.log.getOutArea().setText(i18n(QuiltConstants.NO_ERRORS));
 			this.log.getErrorArea().setText("");
 			this.log.select(true);
 		}catch(Exception e){
@@ -444,7 +452,7 @@ public class ProgrammingPanel extends JPanel{
 	protected DrawFrame frame = null;
 	public void jCommandButton_actionPerformed(ActionEvent actionEvent) {
 		String program = jCommand.getText();
-		CommandCall command=null;
+		FunCommandCall command=null;
 		try{
 			command = machine.command(program);
 			command.setRow(-1);
@@ -453,9 +461,9 @@ public class ProgrammingPanel extends JPanel{
 		}
 		if( command != null ){
 			try{
-				Remnant r = machine.execute(command);
+				Quilt r = (Quilt)machine.execute(command);
 				drawPanel.set(r);
-				if(this.log.getOutArea().getText().contains(ErrorManager.ERROR) ) this.log.getOutArea().setText(machine.message(Language.NO_ERRORS));
+				if(this.log.getOutArea().getText().contains(QuiltConstants.ERROR) ) this.log.getOutArea().setText(i18n(QuiltConstants.NO_ERRORS));
 				this.log.select(true);
 				this.log.getErrorArea().setText("");
 			}catch(Exception e){
@@ -466,8 +474,9 @@ public class ProgrammingPanel extends JPanel{
 	
 	public void setMachine( QuiltMachine machine ){
 		this.machine = machine;
-		jProgram.setTokenizer(machine.parser(), tokens);
-		jCommand.setTokenizer(machine.parser(), tokens);
+		// @TODO : Check the parsing editor
+		//jProgram.setTokenizer(machine.parser(), tokens);
+		//jCommand.setTokenizer(machine.parser(), tokens);
 	}
 }
 

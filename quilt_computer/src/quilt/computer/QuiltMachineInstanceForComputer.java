@@ -1,7 +1,6 @@
 package quilt.computer;
 
 import quilt.factory.QuiltMachineInstance;
-import unalcol.gui.editor.ErrorManager;
 
 /**
 *

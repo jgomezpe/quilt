@@ -2,6 +2,7 @@ package fun_pl.semantic;
 
 import unalcol.io.Position;
 import unalcol.io.Position2D;
+import unalcol.language.LanguageException;
 
 public abstract class FunCommand extends FunObject{
 	protected FunMachine machine;
@@ -18,6 +19,6 @@ public abstract class FunCommand extends FunObject{
 	public void setMachine(FunMachine machine){ this.machine = machine; }
 	public FunMachine machine(){ return machine; }
 	
-	public abstract Object execute( Object... value ) throws Exception;
+	public abstract Object execute( Object... value ) throws LanguageException;
 	public abstract int arity();
 }

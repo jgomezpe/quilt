@@ -2,6 +2,7 @@ package fun_pl.semantic;
 
 import fun_pl.syntax.FunEncoder;
 import fun_pl.util.Constants;
+import unalcol.language.LanguageException;
 
 public class FunCommandDef extends FunCommand{
 	protected FunCommandCall left;
@@ -12,9 +13,13 @@ public class FunCommandDef extends FunCommand{
 		this.left = left;
 		this.right = right;
 	}
+	
+	public void match( Object... values ) throws LanguageException{
+		left.match(values);
+	}
 
 	@Override
-	public Object execute( Object... values ) throws Exception{ return right.execute(left.match(values)); }
+	public Object execute( Object... values ) throws LanguageException{ return right.execute(left.match(values)); }
 
 	public String name(){ return left.name(); }
 

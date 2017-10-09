@@ -53,16 +53,23 @@ public class FunParser implements Parser{
 	    return new int[]{pos.row()+1,pos.row()+1};
 	}
 	
+	protected LanguageException exception(Token t, int symbol ){
+		int[] pos = posf(t);
+		return new LanguageException(t.pos(), Constants.unexpected, FunLexer.get(t.lexeme()),pos[0],pos[1],""+FunEncoder.get_symbol(symbol));
+	}
+	
+	protected LanguageException exception(Token t, String code, String symbol ){
+		int[] pos = posf(t);
+		return new LanguageException(t.pos(), code, FunLexer.get(t.lexeme()),pos[0],pos[1],symbol);
+	}
+	
 	protected Typed wrap_command_exp() throws LanguageException{
 		Token t = get();
 		if(t.type()==Constants.OPEN){
 			next();
 			Typed c = command_exp();
 			t = get();
-			if(t.type()!=Constants.CLOSE){
-				int[] pos = posf(t);
-				throw new LanguageException(Constants.unexpected, FunLexer.get(t.lexeme()),pos[0],pos[1],""+FunEncoder.get_symbol(Constants.CLOSE));
-			}
+			if(t.type()!=Constants.CLOSE) throw exception(t, Constants.CLOSE);
 			next();
 			return c;
 		}else return command_call();
@@ -97,9 +104,9 @@ public class FunParser implements Parser{
 				next();
 				return;
 			}
-			throw new LanguageException(Constants.unexpected, FunLexer.get(t.lexeme()),pos[0],pos[1],""+FunEncoder.get_symbol(Constants.CLOSE));
+			throw exception(t,Constants.CLOSE);
 		}
-		throw new LanguageException(Constants.noargs,pos[0],pos[1]);
+		throw new LanguageException(t.pos(), Constants.noargs, pos[0],pos[1]);
 	}
 	
 	protected Typed command() throws LanguageException{
@@ -113,15 +120,13 @@ public class FunParser implements Parser{
 			}
 			return new TypedValue<Vector<Typed>>(Constants.COMMAND, v);
 		}
-		int[] pos = posf(t);
-		throw new LanguageException(Constants.unexpected, FunLexer.get(t.lexeme()),pos[0],pos[1],I18N.get(Constants.command));
+		throw exception(t, Constants.unexpected, I18N.get(Constants.command));
 	} 
 	
 	protected Typed command_def() throws LanguageException {
 		Typed f = command(); 
 		Token t = get();
-		int[] pos = posf(t); 
-		if( t.type()!=Constants.ASSIGN ) throw new LanguageException(Constants.unexpected, FunLexer.get(t.lexeme()), pos[0], pos[1], ""+FunEncoder.get_symbol(Constants.ASSIGN));
+		if( t.type()!=Constants.ASSIGN ) throw exception(t,Constants.ASSIGN);
 		next();
 		Typed c = command_exp();
 		Vector<Typed> v = new Vector<Typed>();
@@ -147,6 +152,6 @@ public class FunParser implements Parser{
 			case Constants.COMMAND_DEF_LIST: return command_def_list();
 			case Constants.COMMAND: return command();
 		}
-		throw new LanguageException(Constants.norule,1,1);
+		throw new LanguageException(new Position2D(), Constants.norule, 1, 1);
 	}	
 }
