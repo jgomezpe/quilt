@@ -1,14 +1,14 @@
 remnant=Retazo
 primitive=Función Básica
-code=%$=,()+
-extra=Numero de operandos de coser %s no admisible, experando maximo %d operandos de coser
-unexpected=Inesperado %s en la fila %d, columna %d. Experando %s
-noargs=Definicion de argumentos no vailada en la fila %d, columna %d
+code=%$=,()|
+extra=Numero de operandos de coser %s no admisible, esperando maximo %d operandos de coser.
+unexpected=Inesperado %s en la fila %d, columna %d, esperando %s.
+noargs=Definicion de argumentos no valida en la fila %d, columna %d.
 command=command
 norule=Componente no definido %s.
 nocommand=Commando no definido %s.
-argmismatch=Arguments en el llamado al comando %s en la fila %d, columna %d no concuerdan. Reciviendo %s.
-argnumbermismatch=Numero de argumentos no valido en el llamado del comando %s en la fila %d, columna %d. Experando %d y llegan %d.
+argmismatch=Argumento en el llamado al comando %s en la fila %d, columna %d no concuerda. Recibiendo %s.
+argnumbermismatch=Numero de argumentos no valido en el llamado del comando %s en la fila %d, columna %d. Esperando %d y llegan %d.
 novar=Variable %s no definida en la fila %d, columna %d.
 out=Salida
 error=Error
@@ -41,5 +41,6 @@ errors=Problemas!!! Se presentaron problemas al compilar.\nLa descripción de lo
 author=Desarrollado por el Profesor Jonatan Gómez Perdomo.\n jgomezpe at unal.edu.co \nUniversidad Nacional de Colombia
 machine=Configuración de la Máquina
 style=Estilo del editor de texto
-rot=% Rota un retazo 90 grados en dirección contraria al reloj.\n
-sew=% Cose dos retazos que tengan el mismo alto.\n
+rot=rot
+rotc=% Rota un retazo 90 grados en dirección contraria al reloj.\n
+sewc=% Cose dos retazos que tengan el mismo alto.\n

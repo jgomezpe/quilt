@@ -183,21 +183,21 @@ public class Util {
 			String config = plain_file_read(is,true);
 			unalcol.util.I18N.add(language, unalcol.util.I18N.load(config));
 			unalcol.util.I18N.use(language);
+			System.out.println("Language..."+language);
 			return true;
 		}catch( Exception e ){}
 		return false;
 	}
 	
 	public static boolean i18n(String language){
-		try{
-			return set_i18n(language, new FileInputStream(language)) || set_i18n(language, new FileInputStream(resources+i18n+language+I18N)) ||		
-				 set_i18n(language, Util.class.getResourceAsStream("/"+i18n+language+I18N));
-			
-		}catch(Exception e){}	
+		try{ return set_i18n(language, new FileInputStream(language)); }catch(Exception e){}
+		try{ return set_i18n(language, new FileInputStream(resources+i18n+language+I18N)); }catch(Exception e){}
+		try{ return set_i18n(language, Util.class.getResourceAsStream("/"+i18n+language+I18N)); }catch(Exception e){}
 		return false;
 	}
 		
 	public static String config(String file){
+		
 		try{ return plain_file_read(new FileInputStream(file),false); }catch( Exception e ){}
 		try{ return plain_file_read(new FileInputStream(resources+CFG+file),false); }catch( Exception e ){}
 		try{ return plain_file_read(Util.class.getResourceAsStream("/"+CFG+file),false); }catch( Exception e ){}

@@ -1,7 +1,7 @@
 package fun_pl.semantic;
 
 import fun_pl.syntax.FunEncoder;
-import fun_pl.util.Constants;
+import fun_pl.util.FunConstants;
 import unalcol.language.LanguageException;
 
 public class FunCommandDef extends FunCommand{
@@ -29,7 +29,7 @@ public class FunCommandDef extends FunCommand{
 	public String toString(){
 		StringBuilder sb=new StringBuilder();
 		sb.append(left);
-		sb.append(FunEncoder.get_symbol(Constants.ASSIGN));
+		sb.append(FunEncoder.get_symbol(FunConstants.ASSIGN));
 		sb.append(right);
 		return sb.toString();
 	}

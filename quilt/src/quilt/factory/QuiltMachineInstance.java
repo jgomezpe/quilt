@@ -79,6 +79,8 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 		remnants.register(EmptyRemnantInstance.EMPTY, EmptyRemnant.class.getName(), new EmptyRemnantInstance());
 	}
 	
+	public void register(String tag, String type, Instance<Quilt> instance ){ remnants.register(tag, type, instance); }
+	
 	@Override
 	public QuiltMachine load(Object[] args) {
 		if( args.length!=3 || !MACHINE.equals(args[0]) ) return null;

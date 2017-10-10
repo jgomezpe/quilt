@@ -3,7 +3,7 @@ package fun_pl.syntax;
 import java.io.IOException;
 
 import fun_pl.semantic.FunMachine;
-import fun_pl.util.Constants;
+import fun_pl.util.FunConstants;
 import unalcol.io.Position2D;
 import unalcol.io.ShortTermMemoryReader;
 import unalcol.language.LanguageException;
@@ -32,15 +32,8 @@ public class FunLexer implements Lexer{
 	protected Token check_primitive(Token t) throws LanguageException{
 		int[] tlexeme = t.lexeme();
 		String lexeme = get(tlexeme);
-		try{
-			machine.values(lexeme);
-			t.setType(Constants.PRIM_VALUE);
-			return t;
-		}catch(Exception e){}
-		try{ 
-			machine.primitive(lexeme);
-			t.setType(Constants.PRIM_COMMAND);			
-		}catch(Exception e){}
+		if( machine.composed(lexeme) != null )	t.setType(FunConstants.PRIM_VALUE);
+		else if( machine.is_primitive(lexeme) )	t.setType(FunConstants.PRIM_COMMAND);
 		return t; 
 	}
 	
@@ -50,17 +43,17 @@ public class FunLexer implements Lexer{
 			original = reader.read();
 			offset++;
 			int c=encoder.apply(original);
-			if( c==Constants.COMMENT){
+			if( c==FunConstants.COMMENT){
 				c = encoder.apply(reader.read());
 				offset++;
-				while( c!=Constants.COMMENT && c != Constants.EOL && c!=Constants.EOF ){
+				while( c!=FunConstants.COMMENT && c != FunConstants.EOL && c!=FunConstants.EOF ){
 					c = encoder.apply(reader.read());
 					offset++;
 				}
-				if(c==Constants.COMMENT) return next();
+				if(c==FunConstants.COMMENT) return next();
 			}	
 			return c;
-		} catch (IOException e) { return Constants.EOF; }
+		} catch (IOException e) { return FunConstants.EOF; }
 	}
 	
 	protected void back(){ if( reader.back() ) offset--; }
@@ -70,12 +63,12 @@ public class FunLexer implements Lexer{
 		Vector<Integer> v = new Vector<Integer>();
 		v.add(original);
 		int c = next();
-		while( c==Constants.UPPER_CASE || c==Constants.LOWER_CASE || c==Constants.DIGIT ){
+		while( c==FunConstants.UPPER_CASE || c==FunConstants.LOWER_CASE || c==FunConstants.DIGIT ){
 			v.add(original);
 			c=next();
 		}
-		if( c!=Constants.EOF ) back();
-		return new Token(Constants.VARIABLE, new Position2D(off, reader.row(), reader.column()), v);
+		if( c!=FunConstants.EOF ) back();
+		return new Token(FunConstants.VARIABLE, new Position2D(off, reader.row(), reader.column()), v);
 	}
 	
 	protected Token value() throws LanguageException {
@@ -83,13 +76,13 @@ public class FunLexer implements Lexer{
 		Vector<Integer> v = new Vector<Integer>();
 		v.add(original);
 		int c = next();
-		while(	c==Constants.UPPER_CASE || c==Constants.LOWER_CASE ||
-				c==Constants.DIGIT || c==Constants.EXTRA ){
+		while(	c==FunConstants.UPPER_CASE || c==FunConstants.LOWER_CASE ||
+				c==FunConstants.DIGIT || c==FunConstants.EXTRA ){
 			v.add(original);
 			c=next();
 		}
-		if( c!=Constants.EOF ) back();
-		return check_primitive(new Token(Constants.VALUE, new Position2D(off, reader.row(), reader.column()), v));
+		if( c!=FunConstants.EOF ) back();
+		return check_primitive(new Token(FunConstants.VALUE, new Position2D(off, reader.row(), reader.column()), v));
 	}
 	
 	@Override
@@ -99,27 +92,27 @@ public class FunLexer implements Lexer{
 		this.offset = offset;
 		Vector<Token> v = new Vector<Token>();
 		int c = next();
-		while(c!=Constants.EOF){
-			if( Constants.DOLLAR < c && c<Constants.START_LINK_SYMBOLS ){
+		while(c!=FunConstants.EOF){
+			if( FunConstants.DOLLAR < c && c<FunConstants.START_LINK_SYMBOLS ){
 				v.add(new Token(c, new Position2D(this.offset-1, reader.row(), reader.column()), new int[]{original}));
 				c = next();				
 			}else
-				if( Constants.START_LINK_SYMBOLS <= c && c<=Constants.END_LINK_SYMBOLS ){
+				if( FunConstants.START_LINK_SYMBOLS <= c && c<=FunConstants.END_LINK_SYMBOLS ){
 					v.add(new Token(c, new Position2D(this.offset-1, reader.row(), reader.column()), new int[]{original}));
 					c = next();				
 				}else{
 					switch(c){
-						case Constants.SPACE: // We do not care about spaces
-						case Constants.EOL:
+						case FunConstants.SPACE: // We do not care about spaces
+						case FunConstants.EOL:
 							c=next();
 						break;
-						case Constants.COMMENT: // It is a comment, we do not care until next EOL
+						case FunConstants.COMMENT: // It is a comment, we do not care until next EOL
 							c = next();
-							while( c != Constants.EOL && c!=Constants.EOF ){ c = next(); }
-							if( c==Constants.EOL ) c=next();
+							while( c != FunConstants.EOL && c!=FunConstants.EOF ){ c = next(); }
+							if( c==FunConstants.EOL ) c=next();
 						break;	
-						case Constants.UPPER_CASE: // It is a variable
-						case Constants.DOLLAR:
+						case FunConstants.UPPER_CASE: // It is a variable
+						case FunConstants.DOLLAR:
 							v.add(variable());
 							c=next();
 						break;	

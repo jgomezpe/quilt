@@ -5,10 +5,8 @@ import java.util.Iterator;
 import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
-import fun_pl.util.Constants;
 import quilt.operation.Rotate;
 import quilt.operation.Sew;
-import unalcol.language.LanguageException;
 import unalcol.types.collection.Collection;
 import unalcol.types.collection.array.Array;
 import unalcol.types.collection.keymap.HTKeyMap;
@@ -89,27 +87,23 @@ public class QuiltMachine extends FunMachine{
 	}
 
 	@Override
-	public FunCommand primitive(String command) throws LanguageException {
-		FunCommand c = primitives.get(command);
-		if( c!= null ) return c;
-		throw new LanguageException(Constants.nocommand,command);
-	}
+	public FunCommand primitive(String command){ return primitives.get(command); }
 
 	@Override
 	public FunSymbolCommand symbol_command() { return sew; }
 
 	@Override
-	public FunSymbolCommand symbol_command(String arg0){ return sew; }
-
-	@Override
-	public Object value(String remnant) throws Exception {
-		Quilt r = remnants.get(remnant);
-		if( r!=null ) return r;
-		throw new Exception("Unknown value...");
+	public FunSymbolCommand symbol_command(String command){
+		FunCommand c = primitive(command);
+		if( c==sew ) return sew;
+		else return null;
 	}
 
 	@Override
-	public Array<String> values(String compose) throws LanguageException {
+	public Object value(String remnant){ return remnants.get(remnant); }
+
+	@Override
+	public Array<String> composed(String compose){
 		Vector<String> v = new Vector<String>();
 		boolean ok = true;
 		while(compose.length()>0 && ok){
@@ -119,14 +113,14 @@ public class QuiltMachine extends FunMachine{
 			while(iter.hasNext() && !ok){
 				r = iter.next().key();
 				ok = compose.indexOf(r)==0;
-			}
-			if(ok){
-				v.add(r);
-				compose.substring(r.length());
+				if(ok){
+					v.add(r);
+					compose = compose.substring(r.length());
+				}
 			}
 		}
 		if( ok ) return v;
-		throw new LanguageException("Uknown value");
+		return null;
 	}
 
 	@Override

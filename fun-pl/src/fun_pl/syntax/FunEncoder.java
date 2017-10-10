@@ -1,34 +1,33 @@
 package fun_pl.syntax;
 
-import fun_pl.util.Constants;
+import fun_pl.util.FunConstants;
+import unalcol.language.LanguageException;
 import unalcol.language.symbol.Encoder;
 import unalcol.util.I18N;
-import unalcol.util.I18NException;
 
 public class FunEncoder implements Encoder{
 
 	protected String symbols;
 	protected String space=" \t\r";
 	
-	public FunEncoder(){ this.symbols = "%$=,()|#"; }
-	public FunEncoder( String symbols ) throws Exception{
+	public FunEncoder( String symbols ) throws LanguageException{
 		this.symbols = symbols;
-		if(symbols.length()>Constants.END_LINK_SYMBOLS) 
-			throw new I18NException(Constants.extra, symbols.substring(Constants.START_LINK_SYMBOLS), 
-					(Constants.END_LINK_SYMBOLS-Constants.START_LINK_SYMBOLS));
+		if(symbols.length()>FunConstants.END_LINK_SYMBOLS) 
+			throw new LanguageException(FunConstants.extra, symbols.substring(FunConstants.START_LINK_SYMBOLS), 
+					(FunConstants.END_LINK_SYMBOLS-FunConstants.START_LINK_SYMBOLS));
 	} 
 	
 	@Override
 	public int apply(int c) {
-		if(c==Constants.EOF) return Constants.EOF;
+		if(c==FunConstants.EOF) return FunConstants.EOF;
 		int index=symbols.indexOf((char)c);
 		if( index>=0 ) return index;
-		if( Character.isUpperCase(c)) return Constants.UPPER_CASE;
-		if( Character.isLowerCase(c)) return Constants.LOWER_CASE;
-		if( Character.isDigit(c)) return Constants.DIGIT;
-		if( space.indexOf(c)>=0 ) return Constants.SPACE;
-		if(c=='\n') return Constants.EOL;
-		return Constants.EXTRA;
+		if( Character.isUpperCase(c)) return FunConstants.UPPER_CASE;
+		if( Character.isLowerCase(c)) return FunConstants.LOWER_CASE;
+		if( Character.isDigit(c)) return FunConstants.DIGIT;
+		if( space.indexOf(c)>=0 ) return FunConstants.SPACE;
+		if(c=='\n') return FunConstants.EOL;
+		return FunConstants.EXTRA;
 	}
 	
 	public char symbol( int index ){
@@ -38,5 +37,5 @@ public class FunEncoder implements Encoder{
 	
 	public int symbols_number(){ return symbols.length(); }
 	
-	public static char get_symbol(int index){ return I18N.get(Constants.code).charAt(index); }
+	public static char get_symbol(int index){ return I18N.get(FunConstants.code).charAt(index); }
 }

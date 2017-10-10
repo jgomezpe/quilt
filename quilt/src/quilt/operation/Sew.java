@@ -2,10 +2,13 @@ package quilt.operation;
 
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
+import fun_pl.util.FunConstants;
 import quilt.EmptyQuilt;
 import quilt.MatrixQuilt;
 import quilt.Remnant;
+import quilt.util.QuiltConstants;
 import quilt.Quilt;
+import unalcol.language.LanguageException;
 import unalcol.util.I18N;
 
 /**
@@ -53,15 +56,15 @@ import unalcol.util.I18N;
 * @version 1.0
 */
 public class Sew extends FunSymbolCommand{
-	public static final String name="sew";
+	
 	public Sew(FunMachine machine) { super( machine ); } //		super(QuiltMachine.SEW, new String[]{"X", "Y"});
 	public Sew(){ super(); } //		super(QuiltMachine.SEW, new String[]{"X", "Y"});
 
-	public Quilt execute( Quilt left, Quilt right ) throws Exception{
+	public Quilt execute( Quilt left, Quilt right ) throws LanguageException{
 		if(left instanceof EmptyQuilt) return right;
 		if(right instanceof EmptyQuilt) return left;
 		if( left.rows() == right.rows() ) return new MatrixQuilt( left, right );
-		throw new Exception("Cannot stitch..");
+		throw new LanguageException(this, QuiltConstants.STITCH, this.row()+1, this.column()+1, left.rows(), right.rows());
 	}
 
 	public boolean check_right(Quilt quilt, Quilt right){
@@ -103,36 +106,43 @@ public class Sew extends FunSymbolCommand{
 		return (r==1 && k==1)? left[0][0]: new MatrixQuilt(left);
 	}
 	
-	public Quilt[] reverse(Quilt obj, Quilt left, Quilt right) throws Exception{		
+	protected LanguageException exception(){
+		return new LanguageException(this, QuiltConstants.UNSTITCH, row()+1, column()+1); 
+	}
+	
+	public Quilt[] reverse(Quilt obj, Quilt left, Quilt right) throws LanguageException{		
 		int c = obj.columns();
-		if( c!=1 && ((left!=null && left instanceof EmptyQuilt) || (right!=null && right instanceof EmptyQuilt)) ) throw new Exception("Cannot unstitch"); 
+		if( c!=1 && ((left!=null && left instanceof EmptyQuilt) || (right!=null && right instanceof EmptyQuilt)) ) throw exception(); 
 		if( c==1 && left!=null && left instanceof EmptyQuilt ) return new Quilt[]{left,obj}; 
 		if( c==1 && right!=null && right instanceof EmptyQuilt ) return new Quilt[]{obj,right};
 
 		if(left==null){
 			if( right==null ){
-				if(c<2) throw new Exception("Cannot unstitch");
+				if(c<2) throw exception();
 				return new Quilt[]{getLeft(obj, c-1),getRight(obj, 1)};
 			}else{
-				if( !check_right(obj, right) ) throw new Exception("Cannot unstitch");
+				if( !check_right(obj, right) ) throw exception();
 				return new Quilt[]{getLeft(obj, c-right.columns()), right};
 			}
 		}
 		if( right==null ){
-			if( !check_left(obj, left) ) throw new Exception("Cannot unstitch");
+			if( !check_left(obj, left) ) throw exception();
 			return new Quilt[]{left, getRight(obj, c-left.columns())};
 		}else{
-			if( !check_left(obj, left) || !check_right(obj,right) || c!=left.columns()+right.columns()) throw new Exception("Cannot unstitch");
+			if( !check_left(obj, left) || !check_right(obj,right) || c!=left.columns()+right.columns()) throw exception();
 			return new Quilt[]{left,right};
 		}
 	}
 
 	@Override
-	public Object[] reverse(Object obj, Object[] args) throws Exception{ return reverse((Quilt)obj, (Quilt)args[0], (Quilt)args[1]); }
+	public Object[] reverse(Object obj, Object[] args) throws LanguageException{ return reverse((Quilt)obj, (Quilt)args[0], (Quilt)args[1]); }
 
 	@Override
-	public Object execute(Object... args) throws Exception { return execute((Quilt)args[0], (Quilt)args[1]); }
+	public Object execute(Object... args) throws LanguageException { return execute((Quilt)args[0], (Quilt)args[1]); }
 
 	@Override
-	public String name() { return I18N.get(name); }
+	public String name(){
+		String symbols = I18N.get(FunConstants.code);
+		return ""+symbols.charAt(FunConstants.START_LINK_SYMBOLS); 
+	}
 }

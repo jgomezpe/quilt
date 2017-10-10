@@ -2,8 +2,7 @@ package fun_pl.semantic;
 
 import fun_pl.syntax.FunEncoder;
 import fun_pl.syntax.FunLexer;
-import fun_pl.util.Constants;
-import unalcol.io.Position2D;
+import fun_pl.util.FunConstants;
 import unalcol.language.LanguageException;
 import unalcol.language.Typed;
 import unalcol.language.TypedValue;
@@ -23,12 +22,7 @@ public class FunMeaner implements Meaner<FunCommand>{
 	
 	protected FunCommandCall prim(Token t) throws LanguageException{
 		String value = FunLexer.get(t.lexeme());
-		Array<String> compose = null;
-		try{ compose = machine.values(value); }
-		catch(Exception e){
-			Position2D pos = (Position2D)t.pos();
-			throw new LanguageException(pos, Constants.novalue, pos.row()+1,pos.column()+1, value);
-		}
+		Array<String> compose = machine.composed(value);
 		FunCommandCall c = new FunValue(t.pos(), machine, compose.get(0));
 		for( int i=1; i<compose.size(); i++ )
 			c = new FunCommandCall(c, machine, machine.symbol_command().name(), new FunCommandCall[]{c, new FunValue(t.pos(), machine, compose.get(i))} );
@@ -49,7 +43,7 @@ public class FunMeaner implements Meaner<FunCommand>{
 		if( vo.size()==1 ) return (FunCommandCall)apply(vo.get(0));
 		Vector<Object> v = new Vector<Object>();
 		for(Typed c:vo) v.add(c);
-		for( int i=Constants.START_LINK_SYMBOLS; i<encoder.symbols_number() && v.size()>1; i++ ){
+		for( int i=FunConstants.START_LINK_SYMBOLS; i<encoder.symbols_number() && v.size()>1; i++ ){
 			int k=1;
 			int pk=0;
 			int nk=2;
@@ -99,15 +93,15 @@ public class FunMeaner implements Meaner<FunCommand>{
 	@Override
 	public FunCommand apply(Typed rule) throws LanguageException {
 		switch( rule.type() ){
-			case Constants.VARIABLE:
+			case FunConstants.VARIABLE:
 				Token t = (Token)rule;
 				return new FunVariable(t.pos(), machine, FunLexer.get(t.lexeme()));
 			//case FunLexer.VALUE: throw new LanguageException("Don't know to deal with values");
-			case Constants.PRIM_VALUE: return prim((Token)rule);
-			case Constants.COMMAND_EXP: return command_exp((TypedValue<Vector<Typed>>)rule);
-			case Constants.COMMAND_DEF: return command_def((TypedValue<Vector<Typed>>)rule);
-			case Constants.COMMAND_DEF_LIST: return command_def_list((TypedValue<Vector<Typed>>)rule);
-			case Constants.COMMAND: return command((TypedValue<Vector<Typed>>)rule);
+			case FunConstants.PRIM_VALUE: return prim((Token)rule);
+			case FunConstants.COMMAND_EXP: return command_exp((TypedValue<Vector<Typed>>)rule);
+			case FunConstants.COMMAND_DEF: return command_def((TypedValue<Vector<Typed>>)rule);
+			case FunConstants.COMMAND_DEF_LIST: return command_def_list((TypedValue<Vector<Typed>>)rule);
+			case FunConstants.COMMAND: return command((TypedValue<Vector<Typed>>)rule);
 		}
 		return null;
 	}

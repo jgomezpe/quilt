@@ -1,7 +1,6 @@
 package quilt.computer;
 
 import quilt.Quilt;
-import quilt.Remnant;
 import quilt.util.Util;
 import unalcol.gui.util.Instance;
 

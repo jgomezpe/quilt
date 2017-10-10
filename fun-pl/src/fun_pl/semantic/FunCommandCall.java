@@ -1,7 +1,7 @@
 package fun_pl.semantic;
 
 import fun_pl.syntax.FunEncoder;
-import fun_pl.util.Constants;
+import fun_pl.util.FunConstants;
 import unalcol.io.Position;
 import unalcol.language.LanguageException;
 import unalcol.types.collection.keymap.HTKeyMap;
@@ -40,10 +40,10 @@ public class FunCommandCall extends FunCommand {
 		int arity = arity();
 		if( arity == 0 ){
 			Object obj=machine.execute(this, name);
-			if(obj==null || values.length!=1 || !obj.equals(values[0])) throw exception(Constants.argmismatch, values[0].toString());
+			if(obj==null || values.length!=1 || !obj.equals(values[0])) throw exception(FunConstants.argmismatch, values[0].toString());
 			return variables;
 		}
-		if( values.length != arity ) throw exception(Constants.argnumbermismatch,values.length,arity);
+		if( values.length != arity ) throw exception(FunConstants.argnumbermismatch,values.length,arity);
 		LanguageException ex = null;
 		Vector<Integer> index = new Vector<Integer>();
 		for( int i=0; i<arity; i++ ) index.add(i);
@@ -62,7 +62,7 @@ public class FunCommandCall extends FunCommand {
 				}else{
 					if( args[k] instanceof FunValue ){
 						Object obj = args[k].execute(variables);
-						if( obj==null || !obj.equals(values[k]) ) throw exception(Constants.argmismatch,values[k].toString());
+						if( obj==null || !obj.equals(values[k]) ) throw exception(FunConstants.argmismatch,values[k].toString());
 						index.remove(i);
 					}else{					
 						try{
@@ -71,11 +71,12 @@ public class FunCommandCall extends FunCommand {
 								Object[] toMatch = new Object[]{null,null};
 								try{ toMatch[0]=args[k].args[0].execute(variables); }catch(Exception x){}
 								try{ toMatch[1]=args[k].args[1].execute(variables); }catch(Exception x){}
+								c.init(args[k]);
 								Object[] objs = ((FunSymbolCommand)c).reverse(values[k], toMatch);
 								args[k].match(variables, objs);
 							}else{
 								Object obj = args[k].execute(variables);
-								if( obj==null || !obj.equals(values[k]) )  throw new LanguageException(args[k],Constants.argmismatch,values[k].toString());
+								if( obj==null || !obj.equals(values[k]) )  throw new LanguageException(args[k],FunConstants.argmismatch,values[k].toString());
 							}
 							index.remove(i);
 						}catch( LanguageException e ){
@@ -106,13 +107,13 @@ public class FunCommandCall extends FunCommand {
 		sb.append(I18N.get(name));
 		sb.append(name);
 		if( args!=null && args.length>0 ){
-			sb.append(encoder.symbol(Constants.OPEN));
+			sb.append(encoder.symbol(FunConstants.OPEN));
 			sb.append(args[0]);
 			for( int i=1; i<args.length; i++ ){
-				sb.append(encoder.symbol(Constants.COMMA));
+				sb.append(encoder.symbol(FunConstants.COMMA));
 				sb.append(args[i]);
 			}
-			sb.append(encoder.symbol(Constants.CLOSE));
+			sb.append(encoder.symbol(FunConstants.CLOSE));
 		}
 		return sb.toString();
 	}
@@ -125,13 +126,13 @@ public class FunCommandCall extends FunCommand {
 		sb.append(name());
 		int n = arity();
 		if( n>0 ){
-			sb.append(FunEncoder.get_symbol(Constants.OPEN));
+			sb.append(FunEncoder.get_symbol(FunConstants.OPEN));
 			sb.append(args[0]);
 			for( int i=1; i<n;i++ ){
-				sb.append(FunEncoder.get_symbol(Constants.COMMA));			
+				sb.append(FunEncoder.get_symbol(FunConstants.COMMA));			
 				sb.append(args[i]);
 			}
-			sb.append(FunEncoder.get_symbol(Constants.CLOSE));			
+			sb.append(FunEncoder.get_symbol(FunConstants.CLOSE));			
 		}
 		return sb.toString();
 	}

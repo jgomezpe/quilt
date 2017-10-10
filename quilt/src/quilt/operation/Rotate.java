@@ -3,6 +3,7 @@ package quilt.operation;
 import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import quilt.Quilt;
+import unalcol.language.LanguageException;
 import unalcol.util.I18N;
 
 /**
@@ -64,7 +65,7 @@ public class Rotate extends FunCommand{
 	public int arity() { return 1; }
 
 	@Override
-	public Object execute(Object... args) throws Exception { return execute((Quilt)args[0]); }
+	public Object execute(Object... args) throws LanguageException { return execute((Quilt)args[0]); }
 
 	@Override
 	public String name() { return I18N.get(name); }	

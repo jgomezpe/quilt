@@ -1,6 +1,6 @@
 package fun_pl.util;
 
-public class Constants {
+public class FunConstants {
 	// FunMachine
 	public static final String novalue = "novalue";
 

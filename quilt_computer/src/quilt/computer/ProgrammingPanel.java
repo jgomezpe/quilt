@@ -23,11 +23,12 @@ import javax.swing.JToolBar;
 import javax.swing.border.EtchedBorder;
 import javax.swing.text.JTextComponent;
 
-import fun_pl.semantic.FunCommand;
+import fun_pl.FunLanguage;
 import fun_pl.semantic.FunCommandCall;
+import fun_pl.semantic.FunProgram;
+import fun_pl.util.FunConstants;
 import quilt.Quilt;
 import quilt.QuiltMachine;
-import quilt.Remnant;
 import quilt.factory.QuiltMachineInstance;
 import quilt.util.QuiltConstants;
 import unalcol.gui.editor.SyntaxEditPanel;
@@ -35,7 +36,11 @@ import unalcol.gui.editor.SyntaxStyle;
 import unalcol.gui.io.FileFilter;
 import unalcol.gui.log.LogPanel;
 import unalcol.gui.util.ObjectParser;
+import unalcol.io.Position2D;
+import unalcol.io.Tokenizer;
+import unalcol.language.LanguageException;
 import unalcol.types.collection.Collection;
+import unalcol.types.collection.keymap.HTKeyMap;
 import quilt.util.Util;
 
 /**
@@ -88,7 +93,6 @@ public class ProgrammingPanel extends JPanel{
 	 */
 	private static final long serialVersionUID = -3339559167222155206L;
 
-	String Constants="spanish";
 	String title;
 	String fileName = null;
 	String fileDir = ".";
@@ -132,39 +136,48 @@ public class ProgrammingPanel extends JPanel{
 	JButton jCommandButton = new JButton();
 
 	protected QuiltMachine machine;
+	protected QuiltMachineInstance qm= new QuiltMachineInstance();
+	protected HTKeyMap<Integer, String> tokens = new HTKeyMap<Integer,String>();
 	
 	public LogPanel getLogPanel(){ return log; }
 
-	public ProgrammingPanel(TitleComponent parent, String machine_txt, String Constants, String styles){
+	public ProgrammingPanel(TitleComponent parent, String machine_txt, String styles){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
 		int height = (int)screenSize.getHeight();
 		this.setSize(new Dimension(width*4/5, height*4/5));
+
 		// @TODO: Load Constants i18n
-		QuiltMachineInstanceForComputer qm = new QuiltMachineInstanceForComputer();
-		QuiltMachine machine;
-		try{
-			machine = qm.load(ObjectParser.parse(machine_txt));
-		}catch(Exception e){
-			e.printStackTrace();
-			machine = null;
-		}
-		build(parent, width, height, styles, machine, Constants);
+		qm.register(ImageRemnantInstance.IMAGE, ImageRemnant.class.getName(), new ImageRemnantInstance());
+		
+		QuiltMachine machine=null;
+		try{ machine = qm.load(ObjectParser.parse(machine_txt)); }catch(Exception e){ e.printStackTrace(); }
+		build(parent, width, height, styles, machine);
 	}
 	
-	public ProgrammingPanel( TitleComponent parent, int width, int height, String styles,
-			 QuiltMachine machine, String Constants ){
-		build( parent, width, height, styles, machine, Constants );
+	public ProgrammingPanel( TitleComponent parent, int width, int height, String styles, QuiltMachine machine ){
+		build( parent, width, height, styles, machine );
 	}
 	
 	public static String i18n(String code){ return unalcol.util.I18N.get(code); }
 	
-	public void build( TitleComponent parent, int width, int height, String styles,
-					   QuiltMachine machine, String Constants ){
+	public void build( TitleComponent parent, int width, int height, String styles, QuiltMachine machine ){
 		this.setMachine(machine);
 		this.title_component = parent;
-		this.Constants=Constants;
-		try{		
+		try{
+		    String[] tokens_style = { "undef", "regular", "comment", "symbol", "stitch", "regular", "reserved", "remnant" };
+		    tokens.set(Integer.MIN_VALUE,tokens_style[0]);
+		    tokens.set(FunConstants.VALUE,tokens_style[1]);
+		    tokens.set(FunConstants.COMMENT,tokens_style[2]);
+		    tokens.set(FunConstants.ASSIGN,tokens_style[3]);
+		    tokens.set(FunConstants.OPEN,tokens_style[3]);
+		    tokens.set(FunConstants.CLOSE,tokens_style[3]);
+		    tokens.set(FunConstants.COMMA,tokens_style[3]);
+		    tokens.set(FunConstants.START_LINK_SYMBOLS,tokens_style[4]);
+		    tokens.set(FunConstants.VARIABLE,tokens_style[5]);
+		    tokens.set(FunConstants.PRIM_COMMAND,tokens_style[6]);
+		    tokens.set(FunConstants.PRIM_VALUE,tokens_style[7]);
+
 			title =i18n(QuiltConstants.TITLE);
 			fileName = i18n(QuiltConstants.NONAME);
 			parent.setTitle(title + " [" + fileName + "]");
@@ -266,10 +279,7 @@ public class ProgrammingPanel extends JPanel{
 		button.setIcon(new ImageIcon(img.getScaledInstance((button==jCommandButton)?60:30, 30, Image.SCALE_SMOOTH)));
 		button.setToolTipText(message);
 	}
-	
-    protected String[] tokens = { "undef", "regular", "comment", "symbol", "stitch", "regular", "reserved", "remnant" };
-    protected SyntaxStyle[] styles;
-    
+	   
 	public void jStyleButton_actionPerformed(ActionEvent actionEvent) {
 		String QMS = Util.QMS;
 		FileFilter filter = new FileFilter( i18n(QuiltConstants.FILE)+" (*"+QMS+")" );
@@ -311,7 +321,6 @@ public class ProgrammingPanel extends JPanel{
 					s = reader.readLine();
 				}
 				reader.close();
-				QuiltMachineInstance qm = new QuiltMachineInstanceForComputer();
 				machine = qm.load(ObjectParser.parse(sb.toString()));
 				setMachine(machine);
 			}catch (Exception e){ e.printStackTrace(); }
@@ -408,43 +417,42 @@ public class ProgrammingPanel extends JPanel{
 		this.log.getErrorArea().setText("");
 	}
 	
-	public void show_error_message( JTextComponent code_area, Exception e ){
-		// @TODO: Getting the error's position 
-		/*
+	public void show_error_message( JTextComponent code_area, LanguageException e ){
 		if( frame != null ) frame.setVisible(false);
 		String msg = e.getMessage();	
-		System.out.println(msg);
 		int k = msg.indexOf(unalcol.util.I18N.MSG_SEPARATOR);
 		JOptionPane.showMessageDialog(this, i18n(QuiltConstants.ERRORS));
 		this.log.getOutArea().setText(i18n(QuiltConstants.ERRORS));
 		this.log.getErrorArea().setText(msg.substring(k+1));
 		this.log.select(false);
-		Position pos = new Position(msg.substring(0, k));
-		if( pos.row()==-1 ){
-			code_area=jCommand;
-			pos.setRow(0);
-		}
-		String str = code_area.getText();
-		int caret = 0;
-		int i=0;
-		while( i<pos.row() ){
-			while(str.charAt(caret)!='\n') caret++;
-			caret++;
-			i++;
-		}
-		code_area.setCaretPosition(caret+pos.column());
-		code_area.requestFocusInWindow();
-		*/
+		if( e.position() instanceof Position2D ){
+			Position2D pos = (Position2D)e.position();
+			if( pos.row()==-1 ){
+				code_area=jCommand;
+				pos.setRow(0);
+			}
+			String str = code_area.getText();
+			int caret = 0;
+			int i=0;
+			while( i<pos.row() ){
+				while(str.charAt(caret)!='\n') caret++;
+				caret++;
+				i++;
+			}
+			code_area.setCaretPosition(caret+pos.column()-1);
+			code_area.requestFocusInWindow();
+		}	
 	}
 
 	public void jCompileButton_actionPerformed(ActionEvent actionEvent) {
 		String program = jProgram.getText();
 		try{
-			machine.setProgram(program);
+			FunProgram prog = (FunProgram)FunLanguage.analize(machine, program, true);
+			machine.setProgram(prog);
 			this.log.getOutArea().setText(i18n(QuiltConstants.NO_ERRORS));
 			this.log.getErrorArea().setText("");
 			this.log.select(true);
-		}catch(Exception e){
+		}catch(LanguageException e){
 			show_error_message(jProgram, e);
 		}
 	}
@@ -454,19 +462,20 @@ public class ProgrammingPanel extends JPanel{
 		String program = jCommand.getText();
 		FunCommandCall command=null;
 		try{
-			command = machine.command(program);
+			command = (FunCommandCall)FunLanguage.analize(machine, program, false);
 			command.setRow(-1);
-		}catch(Exception e){
+		}catch(LanguageException e){
 			show_error_message(jCommand, e);
 		}
 		if( command != null ){
 			try{
-				Quilt r = (Quilt)machine.execute(command);
+				Quilt r = (Quilt)command.execute( new HTKeyMap<String, Object>() );
 				drawPanel.set(r);
 				if(this.log.getOutArea().getText().contains(QuiltConstants.ERROR) ) this.log.getOutArea().setText(i18n(QuiltConstants.NO_ERRORS));
 				this.log.select(true);
 				this.log.getErrorArea().setText("");
-			}catch(Exception e){
+			}catch(LanguageException e){
+				System.out.println(e.getMessage());
 				show_error_message(jProgram, e);
 			}
 		}	
@@ -474,9 +483,9 @@ public class ProgrammingPanel extends JPanel{
 	
 	public void setMachine( QuiltMachine machine ){
 		this.machine = machine;
-		// @TODO : Check the parsing editor
-		//jProgram.setTokenizer(machine.parser(), tokens);
-		//jCommand.setTokenizer(machine.parser(), tokens);
+		Tokenizer tokenizer = FunLanguage.tokenizer(machine);
+		jProgram.setTokenizer(tokenizer, tokens);
+		jCommand.setTokenizer(tokenizer, tokens);
 	}
 }
 

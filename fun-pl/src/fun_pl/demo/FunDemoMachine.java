@@ -3,9 +3,8 @@ package fun_pl.demo;
 import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
-import fun_pl.util.Constants;
-import unalcol.language.LanguageException;
 import unalcol.types.collection.Collection;
+import unalcol.types.collection.SearchCollection;
 import unalcol.types.collection.array.Array;
 import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.vector.Vector;
@@ -18,21 +17,21 @@ public class FunDemoMachine extends FunMachine{
 	}
 
 	@Override
-	public Object value(String value) throws Exception{ return Integer.parseInt(value); }
+	public Object value(String value){ try{ return Integer.parseInt(value); }catch(NumberFormatException e){ return null; } }
 
 	@Override
-	public Array<String> values(String value) throws LanguageException{
-		try{ 
+	public Array<String> composed(String value){
+		if( this.value(value) != null ){
 			Vector<String> v = new Vector<String>();
-			v.add(""+this.value(value));
+			v.add(value);
 			return v; 
-		}catch(Exception e){ throw new LanguageException(Constants.novalue, value); }
+		}else return null;
 	}
 
 	@Override
-	public FunCommand primitive(String command) throws LanguageException{
+	public FunCommand primitive(String command){
 		if(plus.name().equals(command)) return plus;
-		throw new LanguageException(Constants.nocommand,command);
+		else return null;
 	}
 
 	@Override
@@ -42,7 +41,8 @@ public class FunDemoMachine extends FunMachine{
 
 	@Override
 	public FunSymbolCommand symbol_command(String symbol) {
-		return plus;
+		if(plus.name().equals(symbol)) return plus;
+		else return null;
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class FunDemoMachine extends FunMachine{
 	}
 
 	@Override
-	public Collection<String> primitives() {
+	public SearchCollection<String> primitives() {
 		HTKeyMap<String,String> v = new HTKeyMap<String,String>();
 		v.set(plus.name(),plus.name());
 		return v;

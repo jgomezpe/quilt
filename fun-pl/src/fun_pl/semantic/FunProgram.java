@@ -1,8 +1,6 @@
 package fun_pl.semantic;
 
-import fun_pl.util.Constants;
-import unalcol.io.Position;
-import unalcol.io.Position2D;
+import fun_pl.util.FunConstants;
 import unalcol.language.LanguageException;
 import unalcol.language.LanguageMultiException;
 import unalcol.types.collection.keymap.HTKeyMap;
@@ -36,12 +34,12 @@ public class FunProgram extends FunCommand{
 	
 	public void clear(){ commands.clear(); }
 	
-	public Object execute( Position pos, String command, Object... values ) throws LanguageException{
+	public Object execute( String command, Object... values ) throws LanguageException{
 		Vector<FunCommandDef> v = commands.get(command);
-		if( v==null ) throw new LanguageException(pos, Constants.nocommand, command);
+		if( v==null ) throw new LanguageException(this, FunConstants.nocommand, command);
 		Vector<FunCommandDef> candidates = new Vector<FunCommandDef>();
 		for( FunCommandDef c:v ) if( c.arity()==values.length ) candidates.add(c);
-		if(candidates.size()==0) throw new LanguageException(pos, Constants.argnumbermismatch, command);
+		if(candidates.size()==0) throw new LanguageException(this, FunConstants.argnumbermismatch, command);
 		LanguageMultiException e=null;
 		int i=0; 
 		while( i<candidates.size() ){ 
@@ -67,7 +65,7 @@ public class FunProgram extends FunCommand{
 	}
 	
 	@Override
-	public Object execute(Object... args) throws LanguageException { return execute(new Position2D(), MAIN,args); }
+	public Object execute(Object... args) throws LanguageException { return execute(MAIN,args); }
 
 	@Override
 	public int arity(){ return 0; }

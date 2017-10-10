@@ -48,6 +48,8 @@ public class QuiltConstants{
 	public static final String SPANISH = "spanish";
 	public static final String ENGLISH = "english";
 	public static final String ERROR = "error";
+	public static final String STITCH = "stitch";
+	public static final String UNSTITCH = "unstitch";
 	public static final String OUT = "out";
 	public static final String UNSYMBOL = "unsymbol";
 	public static final String EXPECTING = "expecting";
@@ -55,7 +57,6 @@ public class QuiltConstants{
 	public static final String DIGIT = "digit";
 	public static final String LETTER_DIGIT = "letter_digit";
 	public static final String ARGS = "args";
-	public static final String UNSTITCH = "unstitch";
 	public static final String QUILT = "quilt";
 	public static final String REMNANT = "remnant";
 	public static final String PRIMITIVE = "primitive";
@@ -77,7 +78,7 @@ public class QuiltConstants{
 	public static final String AUTHOR = "author";	
 	public static final String MACHINE = "machine";
 	public static final String STYLE = "style";		
-	public static final String QMC = "qmc";		
-	public static final String QMP = "qmp";		
-	public static final String QMS = "qms";		
+	public static final String QMC = ".qmc";		
+	public static final String QMP = ".qmp";		
+	public static final String QMS = ".qms";		
 }

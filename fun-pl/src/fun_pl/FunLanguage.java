@@ -6,9 +6,10 @@ import fun_pl.semantic.FunMeaner;
 import fun_pl.syntax.FunEncoder;
 import fun_pl.syntax.FunLexer;
 import fun_pl.syntax.FunParser;
-import fun_pl.util.Constants;
+import fun_pl.util.FunConstants;
 import unalcol.io.CharReader;
 import unalcol.io.ShortTermMemoryReader;
+import unalcol.io.Tokenizer;
 import unalcol.language.LanguageException;
 import unalcol.language.Typed;
 import unalcol.language.programming.lexer.Token;
@@ -17,7 +18,7 @@ import unalcol.types.collection.array.Array;
 import unalcol.util.I18N;
 
 public class FunLanguage {
-	public static FunEncoder encoder() throws LanguageException { return new FunEncoder(I18N.get(Constants.code)); }
+	public static FunEncoder encoder() throws LanguageException { return new FunEncoder(I18N.get(FunConstants.code)); }
 	
 	public static Array<Token> lexer(FunMachine machine, FunEncoder encoder, String code) throws LanguageException{
 		ShortTermMemoryReader reader = new CharReader(code);
@@ -28,7 +29,7 @@ public class FunLanguage {
 	}
 	
 	public static Typed parser(Array<Token> tokens, boolean program) throws LanguageException{
-		Parser p = new FunParser(program?Constants.COMMAND_DEF_LIST:Constants.COMMAND_CALL);
+		Parser p = new FunParser(program?FunConstants.COMMAND_DEF_LIST:FunConstants.COMMAND_CALL);
 		return p.apply(tokens, 0);
 	}	
 	
@@ -37,11 +38,16 @@ public class FunLanguage {
 		return meaner.apply(t);
 	}
 	
-	public static FunCommand analize(FunMachine machine, String code, boolean asProgram) throws Exception{
+	public static FunCommand analize(FunMachine machine, String code, boolean asProgram) throws LanguageException{
 		FunEncoder encoder = FunLanguage.encoder();
 		Array<Token> tokens = FunLanguage.lexer(machine, encoder, code);
 		Typed t = FunLanguage.parser(tokens,asProgram);
 		FunCommand c= FunLanguage.meaner(t,machine,encoder);
 		return c;
 	}	
+	
+	public static Tokenizer tokenizer(FunMachine machine){
+		try{ return new Tokenizer(FunLanguage.encoder(), new FunLexer(machine)); }catch(LanguageException e){}
+		return null;
+	}
 }

@@ -1,7 +1,7 @@
 package quilt.computer;
 import javax.swing.JPanel;
 
-import quilt.Remnant;
+import quilt.Quilt;
 import quilt.gui.Drawer;
 
 import java.awt.Color;
@@ -58,23 +58,23 @@ public class DrawPanel extends JPanel{
 	 */
 	private static final long serialVersionUID = -608013051247107752L;
   
-	public Remnant remnant = null;
+	public Quilt Quilt = null;
 
 	public DrawPanel(){
 		this( null );
 	}
 
-	public DrawPanel( Remnant remnant ) {
-		this.remnant = remnant;
+	public DrawPanel( Quilt Quilt ) {
+		this.Quilt = Quilt;
 		setBackground(new Color(255,255,255));
 	}
 
-	public Remnant get(){
-		return remnant;
+	public Quilt get(){
+		return Quilt;
 	}
 
-	public void set( Remnant remnant ){
-		this.remnant = remnant;
+	public void set( Quilt Quilt ){
+		this.Quilt = Quilt;
 		this.updateUI();
 	}
 
@@ -84,13 +84,13 @@ public class DrawPanel extends JPanel{
 	 */
 	protected void paintComponent(Graphics g){
 		super.paintComponent(g);
-		if( remnant != null ){
+		if( Quilt != null ){
 			Dimension d = this.getSize();
 			//System.out.println( "Painting..." + d );
 			int w = Math.min(d.width, d.height);
-			int wr = Math.max(remnant.columns(), remnant.rows());
+			int wr = Math.max(Quilt.columns(), Quilt.rows());
 			Drawer drawer = new AWTDrawer( g, w/wr );
-			remnant.draw(drawer, 0, 0);
+			Quilt.draw(drawer, 0, 0);
 		}
 	}
 }
