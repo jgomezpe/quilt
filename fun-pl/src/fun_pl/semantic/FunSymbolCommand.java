@@ -11,5 +11,5 @@ public abstract class FunSymbolCommand extends FunCommand{
 		return 2;
 	}
 	
-	public abstract Object[] reverse(Object obj, Object[] toMatch) throws LanguageException;
+	public abstract Object[] reverse(Object obj, Object[] toMatch, FunCommand[] args) throws LanguageException;
 }

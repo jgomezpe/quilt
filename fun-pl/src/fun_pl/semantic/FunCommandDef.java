@@ -3,6 +3,8 @@ package fun_pl.semantic;
 import fun_pl.syntax.FunEncoder;
 import fun_pl.util.FunConstants;
 import unalcol.language.LanguageException;
+import unalcol.types.collection.keymap.HTKeyMap;
+import unalcol.types.collection.keymap.KeyMap;
 
 public class FunCommandDef extends FunCommand{
 	protected FunCommandCall left;
@@ -14,12 +16,15 @@ public class FunCommandDef extends FunCommand{
 		this.right = right;
 	}
 	
-	public void match( Object... values ) throws LanguageException{
-		left.match(values);
+	public KeyMap<String,Object> match( Object... values ) throws LanguageException{
+		if(left.arity()==0) return new HTKeyMap<String,Object>();
+		return left.match(values);
 	}
 
 	@Override
-	public Object execute( Object... values ) throws LanguageException{ return right.execute(left.match(values)); }
+	public Object execute( Object... values ) throws LanguageException{ 
+		return right.execute(match(values)); 
+	}
 
 	public String name(){ return left.name(); }
 

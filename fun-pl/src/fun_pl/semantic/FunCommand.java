@@ -1,5 +1,7 @@
 package fun_pl.semantic;
 
+import fun_pl.syntax.FunEncoder;
+import fun_pl.util.FunConstants;
 import unalcol.io.Position;
 import unalcol.io.Position2D;
 import unalcol.language.LanguageException;
@@ -21,4 +23,25 @@ public abstract class FunCommand extends FunObject{
 	
 	public abstract Object execute( Object... value ) throws LanguageException;
 	public abstract int arity();
+	
+	public String comment(){ return null; }
+	public String toString(){
+		StringBuilder sb=new StringBuilder();
+		String c = comment();
+		if( c!=null ) sb.append(c+"\n");
+		sb.append(name());
+		int n = arity();
+		if( n>0 ){
+			String var="XYZABCDEIJKNM";
+			sb.append(FunEncoder.get_symbol(FunConstants.OPEN));
+			sb.append(var.charAt(0));
+			for( int i=1; i<n;i++ ){
+				sb.append(FunEncoder.get_symbol(FunConstants.COMMA));			
+				sb.append(var.charAt(i%var.length())+((i>=var.length())?(""+i/var.length()):""));
+			}
+			sb.append(FunEncoder.get_symbol(FunConstants.CLOSE));			
+		}
+		return sb.toString();
+	}
+	
 }

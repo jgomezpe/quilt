@@ -38,7 +38,8 @@ public class FunConstants {
 	
 	public static final String unexpected="unexpected";
 	public static final String noargs="noargs";
-	public static final String command="command";
+	public static final String validcommand="validcommand";
+	public static final String redefined="redefined";
 	public static final String norule="norule";
 
 	// FunMeaner

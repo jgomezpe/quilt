@@ -72,7 +72,7 @@ public class FunCommandCall extends FunCommand {
 								try{ toMatch[0]=args[k].args[0].execute(variables); }catch(Exception x){}
 								try{ toMatch[1]=args[k].args[1].execute(variables); }catch(Exception x){}
 								c.init(args[k]);
-								Object[] objs = ((FunSymbolCommand)c).reverse(values[k], toMatch);
+								Object[] objs = ((FunSymbolCommand)c).reverse(values[k], toMatch,args[k].args);
 								args[k].match(variables, objs);
 							}else{
 								Object obj = args[k].execute(variables);

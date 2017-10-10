@@ -30,19 +30,6 @@ public class FunParser implements Parser{
 		return get(); 
 	}
 
-	protected Typed command_call() throws LanguageException {
-		LanguageException le = null;
-		int off = offset;
-		try{ return command();	}catch(LanguageException e){ le=e; }
-		offset=off;
-		Token t = get();
-		if( t.type()==FunConstants.VARIABLE || t.type()==FunConstants.PRIM_VALUE || (t.type()&FunConstants.VALUE)==FunConstants.VALUE ){
-			next();
-			return t;
-		}
-		throw le;
-	}
-	
 	public static int[] pos( Token t ){
 	    Position2D pos = (Position2D)t.pos();
 	    return new int[]{pos.row(),pos.row()};
@@ -61,6 +48,19 @@ public class FunParser implements Parser{
 	protected LanguageException exception(Token t, String code, String symbol ){
 		int[] pos = posf(t);
 		return new LanguageException(t.pos(), code, FunLexer.get(t.lexeme()),pos[0],pos[1],symbol);
+	}
+	
+	protected Typed command_call() throws LanguageException {
+		LanguageException le = null;
+		int off = offset;
+		try{ return extended_command(true);	}catch(LanguageException e){ le=e; }
+		offset=off;
+		Token t = get();
+		if( t.type()==FunConstants.VARIABLE || t.type()==FunConstants.PRIM_VALUE || (t.type()&FunConstants.VALUE)==FunConstants.VALUE ){
+			next();
+			return t;
+		}
+		throw le;
 	}
 	
 	protected Typed wrap_command_exp() throws LanguageException{
@@ -110,8 +110,13 @@ public class FunParser implements Parser{
 	}
 	
 	protected Typed command() throws LanguageException{
+		return extended_command(false);
+	} 
+	
+	protected Typed extended_command(boolean call ) throws LanguageException{
 		Token t = get();
-		if( t.type()==FunConstants.PRIM_COMMAND || (t.type()&FunConstants.VALUE)==FunConstants.VALUE ){
+		if(  (t.type()&FunConstants.VALUE)==FunConstants.VALUE  || 
+			 call && (t.type()==FunConstants.PRIM_COMMAND || (FunConstants.START_LINK_SYMBOLS<=t.type()&&t.type()<=FunConstants.END_LINK_SYMBOLS)) ){
 			Vector<Typed> v = new Vector<Typed>();
 			v.add(t);
 			t = next();
@@ -120,7 +125,9 @@ public class FunParser implements Parser{
 			}
 			return new TypedValue<Vector<Typed>>(FunConstants.COMMAND, v);
 		}
-		throw exception(t, FunConstants.unexpected, I18N.get(FunConstants.command));
+		if( t.type()==FunConstants.PRIM_COMMAND || (FunConstants.START_LINK_SYMBOLS<=t.type()&&t.type()<=FunConstants.END_LINK_SYMBOLS) )
+			throw exception(t, FunConstants.redefined, " ");
+		else throw exception(t, FunConstants.unexpected, I18N.get(FunConstants.validcommand));
 	} 
 	
 	protected Typed command_def() throws LanguageException {

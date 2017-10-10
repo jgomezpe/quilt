@@ -5,6 +5,7 @@ import java.util.Iterator;
 import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
+import fun_pl.util.FunConstants;
 import quilt.operation.Rotate;
 import quilt.operation.Sew;
 import unalcol.types.collection.Collection;
@@ -13,6 +14,7 @@ import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.keymap.ImmutableKeyMap;
 import unalcol.types.collection.keymap.KeyValue;
 import unalcol.types.collection.vector.Vector;
+import unalcol.util.I18N;
 
 /**
 *
@@ -83,7 +85,9 @@ public class QuiltMachine extends FunMachine{
 	
 	@Override
 	public boolean can_assign(String variable, Object remnant) {
-		return true;
+		Quilt q = (Quilt)remnant;
+		return (variable.charAt(0)==I18N.get(FunConstants.code).charAt(FunConstants.DOLLAR) && q.columns()==1) ||
+				   (variable.charAt(0)!=I18N.get(FunConstants.code).charAt(FunConstants.DOLLAR) && q.columns()>1);
 	}
 
 	@Override

@@ -40,7 +40,7 @@ public class FunDemo {
 		x.add(FunConstants.extra, "Number of link operands %s not admisible, expecting at most %d link operands");
 		x.add(FunConstants.unexpected, "Unexpected %s at row %d, column %d. Expecting %s");
 		x.add(FunConstants.noargs, "Not valid definition of arguments at row %d, column %d");
-		x.add(FunConstants.command, "command");
+		x.add(FunConstants.validcommand, "valid command name");
 		x.add(FunConstants.norule, "Undefined component %s.");
 		x.add(FunConstants.nocommand, "Undefined command %s at row %d, column %d.");
 		x.add(FunConstants.argmismatch, "Mismatch in arguments calling command %s at row %d, column %d. Receiving %s");
@@ -70,8 +70,8 @@ public class FunDemo {
 		i18n(); // Defining the language for error messages
 		FunMachine machine = new FunDemoMachine();
 		//String code=parser_error(); //Test the compiler using a program written with a grammar error
-		String code=meaner_error(); //Test the compiler using a program written with a semantic error
-		//String code=program(); //Test the compiler without errors
+		//String code=meaner_error(); //Test the compiler using a program written with a semantic error
+		String code=program(); //Test the compiler without errors
 		FunProgram program = (FunProgram)analize(machine, code, true);
 		machine.setProgram(program);
 		FunCommandCall command = (FunCommandCall)analize(machine,command(),false);

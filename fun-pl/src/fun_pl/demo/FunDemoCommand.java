@@ -1,5 +1,6 @@
 package fun_pl.demo;
 
+import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
 import unalcol.io.Position2D;
@@ -28,7 +29,7 @@ public class FunDemoCommand extends FunSymbolCommand{
 	public String name() { return I18N.get(plus); }
 
 	@Override
-	public Object[] reverse(Object obj, Object[] toMatch) throws LanguageException {
+	public Object[] reverse(Object obj, Object[] toMatch, FunCommand[] args) throws LanguageException {
 		Position2D p = (Position2D)this;
 		Integer i = (Integer)obj;
 		if( toMatch[0]==null && toMatch[1]==null ){

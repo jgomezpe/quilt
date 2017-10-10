@@ -69,4 +69,6 @@ public class Rotate extends FunCommand{
 
 	@Override
 	public String name() { return I18N.get(name); }	
+
+	public String comment(){ return I18N.get(name+"c"); }
 }

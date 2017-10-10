@@ -1,5 +1,6 @@
 package quilt.operation;
 
+import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
 import fun_pl.util.FunConstants;
@@ -107,10 +108,10 @@ public class Sew extends FunSymbolCommand{
 	}
 	
 	protected LanguageException exception(){
-		return new LanguageException(this, QuiltConstants.UNSTITCH, row()+1, column()+1); 
+		return new LanguageException(this, QuiltConstants.UNSTITCH, row()+1, column()); 
 	}
 	
-	public Quilt[] reverse(Quilt obj, Quilt left, Quilt right) throws LanguageException{		
+	public Quilt[] reverse(Quilt obj, Quilt left, Quilt right, FunCommand[] vars) throws LanguageException{		
 		int c = obj.columns();
 		if( c!=1 && ((left!=null && left instanceof EmptyQuilt) || (right!=null && right instanceof EmptyQuilt)) ) throw exception(); 
 		if( c==1 && left!=null && left instanceof EmptyQuilt ) return new Quilt[]{left,obj}; 
@@ -119,7 +120,9 @@ public class Sew extends FunSymbolCommand{
 		if(left==null){
 			if( right==null ){
 				if(c<2) throw exception();
-				return new Quilt[]{getLeft(obj, c-1),getRight(obj, 1)};
+				if( vars[0].name().charAt(0)==I18N.get(FunConstants.code).charAt(FunConstants.DOLLAR))
+					return new Quilt[]{getLeft(obj, 1),getRight(obj, c-1)};
+				else return new Quilt[]{getLeft(obj, c-1),getRight(obj, 1)};
 			}else{
 				if( !check_right(obj, right) ) throw exception();
 				return new Quilt[]{getLeft(obj, c-right.columns()), right};
@@ -135,7 +138,7 @@ public class Sew extends FunSymbolCommand{
 	}
 
 	@Override
-	public Object[] reverse(Object obj, Object[] args) throws LanguageException{ return reverse((Quilt)obj, (Quilt)args[0], (Quilt)args[1]); }
+	public Object[] reverse(Object obj, Object[] args, FunCommand[] vars) throws LanguageException{ return reverse((Quilt)obj, (Quilt)args[0], (Quilt)args[1], vars); }
 
 	@Override
 	public Object execute(Object... args) throws LanguageException { return execute((Quilt)args[0], (Quilt)args[1]); }
@@ -145,4 +148,6 @@ public class Sew extends FunSymbolCommand{
 		String symbols = I18N.get(FunConstants.code);
 		return ""+symbols.charAt(FunConstants.START_LINK_SYMBOLS); 
 	}
+	
+	public String comment(){ return I18N.get("sewc"); }	
 }
