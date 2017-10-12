@@ -20,7 +20,16 @@ public abstract class FunCommand extends FunObject{
 	
 	public void setMachine(FunMachine machine){ this.machine = machine; }
 	public FunMachine machine(){ return machine; }
-	
+
+	protected LanguageException exception( String code, Object... args){
+		Object[] nargs = new Object[3+args.length]; 
+		if( args.length>0 ) System.arraycopy(args, 0, nargs, 3, args.length);
+		nargs[0] = name();
+		nargs[1] = row()+1;
+		nargs[2] = column()+1;
+		return new LanguageException(this, code, nargs);
+	}
+		
 	public abstract Object execute( Object... value ) throws LanguageException;
 	public abstract int arity();
 	

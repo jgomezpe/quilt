@@ -11,13 +11,15 @@ public abstract class FunMachine{
 	protected FunProgram program = new FunProgram(this);
 
 	public FunMachine(){}
-	public FunMachine(FunProgram program){
+	public FunMachine(FunProgram program){ setProgram(program);	}
+	
+	public FunProgram get(){ return program; }
+	public void setProgram( FunProgram program ){
 		this.program = program;
 		program.machine = this;
 	}
 	
-	public FunProgram get(){ return program; }
-	public void setProgram( FunProgram program ){ this.program = program; }
+	public void clear(){ this.program.clear(); }
 
 	public boolean is_primitive(String command){ 
 		for( String s:primitives() ) if( s.equals(command) ) return true;

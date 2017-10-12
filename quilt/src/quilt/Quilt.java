@@ -1,6 +1,8 @@
 package quilt;
 
 import quilt.gui.Drawer;
+import quilt.util.QuiltConstants;
+import unalcol.util.I18N;
 
 /**
 *
@@ -57,22 +59,13 @@ public abstract class Quilt{
 	// MinRemnant 
 	public abstract Remnant get( int r, int c );
 	
-	
-	public abstract Quilt[] unstitch() throws Exception;
-	
 	public abstract Object clone();
+	
+	public abstract boolean equals(Quilt quilt);
 	
 	public boolean equals(Object obj) {
 		if( obj==null || !(obj instanceof Quilt) ) return false;
-		Quilt r = (Quilt)obj;
-		if( r.rows()!=rows() || columns()!=r.columns() ) return false; 
-		boolean flag = true;
-		for( int i=0; i<rows() && flag; i++ ){
-			for( int j=0; j<columns() && flag; j++ ){
-				flag = get(i,j).equals(r.get(i, j));
-			}				
-		}
-		return flag;
+		return equals((Quilt)obj);
 	}
 	
 	// Drawing
@@ -80,4 +73,7 @@ public abstract class Quilt{
 	public int units( int value ){ return value*UNIT; }
 	public abstract void draw( Drawer g, int column, int row );
 	
+	public String toString(){
+		return (rows()==1&&columns()==1)?I18N.get(QuiltConstants.REMNANT)+"[1,1]":I18N.get(QuiltConstants.QUILT)+"["+rows()+","+columns()+"]";
+	}	
 }

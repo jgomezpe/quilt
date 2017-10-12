@@ -60,6 +60,8 @@ public class FunLexer implements Lexer{
 	
 	protected Token variable() throws LanguageException {
 		int off = offset-1;
+		int row = reader.row();
+		int column = reader.column()-1;
 		Vector<Integer> v = new Vector<Integer>();
 		v.add(original);
 		int c = next();
@@ -68,11 +70,13 @@ public class FunLexer implements Lexer{
 			c=next();
 		}
 		if( c!=FunConstants.EOF ) back();
-		return new Token(FunConstants.VARIABLE, new Position2D(off, reader.row(), reader.column()), v);
+		return new Token(FunConstants.VARIABLE, new Position2D(off, row, column), v);
 	}
 	
 	protected Token value() throws LanguageException {
 		int off = offset-1;
+		int row = reader.row();
+		int column = reader.column()-1;
 		Vector<Integer> v = new Vector<Integer>();
 		v.add(original);
 		int c = next();
@@ -82,7 +86,7 @@ public class FunLexer implements Lexer{
 			c=next();
 		}
 		if( c!=FunConstants.EOF ) back();
-		return check_primitive(new Token(FunConstants.VALUE, new Position2D(off, reader.row(), reader.column()), v));
+		return check_primitive(new Token(FunConstants.VALUE, new Position2D(off, row, column), v));
 	}
 	
 	@Override
@@ -90,15 +94,18 @@ public class FunLexer implements Lexer{
 		this.reader = reader;
 		this.encoder = encoder;
 		this.offset = offset;
+		
 		Vector<Token> v = new Vector<Token>();
 		int c = next();
 		while(c!=FunConstants.EOF){
+			int row = reader.row();
+			int column = reader.column();
 			if( FunConstants.DOLLAR < c && c<FunConstants.START_LINK_SYMBOLS ){
-				v.add(new Token(c, new Position2D(this.offset-1, reader.row(), reader.column()), new int[]{original}));
+				v.add(new Token(c, new Position2D(this.offset-1, row, column-1), new int[]{original}));
 				c = next();				
 			}else
 				if( FunConstants.START_LINK_SYMBOLS <= c && c<=FunConstants.END_LINK_SYMBOLS ){
-					v.add(new Token(c, new Position2D(this.offset-1, reader.row(), reader.column()), new int[]{original}));
+					v.add(new Token(c, new Position2D(this.offset-1, row, column), new int[]{original}));
 					c = next();				
 				}else{
 					switch(c){

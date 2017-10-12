@@ -2,6 +2,7 @@ package quilt.factory;
 
 import fun_pl.semantic.FunCommand;
 import quilt.MatrixQuilt;
+import quilt.NilQuilt;
 import quilt.QuiltInstance;
 import quilt.QuiltMachine;
 import quilt.Quilt;
@@ -77,6 +78,7 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 		remnants.register(FilledRemnantInstance.FILLED, FilledRemnant.class.getName(), new FilledRemnantInstance());
 		remnants.register(PolygonsRemnantInstance.POLYGONS, PolygonsRemnant.class.getName(), new PolygonsRemnantInstance());
 		remnants.register(EmptyRemnantInstance.EMPTY, EmptyRemnant.class.getName(), new EmptyRemnantInstance());
+		remnants.register(NilQuiltInstance.NIL, NilQuilt.class.getName(), new NilQuiltInstance());
 	}
 	
 	public void register(String tag, String type, Instance<Quilt> instance ){ remnants.register(tag, type, instance); }

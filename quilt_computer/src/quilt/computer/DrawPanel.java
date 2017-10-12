@@ -89,8 +89,10 @@ public class DrawPanel extends JPanel{
 			//System.out.println( "Painting..." + d );
 			int w = Math.min(d.width, d.height);
 			int wr = Math.max(Quilt.columns(), Quilt.rows());
-			Drawer drawer = new AWTDrawer( g, w/wr );
-			Quilt.draw(drawer, 0, 0);
+			if( wr > 0 ){ 
+				Drawer drawer = new AWTDrawer( g, w/wr );
+				Quilt.draw(drawer, 0, 0);
+			}
 		}
 	}
 }

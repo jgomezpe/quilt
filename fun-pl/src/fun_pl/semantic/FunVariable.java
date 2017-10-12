@@ -19,9 +19,9 @@ public class FunVariable extends FunCommandCall{
 		Object obj = variables.get(n);
 		if( obj == null ){ 
 			if(machine.can_assign(n, values[0])) variables.set(n,values[0]);
-			else  throw exception(FunConstants.argmismatch, values[0].toString());
+			else  throw exception(FunConstants.argmismatch, values[0]);
 		}else{
-			if( !obj.equals(values[0]) ) throw exception(FunConstants.argmismatch, values[0].toString());
+			if( !obj.equals(values[0]) ) throw exception(FunConstants.argmismatch, values[0]);
 		}		
 		return variables;
 	}

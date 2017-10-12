@@ -65,7 +65,6 @@ public class SewingMachineProgrammer {
 		String styles = Util.config(conf_file);
 		ProgrammingFrame frame = new ProgrammingFrame(machine_txt, styles);
 		Image img = Util.image("remnant.png");
-		if( img==null) System.out.println("What the hell");
 		frame.setIconImage(img);
 		frame.setVisible(true);
 	}

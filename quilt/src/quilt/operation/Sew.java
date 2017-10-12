@@ -4,8 +4,8 @@ import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
 import fun_pl.util.FunConstants;
-import quilt.EmptyQuilt;
 import quilt.MatrixQuilt;
+import quilt.NilQuilt;
 import quilt.Remnant;
 import quilt.util.QuiltConstants;
 import quilt.Quilt;
@@ -62,10 +62,10 @@ public class Sew extends FunSymbolCommand{
 	public Sew(){ super(); } //		super(QuiltMachine.SEW, new String[]{"X", "Y"});
 
 	public Quilt execute( Quilt left, Quilt right ) throws LanguageException{
-		if(left instanceof EmptyQuilt) return right;
-		if(right instanceof EmptyQuilt) return left;
+		if(left instanceof NilQuilt) return right;
+		if(right instanceof NilQuilt) return left;
 		if( left.rows() == right.rows() ) return new MatrixQuilt( left, right );
-		throw new LanguageException(this, QuiltConstants.STITCH, this.row()+1, this.column()+1, left.rows(), right.rows());
+		throw exception(QuiltConstants.STITCH, left, right);
 	}
 
 	public boolean check_right(Quilt quilt, Quilt right){
@@ -92,6 +92,7 @@ public class Sew extends FunSymbolCommand{
 	}
 	
 	public Quilt getRight( Quilt quilt, int k ){
+		if( k==0 ) return new NilQuilt();
 		int c = quilt.columns();
 		int r = quilt.rows();
 		int sc = c-k;
@@ -101,6 +102,7 @@ public class Sew extends FunSymbolCommand{
 	}
 	
 	public Quilt getLeft( Quilt quilt, int k ){
+		if( k==0 ) return new NilQuilt();
 		int r = quilt.rows();
 		Remnant[][] left = new Remnant[r][k];
 		for( int i=0; i<r; i++ ) for( int j=0; j<k; j++) left[i][j] = quilt.get(i,j);
@@ -108,14 +110,14 @@ public class Sew extends FunSymbolCommand{
 	}
 	
 	protected LanguageException exception(){
-		return new LanguageException(this, QuiltConstants.UNSTITCH, row()+1, column()); 
+		return exception(QuiltConstants.UNSTITCH); 
 	}
 	
-	public Quilt[] reverse(Quilt obj, Quilt left, Quilt right, FunCommand[] vars) throws LanguageException{		
+	public Quilt[] reverse(Quilt obj, Quilt left, Quilt right, FunCommand[] vars) throws LanguageException{	
 		int c = obj.columns();
-		if( c!=1 && ((left!=null && left instanceof EmptyQuilt) || (right!=null && right instanceof EmptyQuilt)) ) throw exception(); 
-		if( c==1 && left!=null && left instanceof EmptyQuilt ) return new Quilt[]{left,obj}; 
-		if( c==1 && right!=null && right instanceof EmptyQuilt ) return new Quilt[]{obj,right};
+		if( c!=1 && ((left!=null && left instanceof NilQuilt) || (right!=null && right instanceof NilQuilt)) ) throw exception(); 
+		if( c==1 && left!=null && left instanceof NilQuilt ) return new Quilt[]{left,obj}; 
+		if( c==1 && right!=null && right instanceof NilQuilt ) return new Quilt[]{obj,right};
 
 		if(left==null){
 			if( right==null ){

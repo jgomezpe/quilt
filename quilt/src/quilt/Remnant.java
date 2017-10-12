@@ -48,8 +48,6 @@ import unalcol.gui.paint.Color;
 * @version 1.0
 */
 public abstract class Remnant extends Quilt{
-	public Quilt[] unstitch() throws Exception { throw new Exception("Unable to unstitch"); }	
-
 	public int rows(){ return 1; }
 
 	public int columns(){ return 1; }

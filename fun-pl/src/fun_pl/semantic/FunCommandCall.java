@@ -32,15 +32,11 @@ public class FunCommandCall extends FunCommand {
 	public String name(){ return name; }
 	public FunCommandCall[] args(){ return args; }
 	
-	protected LanguageException exception( String code, Object... args){
-		return new LanguageException(this, code, name(), row()+1,column()+1, args);
-	}
-	
 	public KeyMap<String, Object> match( KeyMap<String, Object> variables, Object... values ) throws LanguageException{
 		int arity = arity();
 		if( arity == 0 ){
 			Object obj=machine.execute(this, name);
-			if(obj==null || values.length!=1 || !obj.equals(values[0])) throw exception(FunConstants.argmismatch, values[0].toString());
+			if(obj==null || values.length!=1 || !obj.equals(values[0])) throw exception(FunConstants.argmismatch, values[0]);
 			return variables;
 		}
 		if( values.length != arity ) throw exception(FunConstants.argnumbermismatch,values.length,arity);
@@ -62,7 +58,7 @@ public class FunCommandCall extends FunCommand {
 				}else{
 					if( args[k] instanceof FunValue ){
 						Object obj = args[k].execute(variables);
-						if( obj==null || !obj.equals(values[k]) ) throw exception(FunConstants.argmismatch,values[k].toString());
+						if( obj==null || !obj.equals(values[k]) ) throw exception(FunConstants.argmismatch,values[k]);
 						index.remove(i);
 					}else{					
 						try{
@@ -72,11 +68,11 @@ public class FunCommandCall extends FunCommand {
 								try{ toMatch[0]=args[k].args[0].execute(variables); }catch(Exception x){}
 								try{ toMatch[1]=args[k].args[1].execute(variables); }catch(Exception x){}
 								c.init(args[k]);
-								Object[] objs = ((FunSymbolCommand)c).reverse(values[k], toMatch,args[k].args);
+								Object[] objs = c.reverse(values[k], toMatch,args[k].args);
 								args[k].match(variables, objs);
 							}else{
 								Object obj = args[k].execute(variables);
-								if( obj==null || !obj.equals(values[k]) )  throw new LanguageException(args[k],FunConstants.argmismatch,values[k].toString());
+								if( obj==null || !obj.equals(values[k]) ) throw args[k].exception(FunConstants.argmismatch, values[k]);
 							}
 							index.remove(i);
 						}catch( LanguageException e ){

@@ -97,64 +97,6 @@ public class MatrixQuilt extends Quilt implements Rotatable<Quilt>{
 			for( int j=0; j<columns(); j++ ) remnant[i][j].draw(g, column+j, row+i);
 	}	
 
-	public Quilt[] unstitch() throws Exception{
-		int c = columns();
-		if( c>1 ){
-			int r = rows();
-			c--;
-			Remnant[][] left_m = new Remnant[r][c];
-			Remnant[][] right_m = new Remnant[r][1];
-			for( int i=0; i<r; i++ ){
-				for( int j=0; j<c; j++){
-					left_m[i][j] = remnant[i][j];
-				}
-				right_m[i][0] = remnant[i][c];
-			}
-			if( r==1 ){
-				if(c==1) return new Quilt[]{left_m[0][0],right_m[0][0]};
-				else return new Quilt[]{new MatrixQuilt(left_m),right_m[0][0]};
-			}else{
-				return new Quilt[]{new MatrixQuilt(left_m),new MatrixQuilt(right_m)};
-			}
-		}
-		return null;
-	}
-	
-/*	public Remnant[] leftunstitch(){
-		int c = columns();
-		if( c>1 ){
-			int r = rows();
-			c--;
-			MinRemnant[][] right_m = new MinRemnant[r][c];
-			MinRemnant[][] left_m = new MinRemnant[r][1];
-			for( int i=0; i<r; i++ ){
-				for( int j=0; j<c; j++){
-					right_m[i][j] = remnant[i][j+1];
-				}
-				left_m[i][0] = remnant[i][0];
-			}
-			if( r==1 ){
-				if(c==1) return new Remnant[]{left_m[0][0],right_m[0][0]};
-				else return new Remnant[]{left_m[0][0],new Quilt(right_m)};
-			}else{
-				return new Remnant[]{new Quilt(left_m),new Quilt(right_m)};
-			}
-		}
-		return null;
-	}
-	
-	public String toString(){
-		StringBuilder sb = new StringBuilder();
-		for( int i=0; i<rows(); i++ ){
-			for( int j=0; j<columns(); j++ ){
-				sb.append(get(i,j));
-			}
-			sb.append('\n');
-		}
-		return sb.toString();
-	}
-*/
-	
 	@Override
 	public Quilt rotate( Rotate command ) {
 		Remnant[][] r = new Remnant[columns()][rows()];
@@ -165,4 +107,15 @@ public class MatrixQuilt extends Quilt implements Rotatable<Quilt>{
 		}
 		return new MatrixQuilt(r);
 	}
+	
+	public boolean equals(Quilt quilt) {
+		if( quilt.rows()!=rows() || columns()!=quilt.columns() ) return false; 
+		boolean flag = true;
+		for( int i=0; i<rows() && flag; i++ ){
+			for( int j=0; j<columns() && flag; j++ ){
+				flag = get(i,j).equals(quilt.get(i, j));
+			}				
+		}
+		return flag;
+	}	
 }

@@ -2,6 +2,7 @@ package quilt.computer;
 
 import java.awt.Image;
 
+import quilt.Quilt;
 import quilt.Remnant;
 import quilt.gui.Drawer;
 import quilt.operation.Rotatable;
@@ -83,5 +84,12 @@ public class ImageRemnant extends Remnant implements Rotatable<Remnant>{
 	@Override
 	public Remnant rotate(Rotate command) {
 		return new ImageRemnant(name, image, (rot+270)%360);
+	}
+
+	@Override
+	public boolean equals(Quilt r) {
+		if(r==null || !(r instanceof ImageRemnant)) return false;
+		ImageRemnant ir = (ImageRemnant)r;
+		return ir.name.equals(name) && ir.rot==rot;
 	}
 }

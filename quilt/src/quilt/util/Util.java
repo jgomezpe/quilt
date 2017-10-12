@@ -183,7 +183,6 @@ public class Util {
 			String config = plain_file_read(is,true);
 			unalcol.util.I18N.add(language, unalcol.util.I18N.load(config));
 			unalcol.util.I18N.use(language);
-			System.out.println("Language..."+language);
 			return true;
 		}catch( Exception e ){}
 		return false;

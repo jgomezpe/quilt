@@ -86,8 +86,7 @@ public class QuiltMachine extends FunMachine{
 	@Override
 	public boolean can_assign(String variable, Object remnant) {
 		Quilt q = (Quilt)remnant;
-		return (variable.charAt(0)==I18N.get(FunConstants.code).charAt(FunConstants.DOLLAR) && q.columns()==1) ||
-				   (variable.charAt(0)!=I18N.get(FunConstants.code).charAt(FunConstants.DOLLAR) && q.columns()>1);
+		return (variable.charAt(0)!=I18N.get(FunConstants.code).charAt(FunConstants.DOLLAR) ||q.columns()==1);
 	}
 
 	@Override

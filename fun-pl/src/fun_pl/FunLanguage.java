@@ -29,7 +29,7 @@ public class FunLanguage {
 	}
 	
 	public static Typed parser(Array<Token> tokens, boolean program) throws LanguageException{
-		Parser p = new FunParser(program?FunConstants.COMMAND_DEF_LIST:FunConstants.COMMAND_CALL);
+		Parser p = new FunParser(program?FunConstants.COMMAND_DEF_LIST:FunConstants.COMMAND_EXP);
 		return p.apply(tokens, 0);
 	}	
 	

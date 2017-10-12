@@ -439,7 +439,7 @@ public class ProgrammingPanel extends JPanel{
 				caret++;
 				i++;
 			}
-			code_area.setCaretPosition(caret+pos.column()-1);
+			code_area.setCaretPosition(caret+pos.column());
 			code_area.requestFocusInWindow();
 		}	
 	}
@@ -447,6 +447,7 @@ public class ProgrammingPanel extends JPanel{
 	public void jCompileButton_actionPerformed(ActionEvent actionEvent) {
 		String program = jProgram.getText();
 		try{
+			machine.clear();
 			FunProgram prog = (FunProgram)FunLanguage.analize(machine, program, true);
 			machine.setProgram(prog);
 			this.log.getOutArea().setText(i18n(QuiltConstants.NO_ERRORS));
