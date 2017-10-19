@@ -5,7 +5,6 @@ import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunCommandCall;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunProgram;
-import fun_pl.syntax.FunEncoder;
 import fun_pl.syntax.FunLexer;
 import fun_pl.util.FunConstants;
 import unalcol.language.Typed;
@@ -33,33 +32,33 @@ public class FunDemo {
 
 	public static void i18n(){
 		HTKeyMap<String, String> x = new HTKeyMap<String,String>();
-		x.add(FunDemoCommand.plus,"+");
-		x.add(FunDemoCommand.invalid,"Number %d cannot be reduced.");
-		x.add(FunConstants.novalue, "Undefined value %s.");
-		x.add(FunConstants.code, "%$=,()+");
-		x.add(FunConstants.extra, "Number of link operands %s not admisible, expecting at most %d link operands");
-		x.add(FunConstants.unexpected, "Unexpected %s at row %d, column %d. Expecting %s");
-		x.add(FunConstants.noargs, "Not valid definition of arguments at row %d, column %d");
-		x.add(FunConstants.validcommand, "valid command name");
-		x.add(FunConstants.norule, "Undefined component %s.");
-		x.add(FunConstants.nocommand, "Undefined command %s at row %d, column %d.");
-		x.add(FunConstants.argmismatch, "Mismatch in arguments calling command %s at row %d, column %d. Receiving %s");
-		x.add(FunConstants.argnumbermismatch, "Mismatch in the number of arguments calling command %s at row %d, column %d. Expecting %d but receiving %d.");
-		x.add(FunConstants.novar, "Undefined variable %s at row %d, column %d.");
+		x.set(FunDemoCommand.plus,"+");
+		x.set(FunDemoCommand.invalid,"Number %d cannot be reduced.");
+		x.set(FunConstants.novalue, "Undefined value %s.");
+		x.set(FunConstants.code, "%$=,()+");
+		x.set(FunConstants.extra, "Number of link operands %s not admisible, expecting at most %d link operands");
+		x.set(FunConstants.unexpected, "Unexpected %s at row %d, column %d. Expecting %s");
+		x.set(FunConstants.noargs, "Not valid definition of arguments at row %d, column %d");
+		x.set(FunConstants.validcommand, "valid command name");
+		x.set(FunConstants.norule, "Undefined component %s.");
+		x.set(FunConstants.nocommand, "Undefined command %s at row %d, column %d.");
+		x.set(FunConstants.argmismatch, "Mismatch in arguments calling command %s at row %d, column %d. Receiving %s");
+		x.set(FunConstants.argnumbermismatch, "Mismatch in the number of arguments calling command %s at row %d, column %d. Expecting %d but receiving %d.");
+		x.set(FunConstants.novar, "Undefined variable %s at row %d, column %d.");
 		I18N.add("english",x);
 		I18N.use("english");
 	}
 	
 	public static FunCommand analize(FunMachine machine, String code, boolean asProgram){
 		try{
-			FunEncoder encoder = FunLanguage.encoder();
-			Array<Token> tokens = FunLanguage.lexer(machine, encoder, code);
+			FunLanguage funLang = new FunLanguage(machine);
+			Array<Token> tokens = funLang.lexer(code);
 			for( Token t:tokens ){
 				System.out.println(t.type()+","+t.pos().offset()+","+t.length()+","+FunLexer.get(t.lexeme()));
 			}
-			Typed t = FunLanguage.parser(tokens,asProgram);
+			Typed t = funLang.parser((asProgram?FunConstants.COMMAND_DEF_LIST:FunConstants.COMMAND_EXP),tokens,0);
 			System.out.println(t);
-			FunCommand c= FunLanguage.meaner(t,machine,encoder);
+			FunCommand c= funLang.meaner(t);
 			System.out.println(c);
 			return c;
 		}catch( Exception e ){ e.printStackTrace();	}	

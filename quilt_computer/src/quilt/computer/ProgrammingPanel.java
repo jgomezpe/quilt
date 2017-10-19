@@ -136,6 +136,7 @@ public class ProgrammingPanel extends JPanel{
 	JButton jCommandButton = new JButton();
 
 	protected QuiltMachine machine;
+	protected FunLanguage quiltLang;
 	protected QuiltMachineInstance qm= new QuiltMachineInstance();
 	protected HTKeyMap<Integer, String> tokens = new HTKeyMap<Integer,String>();
 	
@@ -448,7 +449,7 @@ public class ProgrammingPanel extends JPanel{
 		String program = jProgram.getText();
 		try{
 			machine.clear();
-			FunProgram prog = (FunProgram)FunLanguage.analize(machine, program, true);
+			FunProgram prog = (FunProgram)quiltLang.process( program, true );
 			machine.setProgram(prog);
 			this.log.getOutArea().setText(i18n(QuiltConstants.NO_ERRORS));
 			this.log.getErrorArea().setText("");
@@ -463,7 +464,7 @@ public class ProgrammingPanel extends JPanel{
 		String program = jCommand.getText();
 		FunCommandCall command=null;
 		try{
-			command = (FunCommandCall)FunLanguage.analize(machine, program, false);
+			command = (FunCommandCall)quiltLang.process( program, false);
 			command.setRow(-1);
 		}catch(LanguageException e){
 			show_error_message(jCommand, e);
@@ -484,6 +485,7 @@ public class ProgrammingPanel extends JPanel{
 	
 	public void setMachine( QuiltMachine machine ){
 		this.machine = machine;
+		try{ this.quiltLang = new FunLanguage(machine); }catch(Exception e){}
 		Tokenizer tokenizer = FunLanguage.tokenizer(machine);
 		jProgram.setTokenizer(tokenizer, tokens);
 		jCommand.setTokenizer(tokenizer, tokens);

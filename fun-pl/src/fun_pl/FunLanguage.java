@@ -7,47 +7,30 @@ import fun_pl.syntax.FunEncoder;
 import fun_pl.syntax.FunLexer;
 import fun_pl.syntax.FunParser;
 import fun_pl.util.FunConstants;
-import unalcol.io.CharReader;
-import unalcol.io.ShortTermMemoryReader;
 import unalcol.io.Tokenizer;
 import unalcol.language.LanguageException;
-import unalcol.language.Typed;
-import unalcol.language.programming.lexer.Token;
-import unalcol.language.programming.parser.Parser;
-import unalcol.types.collection.array.Array;
+import unalcol.language.programming.ProgrammingLanguage;
 import unalcol.util.I18N;
 
-public class FunLanguage {
-	public static FunEncoder encoder() throws LanguageException { return new FunEncoder(I18N.get(FunConstants.code)); }
+public class FunLanguage extends ProgrammingLanguage<FunCommand>{
+	protected FunMachine machine;
+	public FunLanguage(FunMachine machine) throws LanguageException{ this( machine, encoder()); }
 	
-	public static Array<Token> lexer(FunMachine machine, FunEncoder encoder, String code) throws LanguageException{
-		ShortTermMemoryReader reader = new CharReader(code);
-		FunLexer lexer = new FunLexer(machine);
-		Array<Token> tokens = lexer.apply(reader, 0, encoder);
-		try{ reader.close(); }catch(Exception e){}
-		return tokens;
+	public FunLanguage(FunMachine machine, FunEncoder encoder){
+		super( encoder, new FunLexer(machine), new FunParser(), 
+				new FunMeaner(machine,encoder), FunConstants.COMMAND_DEF_LIST);
+		this.machine = machine;
 	}
 	
-	public static Typed parser(Array<Token> tokens, boolean program) throws LanguageException{
-		Parser p = new FunParser(program?FunConstants.COMMAND_DEF_LIST:FunConstants.COMMAND_EXP);
-		return p.apply(tokens, 0);
-	}	
-	
-	public static FunCommand meaner(Typed t, FunMachine machine, FunEncoder encoder) throws LanguageException{
-		FunMeaner meaner = new FunMeaner(machine, encoder);
-		return meaner.apply(t);
+	public FunCommand process( String code, boolean program ) throws LanguageException{
+		return process( code, (program?FunConstants.COMMAND_DEF_LIST:FunConstants.COMMAND_EXP));
 	}
-	
-	public static FunCommand analize(FunMachine machine, String code, boolean asProgram) throws LanguageException{
-		FunEncoder encoder = FunLanguage.encoder();
-		Array<Token> tokens = FunLanguage.lexer(machine, encoder, code);
-		Typed t = FunLanguage.parser(tokens,asProgram);
-		FunCommand c= FunLanguage.meaner(t,machine,encoder);
-		return c;
-	}	
+	public static FunEncoder encoder() throws LanguageException{
+		return new FunEncoder(I18N.get(FunConstants.code));
+	}
 	
 	public static Tokenizer tokenizer(FunMachine machine){
-		try{ return new Tokenizer(FunLanguage.encoder(), new FunLexer(machine)); }catch(LanguageException e){}
+		try{ return new Tokenizer(encoder(), new FunLexer(machine)); }catch(LanguageException e){}
 		return null;
 	}
 }

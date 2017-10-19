@@ -13,11 +13,10 @@ import unalcol.util.I18N;
 
 public class FunParser implements Parser{
 	
-	protected int main;
 	protected int offset;
 	protected Array<Token> tokens;
 	
-	public FunParser(int main){ this.main = main; }
+	public FunParser(){}
 	
 	protected Token get(){
 		if( offset >= tokens.size() ) return new Token(new Position2D(offset,0,0)); 
@@ -149,7 +148,7 @@ public class FunParser implements Parser{
 	} 
 	
 	@Override
-	public Typed apply(Array<Token> tokens, int offset) throws LanguageException {
+	public Typed apply(int main, Array<Token> tokens, int offset) throws LanguageException {
 		this.tokens = tokens;
 		this.offset=offset;
 		switch( main ){

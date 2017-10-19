@@ -15,10 +15,16 @@ public class FunMeaner implements Meaner<FunCommand>{
 	protected FunMachine machine;
 	protected FunEncoder encoder;
 	
+	public FunMeaner(){}
+	
 	public FunMeaner( FunMachine machine, FunEncoder encoder ){
 		this.machine = machine;
 		this.encoder = encoder;
 	}
+	
+	public void setEncoder( FunEncoder encoder ){ this.encoder = encoder; }
+
+	public void setMachine( FunMachine machine ){ this.machine = machine; }
 	
 	protected FunCommandCall prim(Token t) throws LanguageException{
 		String value = FunLexer.get(t.lexeme());

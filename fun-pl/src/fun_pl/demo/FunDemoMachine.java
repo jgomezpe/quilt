@@ -51,7 +51,7 @@ public class FunDemoMachine extends FunMachine{
 	}
 
 	@Override
-	public SearchCollection<String> primitives() {
+	public SearchCollection<String,String> primitives() {
 		HTKeyMap<String,String> v = new HTKeyMap<String,String>();
 		v.set(plus.name(),plus.name());
 		return v;
