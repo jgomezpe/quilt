@@ -18,6 +18,8 @@ public class FunEncoder implements Encoder{
 	} 
 	
 	@Override
+	public int apply(Integer c) { return apply((int)c); }
+
 	public int apply(int c) {
 		if(c==FunConstants.EOF) return FunConstants.EOF;
 		int index=symbols.indexOf((char)c);

@@ -7,6 +7,7 @@ import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunProgram;
 import fun_pl.syntax.FunLexer;
 import fun_pl.util.FunConstants;
+import unalcol.io.Position2D;
 import unalcol.language.Typed;
 import unalcol.language.programming.lexer.Token;
 import unalcol.types.collection.array.Array;
@@ -52,11 +53,12 @@ public class FunDemo {
 	public static FunCommand analize(FunMachine machine, String code, boolean asProgram){
 		try{
 			FunLanguage funLang = new FunLanguage(machine);
-			Array<Token> tokens = funLang.lexer(code);
-			for( Token t:tokens ){
-				System.out.println(t.type()+","+t.pos().offset()+","+t.length()+","+FunLexer.get(t.lexeme()));
+			Array<Token<?>> tokens = funLang.lexer(code);
+			for( Token<?> t:tokens ){
+			    Position2D pos = (Position2D)t.pos();
+			    System.out.println(t.type()+","+pos.row()+","+pos.column()+","+t.length()+","+FunLexer.get(t.lexeme()));
 			}
-			Typed t = funLang.parser((asProgram?FunConstants.COMMAND_DEF_LIST:FunConstants.COMMAND_EXP),tokens,0);
+			Typed t = funLang.parser((asProgram?FunConstants.COMMAND_DEF_LIST:FunConstants.COMMAND_EXP),tokens);
 			System.out.println(t);
 			FunCommand c= funLang.meaner(t);
 			System.out.println(c);

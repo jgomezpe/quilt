@@ -3,6 +3,7 @@ package fun_pl.semantic;
 import fun_pl.syntax.FunEncoder;
 import fun_pl.syntax.FunLexer;
 import fun_pl.util.FunConstants;
+import unalcol.io.Position2D;
 import unalcol.language.LanguageException;
 import unalcol.language.Typed;
 import unalcol.language.TypedValue;
@@ -26,22 +27,23 @@ public class FunMeaner implements Meaner<FunCommand>{
 
 	public void setMachine( FunMachine machine ){ this.machine = machine; }
 	
-	protected FunCommandCall prim(Token t) throws LanguageException{
+	protected FunCommandCall prim(Token<?> t) throws LanguageException{
 		String value = FunLexer.get(t.lexeme());
 		Array<String> compose = machine.composed(value);
-		FunCommandCall c = new FunValue(t.pos(), machine, compose.get(0));
+		Position2D pos = (Position2D)t.pos();
+		FunCommandCall c = new FunValue(pos, machine, compose.get(0));
 		for( int i=1; i<compose.size(); i++ )
-			c = new FunCommandCall(c, machine, machine.symbol_command().name(), new FunCommandCall[]{c, new FunValue(t.pos(), machine, compose.get(i))} );
+			c = new FunCommandCall(c, machine, machine.symbol_command().name(), new FunCommandCall[]{c, new FunValue(pos, machine, compose.get(i))} );
 		return c;
 	}
 
 	@SuppressWarnings("unchecked")
 	protected FunCommandCall command(TypedValue<Vector<Typed>> t) throws LanguageException{
 		Vector<Typed> v = t.value();
-		String name = FunLexer.get(((Token)v.get(0)).lexeme());
+		String name = FunLexer.get(((Token<?>)v.get(0)).lexeme());
 		FunCommandCall[] args = new FunCommandCall[v.size()-1];
 		for( int i=0; i<args.length; i++) args[i] = command_exp((TypedValue<Vector<Typed>>)v.get(i+1));
-		return new FunCommandCall(((Token)v.get(0)).pos(), machine, name, args);
+		return new FunCommandCall( (Position2D)(((Token<?>)v.get(0)).pos()), machine, name, args);
 	}
 	
 	protected FunCommandCall command_exp(TypedValue<Vector<Typed>> t) throws LanguageException{
@@ -54,7 +56,7 @@ public class FunMeaner implements Meaner<FunCommand>{
 			int pk=0;
 			int nk=2;
 			while(k<v.size()){
-				Token token = (Token)v.get(k); 
+				Token<?> token = (Token<?>)v.get(k); 
 				if(token.type()==i){
 					String name = machine.symbol_command(FunLexer.get(token.lexeme())).name();
 					FunCommandCall[] args = new FunCommandCall[2];
@@ -100,10 +102,10 @@ public class FunMeaner implements Meaner<FunCommand>{
 	public FunCommand apply(Typed rule) throws LanguageException {
 		switch( rule.type() ){
 			case FunConstants.VARIABLE:
-				Token t = (Token)rule;
-				return new FunVariable(t.pos(), machine, FunLexer.get(t.lexeme()));
+				Token<?> t = (Token<?>)rule;
+				return new FunVariable((Position2D)t.pos(), machine, FunLexer.get(t.lexeme()));
 			//case FunLexer.VALUE: throw new LanguageException("Don't know to deal with values");
-			case FunConstants.PRIM_VALUE: return prim((Token)rule);
+			case FunConstants.PRIM_VALUE: return prim((Token<?>)rule);
 			case FunConstants.COMMAND_EXP: return command_exp((TypedValue<Vector<Typed>>)rule);
 			case FunConstants.COMMAND_DEF: return command_def((TypedValue<Vector<Typed>>)rule);
 			case FunConstants.COMMAND_DEF_LIST: return command_def_list((TypedValue<Vector<Typed>>)rule);
