@@ -34,6 +34,8 @@ public class FunProgram extends FunCommand{
 	
 	public void clear(){ commands.clear(); }
 	
+	public boolean defined(String command){	return commands.get(command)!=null;	} 
+	
 	public Object execute( String command, Object... values ) throws LanguageException{
 		Vector<FunCommandDef> v = commands.get(command);
 		if( v==null ) throw new LanguageException(this, FunConstants.nocommand, command);

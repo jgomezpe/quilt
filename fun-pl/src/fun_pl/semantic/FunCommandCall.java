@@ -11,6 +11,7 @@ import unalcol.util.I18N;
 
 public class FunCommandCall extends FunCommand {
 	protected String name;
+	protected String ho_name;
 	protected FunCommandCall[] args=null;
 	protected boolean variable = false;
 
@@ -22,6 +23,7 @@ public class FunCommandCall extends FunCommand {
 	public FunCommandCall( Position pos, FunMachine machine, String name ){
 		super(pos, machine);
 		this.name = name;
+		this.ho_name = name;
 	}
 	
 	public FunCommandCall( Position pos, FunMachine machine, String name, FunCommandCall[] args ){
@@ -33,9 +35,11 @@ public class FunCommandCall extends FunCommand {
 	public FunCommandCall[] args(){ return args; }
 	
 	public KeyMap<String, Object> match( KeyMap<String, Object> variables, Object... values ) throws LanguageException{
+		String _ho_name = (String)variables.get(name);
+		ho_name = (_ho_name!=null)?_ho_name:name; 
 		int arity = arity();
 		if( arity == 0 ){
-			Object obj=machine.execute(this, name);
+			Object obj=machine.execute(this, ho_name);
 			if(obj==null || values.length!=1 || !obj.equals(values[0])) throw exception(FunConstants.argmismatch, values[0]);
 			return variables;
 		}
@@ -90,13 +94,17 @@ public class FunCommandCall extends FunCommand {
 	public KeyMap<String, Object> match( Object... values ) throws LanguageException{ return match( new HTKeyMap<String,Object>(), values ); }
 	
 	public Object execute( KeyMap<String,Object> variables ) throws LanguageException{
+		String _ho_name = (String)variables.get(name);
+		ho_name = (_ho_name!=null)?_ho_name:name; 
 		int a = arity();
 		Object[] obj = new Object[a];
 		for( int i=0; i<a; i++ ) obj[i] = args[i].execute(variables);
-		return machine.execute(this, name, obj);
+		return machine.execute(this, ho_name, obj);
 	}
 
-	public Object execute( Object... value ) throws LanguageException{ return machine.execute( this, name, value ); }
+	public Object execute( Object... value ) throws LanguageException{
+		return machine.execute( this, ho_name, value ); 
+	}
 
 	public String toString( FunEncoder encoder ){
 		StringBuilder sb = new StringBuilder();

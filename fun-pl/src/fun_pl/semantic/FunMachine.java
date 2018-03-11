@@ -38,7 +38,13 @@ public abstract class FunMachine{
 	public abstract FunSymbolCommand symbol_command();
 	public abstract FunSymbolCommand symbol_command(String symbol);
 
-	public abstract boolean can_assign( String variable, Object value );
+	public boolean can_assign( String variable, Object value ){
+		if(value instanceof String ){
+			String cmd = (String)value;
+			return primitive(cmd)!=null || program.defined(cmd);
+		}
+		return false;
+	}
 	
 //	public Object execute( String command, Object... args ) throws LanguageException{
 		
@@ -52,7 +58,10 @@ public abstract class FunMachine{
 		if( is_primitive(command) ){
 			FunCommand c = primitive(command); 
 			c.init(pos);
-			if( args.length != c.arity() ) throw new LanguageException(pos, FunConstants.argnumbermismatch, command);
+			if( args.length != c.arity() ){
+				if( args.length > 0 ) throw new LanguageException(pos, FunConstants.argnumbermismatch, command);
+				else return command;
+			}
 			try{ return c.execute(args); }
 			catch(LanguageException e){
 				e.setPosition(pos);
@@ -60,6 +69,11 @@ public abstract class FunMachine{
 			} 
 		}
 		program.init(pos);
-		return program.execute(command, args);
+		try{
+			return program.execute(command, args);
+		}catch(LanguageException e ){
+			if(program.defined(command) && args.length==0 ) return command;
+			else throw e;
+		}	
 	}
 }

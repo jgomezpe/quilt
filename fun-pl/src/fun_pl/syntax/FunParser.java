@@ -56,7 +56,19 @@ public class FunParser implements Parser{
 		try{ return extended_command(true);	}catch(LanguageException e){ le=e; }
 		offset=off;
 		Token<Position2D> t = get();
-		if( t.type()==FunConstants.VARIABLE || t.type()==FunConstants.PRIM_VALUE || (t.type()&FunConstants.VALUE)==FunConstants.VALUE ){
+		// Trying to make it higher order
+		if( t.type()==FunConstants.VARIABLE ){
+			Vector<Typed> v = new Vector<Typed>();
+			v.add(t);
+			Token<Position2D> t1 = next();
+			if( t1.type()==FunConstants.OPEN ){
+				args(v);
+				return new TypedValue<Vector<Typed>>(FunConstants.COMMAND, v);
+			}else{
+				return t;
+			}
+		}
+		if( t.type()==FunConstants.PRIM_VALUE || (t.type()&FunConstants.VALUE)==FunConstants.VALUE ){
 			next();
 			return t;
 		}
