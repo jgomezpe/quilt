@@ -1,6 +1,6 @@
 package quilt;
 
-import quilt.gui.Drawer;
+import unalcol.gui.paint.Canvas;
 
 public class NilQuilt extends Quilt{
 
@@ -20,6 +20,6 @@ public class NilQuilt extends Quilt{
 	public boolean equals(Quilt quilt) { return quilt!=null && quilt instanceof NilQuilt; }
 
 	@Override
-	public void draw(Drawer g, int column, int row) {}
+	public void draw(Canvas g, int column, int row) {}
 
 }

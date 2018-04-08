@@ -1,8 +1,8 @@
 package quilt.factory;
 
 import quilt.Quilt;
-import unalcol.gui.util.Factory;
-import unalcol.gui.util.Instance;
+import unalcol.util.Factory;
+import unalcol.util.Instance;
 import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.keymap.ImmutableKeyMap;
 import unalcol.types.collection.keymap.KeyMap;

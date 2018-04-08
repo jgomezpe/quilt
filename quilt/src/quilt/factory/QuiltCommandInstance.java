@@ -2,7 +2,7 @@ package quilt.factory;
 
 
 import fun_pl.semantic.FunCommand;
-import unalcol.gui.util.Instance;
+import unalcol.util.Instance;
 import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.keymap.ImmutableKeyMap;
 import unalcol.types.collection.keymap.KeyMap;

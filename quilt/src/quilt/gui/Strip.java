@@ -1,6 +1,7 @@
 package quilt.gui;
 
 import quilt.util.Util;
+import unalcol.gui.paint.Canvas;
 import unalcol.gui.paint.Color;
 
 /**
@@ -102,7 +103,7 @@ public class Strip implements Comparable<Object>{
 		return c;
 	}
 	
-	public void draw( Drawer g, int column, int row ){
+	public void draw( Canvas g, int column, int row ){
 		if( color != null ){ g.setColor(color); }
 		g.drawLine(column+start[0], row+start[1], column+end[2], row+end[3]);
 	}

@@ -5,7 +5,7 @@ import quilt.gui.Strip;
 import quilt.gui.StripInstance;
 import unalcol.gui.paint.Color;
 import unalcol.gui.paint.ColorInstance;
-import unalcol.gui.util.Instance;
+import unalcol.util.Instance;
 
 /**
 *

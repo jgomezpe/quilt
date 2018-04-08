@@ -2,7 +2,7 @@ package quilt.factory;
 
 import quilt.NilQuilt;
 import quilt.Quilt;
-import unalcol.gui.util.Instance;
+import unalcol.util.Instance;
 
 public class NilQuiltInstance implements Instance<Quilt> {
 	public static final String NIL="nil";

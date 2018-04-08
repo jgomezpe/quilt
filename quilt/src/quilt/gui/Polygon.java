@@ -1,6 +1,7 @@
 package quilt.gui;
 
 import quilt.util.Util;
+import unalcol.gui.paint.Canvas;
 import unalcol.gui.paint.Color;
 
 /**
@@ -98,7 +99,7 @@ public class Polygon implements Comparable<Object>{
 		return (c==0)?Util.compare(y, p.y):c;
 	}
 	
-	public void draw( Drawer g, int column, int row ){
+	public void draw( Canvas g, int column, int row ){
 		if( color != null ){ g.setColor(color); }
 		int[] mx = x.clone();
 		int[] my = y.clone();
@@ -106,6 +107,6 @@ public class Polygon implements Comparable<Object>{
 			mx[i] +=column;
 			my[i] += row;
 		}
-		g.drawFillPolygon(mx, my);
+		g.drawPolygon(mx, my);
 	}	
 }

@@ -1,7 +1,7 @@
 package quilt.remnant;
 
 import quilt.Quilt;
-import unalcol.gui.util.Instance;
+import unalcol.util.Instance;
 
 /**
 *

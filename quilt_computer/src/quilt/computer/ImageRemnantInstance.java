@@ -2,7 +2,7 @@ package quilt.computer;
 
 import quilt.Quilt;
 import quilt.util.Util;
-import unalcol.gui.util.Instance;
+import unalcol.util.Instance;
 
 /**
 *

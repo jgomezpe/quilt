@@ -1,6 +1,6 @@
 package quilt;
 
-import quilt.gui.Drawer;
+import unalcol.gui.paint.Canvas;
 import unalcol.gui.paint.Color;
 
 /**
@@ -63,7 +63,7 @@ public abstract class Remnant extends Quilt{
 		return null;
 	}
 
-	public void draw( Drawer g, int column, int row ){
+	public void draw( Canvas g, int column, int row ){
 		column = units(column);
 		row = units(row);
 		g.setColor(new Color(0,0,0,255));

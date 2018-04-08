@@ -5,7 +5,7 @@ import java.awt.Image;
 
 import quilt.util.QuiltConstants;
 import quilt.util.Util;
-import unalcol.gui.util.ObjectParser;
+import unalcol.util.ObjectParser;
 
 /**
 *

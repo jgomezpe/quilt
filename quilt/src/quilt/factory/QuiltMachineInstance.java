@@ -16,7 +16,7 @@ import quilt.remnant.PolygonsRemnant;
 import quilt.remnant.PolygonsRemnantInstance;
 import quilt.remnant.StripsRemnant;
 import quilt.remnant.StripsRemnantInstance;
-import unalcol.gui.util.Instance;
+import unalcol.util.Instance;
 import unalcol.types.collection.Collection;
 import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.keymap.ImmutableKeyMap;

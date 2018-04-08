@@ -35,7 +35,7 @@ import unalcol.gui.editor.SyntaxEditPanel;
 import unalcol.gui.editor.SyntaxStyle;
 import unalcol.gui.io.FileFilter;
 import unalcol.gui.log.LogPanel;
-import unalcol.gui.util.ObjectParser;
+import unalcol.util.ObjectParser;
 import unalcol.io.Position2D;
 import unalcol.io.Tokenizer;
 import unalcol.language.LanguageException;

@@ -2,7 +2,7 @@ package quilt.gui;
 
 import unalcol.gui.paint.Color;
 import unalcol.gui.paint.ColorInstance;
-import unalcol.gui.util.Instance;
+import unalcol.util.Instance;
 
 /**
 *

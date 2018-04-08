@@ -4,7 +4,7 @@ import quilt.Quilt;
 import quilt.gui.Polygon;
 import quilt.gui.PolygonInstance;
 import unalcol.gui.paint.ColorInstance;
-import unalcol.gui.util.Instance;
+import unalcol.util.Instance;
 
 /**
 *

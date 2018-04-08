@@ -1,12 +1,12 @@
 package quilt.remnant;
 
 import quilt.Quilt;
-import quilt.gui.Drawer;
 import quilt.gui.Polygon;
 import quilt.operation.Rotatable;
 import quilt.operation.Rotate;
 import quilt.util.Util;
 import unalcol.gui.paint.Color;
+import unalcol.gui.paint.Canvas;
 
 /**
 *
@@ -61,7 +61,7 @@ public class PolygonsRemnant extends ColoredRemnant implements Rotatable<Quilt>{
 	}
 
 	@Override
-	public void draw( Drawer g, int column, int row ){
+	public void draw( Canvas g, int column, int row ){
 		super.draw(g,column,row);
 		column = units(column);
 		row = units(row);

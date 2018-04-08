@@ -1,7 +1,7 @@
 package quilt;
 
-import unalcol.gui.util.Factory;
-import unalcol.gui.util.Instance;
+import unalcol.util.Factory;
+import unalcol.util.Instance;
 
 /**
 *

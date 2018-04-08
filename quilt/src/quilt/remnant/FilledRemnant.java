@@ -1,7 +1,7 @@
 package quilt.remnant;
 
 import quilt.Quilt;
-import quilt.gui.Drawer;
+import unalcol.gui.paint.Canvas;
 import unalcol.gui.paint.Color;
 
 /**
@@ -61,13 +61,13 @@ public class FilledRemnant extends ColoredRemnant{
 	public int side(){ return side; }
 	
 	@Override
-	public void draw( Drawer g, int column, int row ){
+	public void draw( Canvas g, int column, int row ){
 		super.draw(g,column,row);
 		column = units(column);
 		row = units(row);
 		int one = unit();
 		g.setColor(color());
-		g.drawFill(column+(one-side)/2, row+(one-side)/2, side, side);
+		g.drawFillRect(column+(one-side)/2, row+(one-side)/2, side, side);
 	}
 
 	public boolean equals( Quilt r ){

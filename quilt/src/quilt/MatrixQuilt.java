@@ -1,6 +1,6 @@
 package quilt;
 
-import quilt.gui.Drawer;
+import unalcol.gui.paint.Canvas;
 import quilt.operation.Rotatable;
 import quilt.operation.Rotate;
 
@@ -92,7 +92,7 @@ public class MatrixQuilt extends Quilt implements Rotatable<Quilt>{
 	}
 
 	@Override
-	public void draw(Drawer g, int column, int row) {
+	public void draw(Canvas g, int column, int row) {
 		for( int i=0; i<rows(); i++ )
 			for( int j=0; j<columns(); j++ ) remnant[i][j].draw(g, column+j, row+i);
 	}	

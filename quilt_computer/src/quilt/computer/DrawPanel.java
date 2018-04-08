@@ -2,7 +2,8 @@ package quilt.computer;
 import javax.swing.JPanel;
 
 import quilt.Quilt;
-import quilt.gui.Drawer;
+import unalcol.gui.paint.Canvas;
+import unalcol.gui.paint.AWTCanvas;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -90,7 +91,7 @@ public class DrawPanel extends JPanel{
 			int w = Math.min(d.width, d.height);
 			int wr = Math.max(Quilt.columns(), Quilt.rows());
 			if( wr > 0 ){ 
-				Drawer drawer = new AWTDrawer( g, w/wr );
+				Canvas drawer = new AWTCanvas( g, w/wr );
 				Quilt.draw(drawer, 0, 0);
 			}
 		}

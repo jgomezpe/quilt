@@ -4,7 +4,7 @@ import java.awt.Image;
 
 import quilt.Quilt;
 import quilt.Remnant;
-import quilt.gui.Drawer;
+import unalcol.gui.paint.Canvas;
 import quilt.operation.Rotatable;
 import quilt.operation.Rotate;
 
@@ -74,7 +74,7 @@ public class ImageRemnant extends Remnant implements Rotatable<Remnant>{
 	}
 
 	@Override
-	public void draw( Drawer g, int column, int row ){
+	public void draw( Canvas g, int column, int row ){
 		super.draw(g,column,row);
 		column = units(column);
 		row = units(row);

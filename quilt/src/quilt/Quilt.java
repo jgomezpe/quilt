@@ -1,6 +1,6 @@
 package quilt;
 
-import quilt.gui.Drawer;
+import unalcol.gui.paint.Canvas;
 import quilt.util.QuiltConstants;
 import unalcol.util.I18N;
 
@@ -71,7 +71,7 @@ public abstract class Quilt{
 	// Drawing
 	public int unit(){ return UNIT; };
 	public int units( int value ){ return value*UNIT; }
-	public abstract void draw( Drawer g, int column, int row );
+	public abstract void draw( Canvas g, int column, int row );
 	
 	public String toString(){
 		return (rows()==1&&columns()==1)?I18N.get(QuiltConstants.REMNANT)+"[1,1]":I18N.get(QuiltConstants.QUILT)+"["+rows()+","+columns()+"]";
