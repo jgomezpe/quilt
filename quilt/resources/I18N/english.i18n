@@ -1,37 +1,40 @@
-novalue=Undefined value %s.
-code=%$=,()+
-extra=Unknown element $s at row $d, column %d..
-unexpected=Unexpected %s at row %d, column %d. Expecting %s.
-noargs=Arguments definition is not valid at row %d, column %d.
-validcommand=function's valid name.
-redefined=Primitive function or remnant %s cannot be redefined at row %d, column %d.
-norule=Undefined component %s.
-nocommand=Undefined function %s at row %d, column %d.
-argmismatch=Mismatch in arguments calling %s at row %d, column %d. Receiving %s.
-argnumbermismatch=Number of arguments mismatch calling %s at row %d, column %d. Expecting %d but receiving %d.
-novar=Undefined variable %s at row %d, column %d.
-out=Out
-error=Error
-stitch=Unable to apply sew (%s) operation at row %d, column %d: Quilts %s and %s have different heights.  
-unstitch=Unable to apply unstitch (%s) operation at row %d, column %d.  
-remnant=Remnant
-quilt=Quilt
-primitive=Primitive Function
-noname=No name
-clean=Clean Program and Command areas?
-new=New
-open=Load
-save=Save
-compile=Compile
-execute=Execute
-command=Command:
-title=Sewer Machine Environment
-file=Sewer machine files
-no_errors=No errors...!!!!
-errors=Problems!!! There are some errors.\nSee error tab for a complete description of the error
-author=Developed by Professor Jonatan Gomez Perdomo.\n jgomezpe at unal.edu.co \nUniversidad Nacional de Colombia
-machine=Machine configuration
-style=Editor Text Style
-rot=rot
-rotc=% Rotates a remnant 90 degrees counter clock wise.\n
-sewc=% Sews two remnants with same high.\n
+<?xml version="1.0"?>
+<language id='english'>
+  <i18n id='novalue' msg='Undefined value %s'/>
+  <i18n id='code' msg='=%$=,()+'/>
+  <i18n id='extra' msg='Unknown element $s at row $d, column %d..'/>
+  <i18n id='unexpected' msg='Unexpected %s at row %d, column %d. Expecting %s.'/>
+  <i18n id='noargs' msg='Arguments definition is not valid at row %d, column %d.'/>
+  <i18n id='validcommand' msg='function's valid name.'/>
+  <i18n id='redefined' msg='Primitive function or remnant %s cannot be redefined at row %d, column %d.'/>
+  <i18n id='norule' msg='Undefined component %s.'/>
+  <i18n id='nocommand' msg='Undefined function %s at row %d, column %d.'/>
+  <i18n id='argmismatch' msg='Mismatch in arguments calling %s at row %d, column %d. Receiving %s.'/>
+  <i18n id='argnumbermismatch' msg='Number of arguments mismatch calling %s at row %d, column %d. Expecting %d but receiving %d.'/>
+  <i18n id='novar' msg='Undefined variable %s at row %d, column %d.'/>
+  <i18n id='out' msg='Out'/>
+  <i18n id='error' msg='Error'/>
+  <i18n id='stitch' msg='Unable to apply sew (%s) operation at row %d, column %d: Quilts %s and %s have different heights.'/>  
+  <i18n id='unstitch' msg='Unable to apply unstitch (%s) operation at row %d, column %d.'/>
+  <i18n id='remnant' msg='Remnant'/>
+  <i18n id='quilt' msg='Quilt'/>
+  <i18n id='primitive' msg='Primitive Function'/>
+  <i18n id='noname' msg='No name'/>
+  <i18n id='clean' msg='Clean Program and Command areas?'/>
+  <i18n id='new' msg='New'/>
+  <i18n id='open' msg='Load'/>
+  <i18n id='save' msg='Save'/>
+  <i18n id='compile' msg='Compile'/>
+  <i18n id='execute' msg='Execute'/>
+  <i18n id='command' msg='Command:'/>
+  <i18n id='title' msg='Sewer Machine Environment'/>
+  <i18n id='file' msg='Sewer machine files'/>
+  <i18n id='no_errors' msg='No errors...!!!!'/>
+  <i18n id='errors' msg='Problems!!! There are some errors.\nSee error tab for a complete description of the error'/>
+  <i18n id='author' msg='Developed by Professor Jonatan Gomez Perdomo.\n jgomezpe at unal.edu.co \nUniversidad Nacional de Colombia'/>
+  <i18n id='machine' msg='Machine configuration'/>
+  <i18n id='style' msg='Editor Text Style'/>
+  <i18n id='rot' msg='rot'/>
+  <i18n id='rotc' msg='% Rotates a remnant 90 degrees counter clock wise.\n'/>
+  <i18n id='sewc' msg='% Sews two remnants with same high.\n'/>
+</language>

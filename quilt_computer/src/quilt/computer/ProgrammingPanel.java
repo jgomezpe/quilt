@@ -421,7 +421,7 @@ public class ProgrammingPanel extends JPanel{
 	public void show_error_message( JTextComponent code_area, LanguageException e ){
 		if( frame != null ) frame.setVisible(false);
 		String msg = e.getMessage();	
-		int k = msg.indexOf(unalcol.util.I18N.MSG_SEPARATOR);
+		int k = msg.indexOf('=');
 		JOptionPane.showMessageDialog(this, i18n(QuiltConstants.ERRORS));
 		this.log.getOutArea().setText(i18n(QuiltConstants.ERRORS));
 		this.log.getErrorArea().setText(msg.substring(k+1));
