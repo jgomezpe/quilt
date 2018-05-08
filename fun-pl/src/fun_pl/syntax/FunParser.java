@@ -32,7 +32,7 @@ public class FunParser implements Parser{
 
 	public static int[] pos( Token<Position2D> t ){
 	    Position2D pos = (Position2D)t.pos();
-	    return new int[]{pos.row(),pos.row()};
+	    return new int[]{pos.row(),pos.column()};
 	}
 	
 	public static int[] posf( Token<Position2D> t ){

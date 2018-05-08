@@ -1,7 +1,6 @@
-package quilt.computer;
+package quilt.remnant;
 
 import quilt.Quilt;
-import quilt.util.Util;
 import unalcol.util.Instance;
 
 /**
@@ -57,7 +56,7 @@ public class ImageRemnantInstance implements Instance<Quilt>{
 		int rot = args.length==2?0:(int)args[2];
 		String name = (String)args[1];
 		System.out.println(name);
-		return new ImageRemnant(name, Util.image(name), rot);
+		return new ImageRemnant(name, rot);
 	}
 
 	@Override

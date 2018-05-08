@@ -3,7 +3,7 @@ import javax.swing.JPanel;
 
 import quilt.Quilt;
 import unalcol.gui.paint.Canvas;
-import unalcol.gui.paint.AWTCanvas;
+import unalcol.gui.paint.AWTRender;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -60,6 +60,7 @@ public class DrawPanel extends JPanel{
 	private static final long serialVersionUID = -608013051247107752L;
   
 	public Quilt Quilt = null;
+	public AWTRender render = new AWTRender();
 
 	public DrawPanel(){
 		this( null );
@@ -76,6 +77,9 @@ public class DrawPanel extends JPanel{
 
 	public void set( Quilt Quilt ){
 		this.Quilt = Quilt;
+		Canvas drawer = new Canvas( render );
+		render.init();
+		Quilt.draw(drawer, 0, 0);
 		this.updateUI();
 	}
 
@@ -87,12 +91,11 @@ public class DrawPanel extends JPanel{
 		super.paintComponent(g);
 		if( Quilt != null ){
 			Dimension d = this.getSize();
-			//System.out.println( "Painting..." + d );
 			int w = Math.min(d.width, d.height);
 			int wr = Math.max(Quilt.columns(), Quilt.rows());
 			if( wr > 0 ){ 
-				Canvas drawer = new AWTCanvas( g, w/wr );
-				Quilt.draw(drawer, 0, 0);
+				render.setGraphics( g, w/wr );
+				render.render();
 			}
 		}
 	}

@@ -1,12 +1,11 @@
 package fun_pl.semantic;
 
+import fun_pl.syntax.FunLexerCheck;
 import fun_pl.util.FunConstants;
 import unalcol.io.Position;
 import unalcol.language.LanguageException;
-import unalcol.types.collection.Collection;
-import unalcol.types.collection.array.Array;
 
-public abstract class FunMachine{
+public abstract class FunMachine implements FunLexerCheck{
 
 	protected FunProgram program = new FunProgram(this);
 
@@ -21,18 +20,10 @@ public abstract class FunMachine{
 	
 	public void clear(){ this.program.clear(); }
 
-	public boolean is_primitive(String command){ 
-		for( String s:primitives() ) if( s.equals(command) ) return true;
-		return false;
-	}
-	
-	public abstract Collection<String> primitives();
 	public abstract FunCommand primitive(String command);
 
 	public boolean is_value(String val){ return value(val)!=null; }
 	public abstract Object value(String value);
-	public abstract Collection<String> values();
-	public abstract Array<String> composed(String value);
 	
 	public boolean is_symbol_command(String command){ return symbol_command(command)!=null; }
 	public abstract FunSymbolCommand symbol_command();

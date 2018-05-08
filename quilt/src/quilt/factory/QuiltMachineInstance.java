@@ -12,6 +12,8 @@ import quilt.remnant.EmptyRemnant;
 import quilt.remnant.EmptyRemnantInstance;
 import quilt.remnant.FilledRemnant;
 import quilt.remnant.FilledRemnantInstance;
+import quilt.remnant.ImageRemnant;
+import quilt.remnant.ImageRemnantInstance;
 import quilt.remnant.PolygonsRemnant;
 import quilt.remnant.PolygonsRemnantInstance;
 import quilt.remnant.StripsRemnant;
@@ -79,6 +81,7 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 		remnants.register(PolygonsRemnantInstance.POLYGONS, PolygonsRemnant.class.getName(), new PolygonsRemnantInstance());
 		remnants.register(EmptyRemnantInstance.EMPTY, EmptyRemnant.class.getName(), new EmptyRemnantInstance());
 		remnants.register(NilQuiltInstance.NIL, NilQuilt.class.getName(), new NilQuiltInstance());
+		remnants.register(ImageRemnantInstance.IMAGE, ImageRemnant.class.getName(), new ImageRemnantInstance());
 	}
 	
 	public void register(String tag, String type, Instance<Quilt> instance ){ remnants.register(tag, type, instance); }

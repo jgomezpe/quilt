@@ -112,11 +112,11 @@ public class QuiltMachine extends FunMachine{
 		Vector<String> v = new Vector<String>();
 		boolean ok = true;
 		while(compose.length()>0 && ok){
-			Iterator<KeyValue<String,Quilt>> iter = remnants.pairs().iterator();
+			Iterator<String> iter = values().iterator();
 			String r=null;
 			ok = false;
 			while(iter.hasNext() && !ok){
-				r = iter.next().key();
+				r = iter.next();
 				ok = compose.indexOf(r)==0;
 				if(ok){
 					v.add(r);

@@ -2,7 +2,6 @@ package fun_pl.syntax;
 
 import java.util.NoSuchElementException;
 
-import fun_pl.semantic.FunMachine;
 import fun_pl.util.FunConstants;
 import unalcol.io.Position2D;
 import unalcol.language.LanguageException;
@@ -20,9 +19,11 @@ public class FunLexer implements Lexer{
 	protected UnalcolIterator<Position2D, Integer> reader;
 	protected Encoder encoder;
 	
-	protected FunMachine machine;
+	protected FunLexerCheck machine;
 	
-	public FunLexer( FunMachine machine ){ this.machine = machine; }
+	public FunLexer( String[] primitives, String[] values ){ this.machine = new SimpleFunLexerCheck(primitives, values); }
+
+	public FunLexer( FunLexerCheck machine ){ this.machine = machine; }
 	
 	public static String get( int[] lexeme ){
 		StringBuilder sb = new StringBuilder();

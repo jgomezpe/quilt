@@ -149,7 +149,6 @@ public class ProgrammingPanel extends JPanel{
 		this.setSize(new Dimension(width*4/5, height*4/5));
 
 		// @TODO: Load Constants i18n
-		qm.register(ImageRemnantInstance.IMAGE, ImageRemnant.class.getName(), new ImageRemnantInstance());
 		
 		QuiltMachine machine=null;
 		try{ machine = qm.load(ObjectParser.parse(machine_txt)); }catch(Exception e){ e.printStackTrace(); }
@@ -421,10 +420,9 @@ public class ProgrammingPanel extends JPanel{
 	public void show_error_message( JTextComponent code_area, LanguageException e ){
 		if( frame != null ) frame.setVisible(false);
 		String msg = e.getMessage();	
-		int k = msg.indexOf('=');
 		JOptionPane.showMessageDialog(this, i18n(QuiltConstants.ERRORS));
 		this.log.getOutArea().setText(i18n(QuiltConstants.ERRORS));
-		this.log.getErrorArea().setText(msg.substring(k+1));
+		this.log.getErrorArea().setText(msg);
 		this.log.select(false);
 		if( e.position() instanceof Position2D ){
 			Position2D pos = (Position2D)e.position();
@@ -477,7 +475,6 @@ public class ProgrammingPanel extends JPanel{
 				this.log.select(true);
 				this.log.getErrorArea().setText("");
 			}catch(LanguageException e){
-				System.out.println(e.getMessage());
 				show_error_message(jProgram, e);
 			}
 		}	

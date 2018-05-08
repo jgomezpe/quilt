@@ -38,7 +38,7 @@ public class FunProgram extends FunCommand{
 	
 	public Object execute( String command, Object... values ) throws LanguageException{
 		Vector<FunCommandDef> v = commands.get(command);
-		if( v==null ) throw new LanguageException(this, FunConstants.nocommand, command);
+		if( v==null ) throw new LanguageException(this, FunConstants.nocommand, command, 0, 0);
 		Vector<FunCommandDef> candidates = new Vector<FunCommandDef>();
 		for( FunCommandDef c:v ) if( c.arity()==values.length ) candidates.add(c);
 		if(candidates.size()==0) throw exception(FunConstants.argnumbermismatch, command);

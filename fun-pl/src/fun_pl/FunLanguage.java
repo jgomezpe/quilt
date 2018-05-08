@@ -5,6 +5,7 @@ import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunMeaner;
 import fun_pl.syntax.FunEncoder;
 import fun_pl.syntax.FunLexer;
+import fun_pl.syntax.FunLexerCheck;
 import fun_pl.syntax.FunParser;
 import fun_pl.util.FunConstants;
 import unalcol.io.Tokenizer;
@@ -29,7 +30,7 @@ public class FunLanguage extends ProgrammingLanguage<FunCommand>{
 		return new FunEncoder(I18N.get(FunConstants.code));
 	}
 	
-	public static Tokenizer tokenizer(FunMachine machine){
+	public static Tokenizer tokenizer(FunLexerCheck machine){
 		try{ return new Tokenizer(encoder(), new FunLexer(machine)); }catch(LanguageException e){}
 		return null;
 	}

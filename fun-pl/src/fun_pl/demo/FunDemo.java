@@ -31,22 +31,27 @@ public class FunDemo {
 		return "*(6,10)";
 	}
 
+	public static String english(){
+		return "<?xml version='1.0'?>\n" +
+		"  <language id='english'>\n" +
+		"    <i18n id='" + FunDemoCommand.plus + "' msg='+'/>\n" +		
+		"    <i18n id='" + FunDemoCommand.invalid + "' msg='Number %d cannot be reduced.'/>\n" +		
+		"    <i18n id='" + FunConstants.novalue + "' msg='Undefined value %s.'/>\n" +		
+		"    <i18n id='" + FunConstants.code + "' msg='%$=,()+'/>\n" +		
+		"    <i18n id='" + FunConstants.extra + "' msg='Number of link operands %s not admisible, expecting at most %d link operands'/>\n" +		
+		"    <i18n id='" + FunConstants.unexpected + "' msg='Unexpected %s at row %d, column %d. Expecting %s'/>\n" +		
+		"    <i18n id='" + FunConstants.noargs + "' msg='Not valid definition of arguments at row %d, column %d'/>\n" +		
+		"    <i18n id='" + FunConstants.validcommand + "' msg='valid command name'/>\n" +		
+		"    <i18n id='" + FunConstants.norule + "' msg='Undefined component %s.'/>\n" +		
+		"    <i18n id='" + FunConstants.nocommand + "' msg='Undefined command %s at row %d, column %d.'/>\n" +		
+		"    <i18n id='" + FunConstants.argmismatch + "' msg='Mismatch in arguments calling command %s at row %d, column %d. Receiving %s'/>\n" +		
+		"    <i18n id='" + FunConstants.argnumbermismatch + "' msg='Mismatch in the number of arguments calling command %s at row %d, column %d. Expecting %d but receiving %d.'/>\n" +		
+		"    <i18n id='" + FunConstants.novar + "' msg='Undefined variable %s at row %d, column %d.'/>\n"+
+		" </language>";
+	}
+	
 	public static void i18n(){
-		HTKeyMap<String, String> x = new HTKeyMap<String,String>();
-		x.set(FunDemoCommand.plus,"+");
-		x.set(FunDemoCommand.invalid,"Number %d cannot be reduced.");
-		x.set(FunConstants.novalue, "Undefined value %s.");
-		x.set(FunConstants.code, "%$=,()+");
-		x.set(FunConstants.extra, "Number of link operands %s not admisible, expecting at most %d link operands");
-		x.set(FunConstants.unexpected, "Unexpected %s at row %d, column %d. Expecting %s");
-		x.set(FunConstants.noargs, "Not valid definition of arguments at row %d, column %d");
-		x.set(FunConstants.validcommand, "valid command name");
-		x.set(FunConstants.norule, "Undefined component %s.");
-		x.set(FunConstants.nocommand, "Undefined command %s at row %d, column %d.");
-		x.set(FunConstants.argmismatch, "Mismatch in arguments calling command %s at row %d, column %d. Receiving %s");
-		x.set(FunConstants.argnumbermismatch, "Mismatch in the number of arguments calling command %s at row %d, column %d. Expecting %d but receiving %d.");
-		x.set(FunConstants.novar, "Undefined variable %s at row %d, column %d.");
-		I18N.add("english",x);
+		I18N.add("english",english());
 		I18N.use("english");
 	}
 	

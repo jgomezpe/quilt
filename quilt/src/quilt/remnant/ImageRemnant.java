@@ -1,6 +1,4 @@
-package quilt.computer;
-
-import java.awt.Image;
+package quilt.remnant;
 
 import quilt.Quilt;
 import quilt.Remnant;
@@ -54,23 +52,20 @@ import quilt.operation.Rotate;
 */
 public class ImageRemnant extends Remnant implements Rotatable<Remnant>{
 	protected String name;
-	
-	protected Image image;
 	protected int rot=0;
 	
-	public ImageRemnant(String name, Image image, int rot){
+	public ImageRemnant(String name, int rot){
 		this.name = name;
-		this.image = image;
 		this.rot = rot;
 	}
 	
-	public ImageRemnant(String name, Image image) {
-		this(name, image, 0 );
+	public ImageRemnant(String name) {
+		this(name, 0 );
 	}
 	
 	@Override
 	public Object clone() {
-		return new ImageRemnant(name,image,rot);
+		return new ImageRemnant(name,rot);
 	}
 
 	@Override
@@ -78,12 +73,12 @@ public class ImageRemnant extends Remnant implements Rotatable<Remnant>{
 		super.draw(g,column,row);
 		column = units(column);
 		row = units(row);
-		g.drawImage(column, row, unit(), unit(), rot, image);
+		g.drawImage(column, row, unit(), unit(), rot, name);
 	}
 
 	@Override
 	public Remnant rotate(Rotate command) {
-		return new ImageRemnant(name, image, (rot+270)%360);
+		return new ImageRemnant(name, (rot+270)%360);
 	}
 
 	@Override
