@@ -8,13 +8,12 @@ import fun_pl.semantic.FunSymbolCommand;
 import fun_pl.util.FunConstants;
 import quilt.operation.Rotate;
 import quilt.operation.Sew;
+import unalcol.i18n.I18N;
 import unalcol.types.collection.Collection;
 import unalcol.types.collection.array.Array;
 import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.keymap.ImmutableKeyMap;
-import unalcol.types.collection.keymap.KeyValue;
 import unalcol.types.collection.vector.Vector;
-import unalcol.util.I18N;
 
 /**
 *

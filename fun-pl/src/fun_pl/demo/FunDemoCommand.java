@@ -3,9 +3,9 @@ package fun_pl.demo;
 import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
+import unalcol.i18n.I18N;
 import unalcol.io.Position2D;
 import unalcol.language.LanguageException;
-import unalcol.util.I18N;
 
 public class FunDemoCommand extends FunSymbolCommand{
 	public static final String plus="plus";

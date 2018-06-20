@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-
 import javax.imageio.ImageIO;
 
 import quilt.gui.Strip;
@@ -181,8 +180,8 @@ public class Util {
 	protected static boolean set_i18n( String language, InputStream is ){
 		try{ 
 			String config = plain_file_read(is,true);
-			unalcol.util.I18N.add(language, unalcol.util.I18N.load(config));
-			unalcol.util.I18N.use(language);
+			unalcol.i18n.I18N.add(language, unalcol.i18n.I18N.load(config));
+			unalcol.i18n.I18N.use(language);
 			return true;
 		}catch( Exception e ){}
 		return false;

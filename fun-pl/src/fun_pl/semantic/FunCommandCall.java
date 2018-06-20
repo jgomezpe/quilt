@@ -2,12 +2,12 @@ package fun_pl.semantic;
 
 import fun_pl.syntax.FunEncoder;
 import fun_pl.util.FunConstants;
+import unalcol.i18n.I18N;
 import unalcol.io.Position;
 import unalcol.language.LanguageException;
 import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.keymap.KeyMap;
 import unalcol.types.collection.vector.Vector;
-import unalcol.util.I18N;
 
 public class FunCommandCall extends FunCommand {
 	protected String name;

@@ -3,8 +3,8 @@ package quilt.operation;
 import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import quilt.Quilt;
+import unalcol.i18n.I18N;
 import unalcol.language.LanguageException;
-import unalcol.util.I18N;
 
 /**
 *

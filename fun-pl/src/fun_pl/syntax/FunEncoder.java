@@ -1,9 +1,9 @@
 package fun_pl.syntax;
 
 import fun_pl.util.FunConstants;
+import unalcol.i18n.I18N;
 import unalcol.language.LanguageException;
 import unalcol.language.symbol.Encoder;
-import unalcol.util.I18N;
 
 public class FunEncoder implements Encoder{
 

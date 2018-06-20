@@ -1,6 +1,7 @@
 package fun_pl.syntax;
 
 import fun_pl.util.FunConstants;
+import unalcol.i18n.I18N;
 import unalcol.io.Position2D;
 import unalcol.language.LanguageException;
 import unalcol.language.Typed;
@@ -9,7 +10,6 @@ import unalcol.language.programming.lexer.Token;
 import unalcol.language.programming.parser.Parser;
 import unalcol.types.collection.array.Array;
 import unalcol.types.collection.vector.Vector;
-import unalcol.util.I18N;
 
 public class FunParser implements Parser{
 	

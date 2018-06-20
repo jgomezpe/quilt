@@ -159,7 +159,7 @@ public class ProgrammingPanel extends JPanel{
 		build( parent, width, height, styles, machine );
 	}
 	
-	public static String i18n(String code){ return unalcol.util.I18N.get(code); }
+	public static String i18n(String code){ return unalcol.i18n.I18N.get(code); }
 	
 	public void build( TitleComponent parent, int width, int height, String styles, QuiltMachine machine ){
 		this.setMachine(machine);

@@ -8,10 +8,10 @@ import fun_pl.syntax.FunLexer;
 import fun_pl.syntax.FunLexerCheck;
 import fun_pl.syntax.FunParser;
 import fun_pl.util.FunConstants;
+import unalcol.i18n.I18N;
 import unalcol.io.Tokenizer;
 import unalcol.language.LanguageException;
 import unalcol.language.programming.ProgrammingLanguage;
-import unalcol.util.I18N;
 
 public class FunLanguage extends ProgrammingLanguage<FunCommand>{
 	protected FunMachine machine;

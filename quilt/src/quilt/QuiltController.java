@@ -4,13 +4,15 @@ import fun_pl.FunLanguage;
 import fun_pl.semantic.FunCommandCall;
 import fun_pl.semantic.FunProgram;
 import quilt.factory.QuiltMachineInstance;
-import quilt.util.QuiltConstants;
 import unalcol.language.LanguageException;
 import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.util.ObjectParser;
-import unalcol.vc.backend.SimpleController;
+import unalcol.vc.Controller;
+import unalcol.vc.DefaultComponent;
 
-public class QuiltController extends SimpleController{
+public class QuiltController extends DefaultComponent implements Controller{
+	public QuiltController() { super("QuiltController"); }
+
 	protected QuiltMachine machine;
 	protected FunLanguage quiltLang;
 	protected QuiltMachineInstance qm= new QuiltMachineInstance();

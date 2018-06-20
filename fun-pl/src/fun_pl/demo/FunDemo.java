@@ -7,12 +7,12 @@ import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunProgram;
 import fun_pl.syntax.FunLexer;
 import fun_pl.util.FunConstants;
+import unalcol.i18n.I18N;
 import unalcol.io.Position2D;
 import unalcol.language.Typed;
 import unalcol.language.programming.lexer.Token;
 import unalcol.types.collection.array.Array;
 import unalcol.types.collection.keymap.HTKeyMap;
-import unalcol.util.I18N;
 
 public class FunDemo {
 	public static String parser_error(){

@@ -9,8 +9,8 @@ import quilt.NilQuilt;
 import quilt.Remnant;
 import quilt.util.QuiltConstants;
 import quilt.Quilt;
+import unalcol.i18n.I18N;
 import unalcol.language.LanguageException;
-import unalcol.util.I18N;
 
 /**
 *

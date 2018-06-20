@@ -1,8 +1,8 @@
 package quilt;
 
 import unalcol.gui.paint.Canvas;
+import unalcol.i18n.I18N;
 import quilt.util.QuiltConstants;
-import unalcol.util.I18N;
 
 /**
 *
