@@ -3,7 +3,7 @@ package fun_pl.semantic;
 import fun_pl.syntax.FunEncoder;
 import fun_pl.util.FunConstants;
 import unalcol.i18n.I18N;
-import unalcol.io.Position;
+import unalcol.io.Position2D;
 import unalcol.language.LanguageException;
 import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.keymap.KeyMap;
@@ -15,18 +15,18 @@ public class FunCommandCall extends FunCommand {
 	protected FunCommandCall[] args=null;
 	protected boolean variable = false;
 
-	public FunCommandCall( Position pos, FunMachine machine, String name, boolean variable ){
+	public FunCommandCall( Position2D pos, FunMachine machine, String name, boolean variable ){
 		this(pos, machine, name);
 		this.variable = variable;
 	}
 	
-	public FunCommandCall( Position pos, FunMachine machine, String name ){
+	public FunCommandCall( Position2D pos, FunMachine machine, String name ){
 		super(pos, machine);
 		this.name = name;
 		this.ho_name = name;
 	}
 	
-	public FunCommandCall( Position pos, FunMachine machine, String name, FunCommandCall[] args ){
+	public FunCommandCall( Position2D pos, FunMachine machine, String name, FunCommandCall[] args ){
 		this(pos, machine, name);
 		this.args = args;
 	}	
@@ -39,7 +39,7 @@ public class FunCommandCall extends FunCommand {
 		ho_name = (_ho_name!=null)?_ho_name:name; 
 		int arity = arity();
 		if( arity == 0 ){
-			Object obj=machine.execute(this, ho_name);
+			Object obj=machine.execute(this.pos(), ho_name);
 			if(obj==null || values.length!=1 || !obj.equals(values[0])) throw exception(FunConstants.argmismatch, values[0]);
 			return variables;
 		}
@@ -71,7 +71,7 @@ public class FunCommandCall extends FunCommand {
 								Object[] toMatch = new Object[]{null,null};
 								try{ toMatch[0]=args[k].args[0].execute(variables); }catch(Exception x){}
 								try{ toMatch[1]=args[k].args[1].execute(variables); }catch(Exception x){}
-								c.init(args[k]);
+								c.setPos(args[k].pos);
 								Object[] objs = c.reverse(values[k], toMatch,args[k].args);
 								args[k].match(variables, objs);
 							}else{
@@ -99,11 +99,11 @@ public class FunCommandCall extends FunCommand {
 		int a = arity();
 		Object[] obj = new Object[a];
 		for( int i=0; i<a; i++ ) obj[i] = args[i].execute(variables);
-		return machine.execute(this, ho_name, obj);
+		return machine.execute(this.pos, ho_name, obj);
 	}
 
 	public Object execute( Object... value ) throws LanguageException{
-		return machine.execute( this, ho_name, value ); 
+		return machine.execute( this.pos, ho_name, value ); 
 	}
 
 	public String toString( FunEncoder encoder ){

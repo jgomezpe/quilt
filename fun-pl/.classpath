@@ -5,5 +5,9 @@
 	<classpathentry kind="lib" path="/home/jgomez/git/unalcol/libs/defs.jar"/>
 	<classpathentry kind="lib" path="/home/jgomez/git/unalcol/libs/core.jar"/>
 	<classpathentry kind="lib" path="/home/jgomez/git/unalcol/libs/langcore.jar"/>
+	<classpathentry kind="lib" path="/home/jgomez/git/unalcol/libs/vc.jar"/>
+	<classpathentry kind="lib" path="/home/jgomez/git/unalcol/libs/gui.jar"/>
+	<classpathentry kind="lib" path="/home/jgomez/git/unalcol/libs/rsyntaxtextarea-3.0.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/home/jgomez/git/unalcol/libs/awtgui.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -21,5 +21,4 @@ public class NilQuilt extends Quilt{
 
 	@Override
 	public void draw(Canvas g, int column, int row) {}
-
 }

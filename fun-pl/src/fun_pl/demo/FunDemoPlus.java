@@ -7,12 +7,12 @@ import unalcol.i18n.I18N;
 import unalcol.io.Position2D;
 import unalcol.language.LanguageException;
 
-public class FunDemoCommand extends FunSymbolCommand{
+public class FunDemoPlus extends FunSymbolCommand{
 	public static final String plus="plus";
 	public static final String invalid="invalid";
 	public static final String irreducible="irreducible";
 	
-	public FunDemoCommand(FunMachine machine) { super(machine); }
+	public FunDemoPlus(FunMachine machine) { super(machine); }
 	
 	@Override
 	public Object execute(Object... value) throws LanguageException {
@@ -30,7 +30,7 @@ public class FunDemoCommand extends FunSymbolCommand{
 
 	@Override
 	public Object[] reverse(Object obj, Object[] toMatch, FunCommand[] args) throws LanguageException {
-		Position2D p = (Position2D)this;
+		Position2D p = this.pos();
 		Integer i = (Integer)obj;
 		if( toMatch[0]==null && toMatch[1]==null ){
 			if( i<= 0 ) throw exception(i, p);

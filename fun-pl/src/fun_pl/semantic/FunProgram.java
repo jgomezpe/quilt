@@ -9,7 +9,7 @@ import unalcol.types.collection.vector.Vector;
 public class FunProgram extends FunCommand{
 	public static String MAIN="main";
 	
-	public FunProgram(FunMachine machine){ super(machine); }
+	public FunProgram(FunMachine machine){ super(null,machine); }
 
 	public FunProgram(FunMachine machine, Vector<FunCommandDef> commands) throws LanguageException{
 		this(machine);
@@ -36,11 +36,29 @@ public class FunProgram extends FunCommand{
 	
 	public boolean defined(String command){	return commands.get(command)!=null;	} 
 	
-	public Object execute( String command, Object... values ) throws LanguageException{
-		Vector<FunCommandDef> v = commands.get(command);
-		if( v==null ) throw new LanguageException(this, FunConstants.nocommand, command, 0, 0);
+	protected Vector<FunCommandDef> candidates(String command, int arity ){
 		Vector<FunCommandDef> candidates = new Vector<FunCommandDef>();
-		for( FunCommandDef c:v ) if( c.arity()==values.length ) candidates.add(c);
+		Vector<FunCommandDef> v = commands.get(command);
+		if( v!=null )
+		for( FunCommandDef c:v ) if( c.arity()==arity ) candidates.add(c);
+		return candidates;
+	}
+	
+	public boolean constant(String command){ return candidates(command,0).size()>0;	}
+
+	@Override
+	protected LanguageException exception( String code, Object... args){
+		Object[] nargs = new Object[2+args.length]; 
+		if( args.length>0 ) System.arraycopy(args, 1, nargs, 3, args.length-1);
+		nargs[0] = args[0];
+		nargs[1] = pos.row()+1;
+		nargs[2] = pos.column()+1;
+		return new LanguageException(pos, code, nargs);
+	}
+	
+	public Object execute( String command, Object... values ) throws LanguageException{
+		if( !defined(command) ) throw exception(FunConstants.nocommand, command);
+		Vector<FunCommandDef> candidates = candidates(command,values.length );
 		if(candidates.size()==0) throw exception(FunConstants.argnumbermismatch, command);
 		LanguageMultiException e=null;
 		int i=0; 

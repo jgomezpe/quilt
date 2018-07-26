@@ -33,7 +33,7 @@ public class FunMeaner implements Meaner<FunCommand>{
 		Position2D pos = (Position2D)t.pos();
 		FunCommandCall c = new FunValue(pos, machine, compose.get(0));
 		for( int i=1; i<compose.size(); i++ )
-			c = new FunCommandCall(c, machine, machine.symbol_command().name(), new FunCommandCall[]{c, new FunValue(pos, machine, compose.get(i))} );
+			c = new FunCommandCall(c.pos, machine, machine.symbol_command().name(), new FunCommandCall[]{c, new FunValue(pos, machine, compose.get(i))} );
 		return c;
 	}
 
@@ -62,7 +62,7 @@ public class FunMeaner implements Meaner<FunCommand>{
 					FunCommandCall[] args = new FunCommandCall[2];
 					args[0]=(v.get(pk) instanceof Typed)?(FunCommandCall)apply((Typed)v.get(pk)):(FunCommandCall)v.get(pk);
 					args[1]=(v.get(nk) instanceof Typed)?(FunCommandCall)apply((Typed)v.get(nk)):(FunCommandCall)v.get(nk);
-					FunCommandCall c = new FunCommandCall(args[0], machine, name, args); 
+					FunCommandCall c = new FunCommandCall(args[0].pos(), machine, name, args); 
 					v.set(pk,c);
 					v.remove(k);
 					v.remove(k);

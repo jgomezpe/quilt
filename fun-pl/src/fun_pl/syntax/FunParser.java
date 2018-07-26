@@ -20,7 +20,10 @@ public class FunParser implements Parser{
 	
 	@SuppressWarnings("unchecked")
 	protected Token<Position2D> get(){
-		if( offset >= tokens.size() ) return new Token<Position2D>(new Position2D(offset,0,0)); 
+		if( offset >= tokens.size() ){
+			if( tokens.size()==0 ) return new Token<Position2D>(new Position2D(0,0,0,0)); 
+			else return new Token<Position2D>( (Position2D)tokens.get(tokens.size()-1).pos() ); 
+		}
 		return (Token<Position2D>)tokens.get(offset); 
 	}
 	
@@ -77,14 +80,26 @@ public class FunParser implements Parser{
 	
 	protected Typed wrap_command_exp() throws LanguageException{
 		Token<Position2D> t = get();
-		if(t.type()==FunConstants.OPEN){
+		int type = t.type(); 
+		if(type==FunConstants.OPEN){
 			next();
 			Typed c = command_exp();
 			t = get();
 			if(t.type()!=FunConstants.CLOSE) throw exception(t, FunConstants.CLOSE);
 			next();
 			return c;
-		}else return command_call();
+		}else{
+			if(FunConstants.START_LINK_SYMBOLS<=type && type<=FunConstants.END_LINK_SYMBOLS && I18N.get(FunConstants.arity).charAt(type)=='1'){
+				Vector<Typed> v = new Vector<Typed>();
+				v.add(t);
+				next();
+				Vector<Typed> v2 = new Vector<Typed>();
+				Typed c = wrap_command_exp();
+				v2.add(c);
+				v.add(new TypedValue<Vector<Typed>>(FunConstants.COMMAND_EXP, v2));
+				return new TypedValue<Vector<Typed>>(FunConstants.COMMAND, v);
+			}else return command_call();
+		}
 	}
 	
 	protected Typed command_exp() throws LanguageException {
@@ -92,11 +107,37 @@ public class FunParser implements Parser{
 		Typed c = wrap_command_exp();
 		v.add(c);
 		Token<Position2D> t = get();
-		while(FunConstants.START_LINK_SYMBOLS<=t.type() && t.type()<=FunConstants.END_LINK_SYMBOLS){
+		while(FunConstants.START_LINK_SYMBOLS<=t.type() && t.type()<=FunConstants.END_LINK_SYMBOLS  && I18N.get(FunConstants.arity).charAt(t.type())=='2'){
 			v.add(t);
 			t = next();
 			v.add(wrap_command_exp());
 			t=get();
+		}
+		// @TODO: Check priority
+		while( v.size()>3 ){
+			int start = 0;
+			int end = 2;
+			int priority=I18N.get(FunConstants.priority).charAt(v.get(1).type())-'0';
+			int k=end+1;
+			while(k<v.size()){
+				int p = I18N.get(FunConstants.priority).charAt(v.get(k).type())-'0'; 
+				if(p!=priority){
+					if( p<priority ){
+						Vector<Typed> v2 = new Vector<Typed>();
+						for( int i=start; i<=end; i++ ){
+							v2.add(v.get(start));
+							v.remove(start);
+						}
+						v.add(start, new TypedValue<Vector<Typed>>(FunConstants.COMMAND_EXP, v2));
+						k=v.size();
+					}else{
+						start=end;
+						end+=2;
+						priority=p;
+					}
+				}
+				k+=2;
+			}
 		}
 		return new TypedValue<Vector<Typed>>(FunConstants.COMMAND_EXP, v);
 	} 
@@ -160,6 +201,7 @@ public class FunParser implements Parser{
 		return new TypedValue<Vector<Typed>>(FunConstants.COMMAND_DEF_LIST, v);
 	} 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public Typed apply(int main, Array<Token<?>> tokens) throws LanguageException {
 		this.tokens = (Array<Token<?>>)tokens;
@@ -171,6 +213,9 @@ public class FunParser implements Parser{
 			case FunConstants.COMMAND_DEF_LIST: return command_def_list();
 			case FunConstants.COMMAND: return command();
 		}
-		throw new LanguageException(new Position2D(), FunConstants.norule, 1, 1);
+		
+		Position2D pos = new Position2D(0,0,0,0);
+		if( tokens.size()>0 ) pos = ((Token<Position2D>)tokens.get(0)).pos();
+		throw new LanguageException(pos, FunConstants.norule, 1, 1);
 	}	
 }

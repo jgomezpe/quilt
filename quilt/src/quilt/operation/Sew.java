@@ -57,9 +57,9 @@ import unalcol.language.LanguageException;
 * @version 1.0
 */
 public class Sew extends FunSymbolCommand{
+	public static String name = "sew";
 	
 	public Sew(FunMachine machine) { super( machine ); } //		super(QuiltMachine.SEW, new String[]{"X", "Y"});
-	public Sew(){ super(); } //		super(QuiltMachine.SEW, new String[]{"X", "Y"});
 
 	public Quilt execute( Quilt left, Quilt right ) throws LanguageException{
 		if(left instanceof NilQuilt) return right;
@@ -143,13 +143,14 @@ public class Sew extends FunSymbolCommand{
 	public Object[] reverse(Object obj, Object[] args, FunCommand[] vars) throws LanguageException{ return reverse((Quilt)obj, (Quilt)args[0], (Quilt)args[1], vars); }
 
 	@Override
-	public Object execute(Object... args) throws LanguageException { return execute((Quilt)args[0], (Quilt)args[1]); }
+	public Object execute(Object... args) throws LanguageException {
+		if( !(args[0] instanceof Quilt) ) throw exception(FunConstants.argmismatch, args[0]);
+		if( !(args[1] instanceof Quilt) ) throw exception(FunConstants.argmismatch, args[1]);
+		return execute((Quilt)args[0], (Quilt)args[1]); 
+	}
 
 	@Override
-	public String name(){
-		String symbols = I18N.get(FunConstants.code);
-		return ""+symbols.charAt(FunConstants.START_LINK_SYMBOLS); 
-	}
+	public String name(){ return I18N.get(name); }
 	
-	public String comment(){ return I18N.get("sewc"); }	
+	public String comment(){ return I18N.get(name+'c'); }	
 }

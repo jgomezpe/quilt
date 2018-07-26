@@ -6,6 +6,8 @@ public class FunConstants {
 
 	// FunEncoder
 	public static final String code="code";
+	public static final String arity="arity";
+	public static final String priority="priority";
 	public static final String extra="extra";
 	public static final int EOF=-1;
 	public static final int COMMENT=0;
@@ -46,5 +48,5 @@ public class FunConstants {
 	public static final String nocommand="nocommand";
 	public static final String argmismatch="argmismatch";
 	public static final String argnumbermismatch="argnumbermismatch";
-	public static final String novar="novar";
+	public static final String novar="novar";	
 }

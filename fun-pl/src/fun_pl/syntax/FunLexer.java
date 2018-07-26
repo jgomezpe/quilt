@@ -14,16 +14,22 @@ import unalcol.types.collection.array.Array;
 import unalcol.types.collection.vector.Vector;
 
 public class FunLexer implements Lexer{
-	
+	protected int src;
 	protected int offset;
 	protected UnalcolIterator<Position2D, Integer> reader;
 	protected Encoder encoder;
 	
 	protected FunLexerCheck machine;
 	
-	public FunLexer( String[] primitives, String[] values ){ this.machine = new SimpleFunLexerCheck(primitives, values); }
+	public FunLexer( String[] primitives, String[] values ){ this( new SimpleFunLexerCheck(primitives, values) ); }
 
 	public FunLexer( FunLexerCheck machine ){ this.machine = machine; }
+	
+	@Override
+	public int src(){ return src; }
+
+	@Override
+	public void setSrc(int src){ this.src = src; }	
 	
 	public static String get( int[] lexeme ){
 		StringBuilder sb = new StringBuilder();
@@ -73,7 +79,7 @@ public class FunLexer implements Lexer{
 			c=next();
 		}
 		if( c!=FunConstants.EOF ) back();
-		return new Token<Position2D>(FunConstants.VARIABLE, new Position2D(off, row, column), v);
+		return new Token<Position2D>(FunConstants.VARIABLE, new Position2D(src,off, row, column), v);
 	}
 	
 	protected Token<Position2D> value() throws LanguageException {
@@ -90,7 +96,7 @@ public class FunLexer implements Lexer{
 			c=next();
 		}
 		if( c!=FunConstants.EOF ) back();
-		return check_primitive(new Token<Position2D>(FunConstants.VALUE, new Position2D(off, row, column), v));
+		return check_primitive(new Token<Position2D>(FunConstants.VALUE, new Position2D(src, off, row, column), v));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -107,11 +113,11 @@ public class FunLexer implements Lexer{
 		int row = pos.row();
 		int column = pos.column();
 		if( FunConstants.DOLLAR < c && c<FunConstants.START_LINK_SYMBOLS ){
-			v.add(new Token<Position2D>(c, new Position2D(this.offset-1, row, column-1), new int[]{original}));
+			v.add(new Token<Position2D>(c, new Position2D(src, this.offset-1, row, column), new int[]{original}));
 			c = next();				
 		}else
 			if( FunConstants.START_LINK_SYMBOLS <= c && c<=FunConstants.END_LINK_SYMBOLS ){
-				v.add(new Token<Position2D>(c, new Position2D(this.offset-1, row, column), new int[]{original}));
+				v.add(new Token<Position2D>(c, new Position2D(src,this.offset-1, row, column), new int[]{original}));
 				c = next();				
 			}else{
 				switch(c){

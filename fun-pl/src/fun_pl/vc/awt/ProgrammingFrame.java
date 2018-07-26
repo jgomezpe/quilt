@@ -1,4 +1,4 @@
-package quilt.computer;
+package fun_pl.vc.awt;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -60,12 +60,14 @@ public class ProgrammingFrame extends JFrame implements TitleComponent {
 	BorderLayout windowLayout = new BorderLayout();
 	BorderLayout windowPaneLayout = new BorderLayout();
 
+	public ProgrammingFrame(String machine_txt){ this(machine_txt,null); }
+	
 	public ProgrammingFrame(String machine_txt, String styles){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
 		int height = (int)screenSize.getHeight();
 		this.setSize(new Dimension(width*4/5, height*4/5));
-		windowPanel = new ProgrammingPanel(this, machine_txt, styles);
+		windowPanel = new ProgrammingPanel(this, styles);
 		this.getContentPane().setLayout(windowLayout);
 		this.getContentPane().add(windowPanel, java.awt.BorderLayout.CENTER);
 		// Closing the window
@@ -75,4 +77,6 @@ public class ProgrammingFrame extends JFrame implements TitleComponent {
 			} 
 		} );
 	}
+	
+	public ProgrammingPanel windowPanel(){ return windowPanel; }
 }

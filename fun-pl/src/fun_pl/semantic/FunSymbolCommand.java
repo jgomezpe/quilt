@@ -3,8 +3,8 @@ package fun_pl.semantic;
 import unalcol.language.LanguageException;
 
 public abstract class FunSymbolCommand extends FunCommand{
-	public FunSymbolCommand(FunMachine machine) { super(machine); }
-	public FunSymbolCommand() { super(); }
+	public FunSymbolCommand(FunMachine machine) { super(null,machine); }
+//	public FunSymbolCommand() { this(null); }
 
 	@Override
 	public int arity(){ return 2; }

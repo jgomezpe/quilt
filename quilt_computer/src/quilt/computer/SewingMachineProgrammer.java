@@ -1,11 +1,19 @@
 package quilt.computer;
 
-import java.awt.Color;
 import java.awt.Image;
 
+import fun_pl.vc.FunBackEnd;
+import fun_pl.vc.FunController;
+import fun_pl.vc.GUIFunConstants;
+import fun_pl.vc.awt.AWTFunFrontEnd;
+import fun_pl.vc.awt.ProgrammingFrame;
+import fun_pl.vc.awt.ProgrammingPanel;
+import quilt.factory.QuiltMachineInstance;
 import quilt.util.QuiltConstants;
-import quilt.util.Util;
-import unalcol.util.ObjectParser;
+import fun_pl.util.Util;
+import unalcol.i18n.I18N;
+import unalcol.vc.FrontEnd;
+import unalcol.vc.VCModel;
 
 /**
 *
@@ -52,18 +60,26 @@ import unalcol.util.ObjectParser;
 * @version 1.0
 */
 public class SewingMachineProgrammer {
-	protected static String color( Color c ){
-		return ObjectParser.store(new Object[]{"color",c.getRed(),c.getGreen(),c.getBlue(),c.getAlpha()});
-	}
-    
 	public static void main( String[] args ){
+		
 		String language = args.length>=1?args[0]:QuiltConstants.SPANISH;
 		Util.i18n(language);
-		String conf_file = args.length>=2?args[1]:"default"+QuiltConstants.QMC;
+		FunController.setInstance(new QuiltMachineInstance());
+		GUIFunConstants.FMC=I18N.get(GUIFunConstants.FMC);
+		GUIFunConstants.FMS=I18N.get(GUIFunConstants.FMS);
+		GUIFunConstants.FMP=I18N.get(GUIFunConstants.FMP);
+		String conf_file = args.length>=2?args[1]:"default"+GUIFunConstants.FMC;
 		String machine_txt = Util.config(conf_file);
-		conf_file = args.length==3?args[2]:"default"+Util.QMS;
-		String styles = Util.config(conf_file);
+		String styles = args.length==3?Util.config(args[2]):null;
 		ProgrammingFrame frame = new ProgrammingFrame(machine_txt, styles);
+		ProgrammingPanel panel = frame.windowPanel();
+		
+		FunBackEnd backend = new FunBackEnd();
+		FrontEnd frontend = new AWTFunFrontEnd(panel);
+		new VCModel(backend,frontend);
+		panel.setBackEnd(backend);
+		panel.setMachine( machine_txt );
+
 		Image img = Util.image("remnant.png");
 		frame.setIconImage(img);
 		frame.setVisible(true);

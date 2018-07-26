@@ -1,23 +1,12 @@
-package quilt.computer;
+package fun_pl.vc.awt;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-
-import javax.swing.JFrame;
-
-import quilt.Remnant;
-
-//
-//Quilt Sewer Machine 1.0 by Jonatan Gomez-Perdomo
-//https://github.com/jgomezpe/quilt/tree/master/quilt/
-//
 /**
 *
-* DrawFrame
-* <P>Frame window for drawing quilts.
+* TitleComponent
+* <P>Abstract component that can have a title.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt_computer/src/quilt/computer/DrawFrame.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt_computer/src/quilt/computer/TitleComponent.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -55,35 +44,6 @@ import quilt.Remnant;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class DrawFrame extends JFrame {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3169120551000963064L;
-
-	protected BorderLayout borderLayout1 = new BorderLayout();
-	protected DrawPanel drawPanel = new DrawPanel();
-	
-	public DrawFrame() {
-		super();
-	    try {
-	        jbInit();
-	      }
-	      catch(Exception e) {
-	        e.printStackTrace();
-	      }
-	}
-	
-	public void setRemnant( Remnant remnant ){
-		drawPanel.set(remnant);
-		drawPanel.repaint();
-	}
-
-	protected void jbInit() throws Exception {
-		this.setSize(new Dimension(500, 550));
-		this.setTitle("Colcha");
-		this.getContentPane().setLayout(borderLayout1);
-	    this.getContentPane().add(drawPanel,  BorderLayout.CENTER);
-	}  
+public interface TitleComponent {
+	public void setTitle( String str );
 }

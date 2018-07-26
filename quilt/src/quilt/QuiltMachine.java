@@ -61,12 +61,13 @@ import unalcol.types.collection.vector.Vector;
 */
 public class QuiltMachine extends FunMachine{
 	protected FunSymbolCommand sew;
+	protected FunSymbolCommand rot;
 	protected ImmutableKeyMap<String, Quilt> remnants;
 	protected ImmutableKeyMap<String, FunCommand> primitives;
 
 	public QuiltMachine(){
 		sew = new Sew(this);
-		FunCommand rot = new Rotate(this);
+		rot = new Rotate(this);
 		HTKeyMap<String,FunCommand> prims = new HTKeyMap<String,FunCommand>();		
 		prims.set(sew.name(),sew);
 		prims.set(rot.name(),rot);
@@ -79,7 +80,11 @@ public class QuiltMachine extends FunMachine{
 	public QuiltMachine(ImmutableKeyMap<String, FunCommand> primitives, ImmutableKeyMap<String,Quilt> remnants){
 		this.remnants = remnants;
 		this.primitives = primitives;
-		for( FunCommand c:primitives) if( c instanceof FunSymbolCommand ) this.sew = (FunSymbolCommand)c;
+		for( FunCommand c:primitives) 
+			if( c instanceof FunSymbolCommand ){
+				if( c.name().equals(I18N.get(Sew.name))) this.sew = (FunSymbolCommand)c;
+				if( c.name().equals(I18N.get(Rotate.name))) this.rot = (FunSymbolCommand)c;
+			}
 	}
 	
 	@Override
@@ -100,6 +105,7 @@ public class QuiltMachine extends FunMachine{
 	public FunSymbolCommand symbol_command(String command){
 		FunCommand c = primitive(command);
 		if( c==sew ) return sew;
+		if( c==rot ) return rot;
 		else return null;
 	}
 

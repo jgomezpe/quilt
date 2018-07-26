@@ -24,20 +24,23 @@ public class FunDemo {
 	}
 
 	public static String program(){
-		return "*(0,Y)=0\n*(X+1,Y)=*(X,Y)+Y";
+		return "*(0,Y)=0\n*(!X,Y)=*(X,Y)+Y";
 	}
 
 	public static String command(){
-		return "*(6,10)";
+		return "*(!6,10)";
 	}
 
 	public static String english(){
 		return "<?xml version='1.0'?>\n" +
 		"  <language id='english'>\n" +
-		"    <i18n id='" + FunDemoCommand.plus + "' msg='+'/>\n" +		
-		"    <i18n id='" + FunDemoCommand.invalid + "' msg='Number %d cannot be reduced.'/>\n" +		
+		"    <i18n id='" + FunDemoPlus.plus + "' msg='+'/>\n" +		
+		"    <i18n id='" + FunDemoDecrement.dec + "' msg='!'/>\n" +		
+		"    <i18n id='" + FunDemoPlus.invalid + "' msg='Number %d cannot be reduced.'/>\n" +		
 		"    <i18n id='" + FunConstants.novalue + "' msg='Undefined value %s.'/>\n" +		
-		"    <i18n id='" + FunConstants.code + "' msg='%$=,()+'/>\n" +		
+		"    <i18n id='" + FunConstants.code + "' msg='%$=,()+!'/>\n" +		
+		"    <i18n id='" + FunConstants.arity + "' msg='00000021'/>\n" +		
+		"    <i18n id='" + FunConstants.priority + "' msg='0000001'/>\n" +		
 		"    <i18n id='" + FunConstants.extra + "' msg='Number of link operands %s not admisible, expecting at most %d link operands'/>\n" +		
 		"    <i18n id='" + FunConstants.unexpected + "' msg='Unexpected %s at row %d, column %d. Expecting %s'/>\n" +		
 		"    <i18n id='" + FunConstants.noargs + "' msg='Not valid definition of arguments at row %d, column %d'/>\n" +		

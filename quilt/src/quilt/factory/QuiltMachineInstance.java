@@ -1,6 +1,7 @@
 package quilt.factory;
 
 import fun_pl.semantic.FunCommand;
+import fun_pl.semantic.FunMachine;
 import quilt.MatrixQuilt;
 import quilt.NilQuilt;
 import quilt.QuiltInstance;
@@ -67,14 +68,14 @@ import unalcol.types.collection.keymap.ImmutableKeyMap;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class QuiltMachineInstance implements Instance<QuiltMachine> {
+public class QuiltMachineInstance implements Instance<FunMachine> {
 	public static final String MACHINE="machine";
 	
 	protected QuiltCommandInstance commands = new QuiltCommandInstance();
 	protected QuiltValuesInstance remnants = new QuiltValuesInstance();
 	public QuiltMachineInstance() {
-		commands.register(new Sew());
-		commands.register(new Rotate());		
+		commands.register(new Sew(null));
+		commands.register(new Rotate(null));		
 		remnants.register(StripsRemnantInstance.STRIPS, StripsRemnant.class.getName(), new StripsRemnantInstance());	
 		remnants.register(QuiltInstance.QUILT, MatrixQuilt.class.getName(), new QuiltInstance(remnants.factory()));			
 		remnants.register(FilledRemnantInstance.FILLED, FilledRemnant.class.getName(), new FilledRemnantInstance());
@@ -87,7 +88,7 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 	public void register(String tag, String type, Instance<Quilt> instance ){ remnants.register(tag, type, instance); }
 	
 	@Override
-	public QuiltMachine load(Object[] args) {
+	public FunMachine load(Object[] args) {
 		if( args.length!=3 || !MACHINE.equals(args[0]) ) return null;
 		ImmutableKeyMap<String, FunCommand> c = commands.load((Object[])args[1]);
 		ImmutableKeyMap<String, Quilt> r = remnants.load((Object[])args[2]);
@@ -95,7 +96,7 @@ public class QuiltMachineInstance implements Instance<QuiltMachine> {
 	}
 
 	@Override
-	public Object[] store(QuiltMachine obj) {
+	public Object[] store(FunMachine obj) {
 		Collection<String> keys = obj.values();
 		HTKeyMap<String,Quilt> r = new HTKeyMap<String,Quilt>();
 		if( keys!=null ) for( String val:keys ) try{ r.set(val, (Quilt)obj.value(val)); }catch(Exception e){}

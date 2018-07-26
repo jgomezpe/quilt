@@ -24,6 +24,7 @@ public class FunLanguage extends ProgrammingLanguage<FunCommand>{
 	}
 	
 	public FunCommand process( String code, boolean program ) throws LanguageException{
+		this.lexer.setSrc(program?0:1);
 		return process( code, (program?FunConstants.COMMAND_DEF_LIST:FunConstants.COMMAND_EXP));
 	}
 	public static FunEncoder encoder() throws LanguageException{

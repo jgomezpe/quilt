@@ -48,6 +48,8 @@ public class QuiltConstants{
 	public static final String SPANISH = "spanish";
 	public static final String ENGLISH = "english";
 	public static final String ERROR = "error";
+	public static final String ROTATE = "rotate";
+	public static final String UNROTATE = "unrotate";
 	public static final String STITCH = "stitch";
 	public static final String UNSTITCH = "unstitch";
 	public static final String OUT = "out";

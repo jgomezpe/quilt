@@ -11,7 +11,7 @@ public class FunCommandDef extends FunCommand{
 	protected FunCommandCall right;
 
 	public FunCommandDef(FunMachine machine, FunCommandCall left, FunCommandCall right ){
-		super( left, machine );
+		super( left.pos, machine );
 		this.left = left;
 		this.right = right;
 	}

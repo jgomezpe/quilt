@@ -2,6 +2,8 @@ package quilt.operation;
 
 import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
+import fun_pl.semantic.FunSymbolCommand;
+import fun_pl.util.FunConstants;
 import quilt.Quilt;
 import unalcol.i18n.I18N;
 import unalcol.language.LanguageException;
@@ -50,9 +52,8 @@ import unalcol.language.LanguageException;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class Rotate extends FunCommand{
+public class Rotate extends FunSymbolCommand{
 	public static final String name="rot";
-	public Rotate() { super(); }
 	public Rotate(FunMachine machine) { super(machine); }
 
 	@SuppressWarnings("unchecked")
@@ -65,10 +66,24 @@ public class Rotate extends FunCommand{
 	public int arity() { return 1; }
 
 	@Override
-	public Object execute(Object... args) throws LanguageException { return execute((Quilt)args[0]); }
+	public Object execute(Object... args) throws LanguageException {
+		if( !(args[0] instanceof Quilt) ) throw exception(FunConstants.argmismatch, args[0]);
+		return execute((Quilt)args[0]); 
+	}
 
 	@Override
 	public String name() { return I18N.get(name); }	
 
 	public String comment(){ return I18N.get(name+"c"); }
+
+	@Override
+	public Object[] reverse(Object obj, Object[] toMatch, FunCommand[] args) throws LanguageException {
+		Quilt q = execute(execute(execute((Quilt)obj)));
+		if( toMatch[0]==null ){
+			return new Quilt[]{q};
+		}
+		Quilt q2 = (Quilt)toMatch[0];
+		if( q2.equals(q)) return new Quilt[]{q2};
+		return null;
+	}
 }

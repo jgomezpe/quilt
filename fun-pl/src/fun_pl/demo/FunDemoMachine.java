@@ -4,16 +4,17 @@ import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
 import unalcol.types.collection.Collection;
-import unalcol.types.collection.SearchCollection;
 import unalcol.types.collection.array.Array;
 import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.vector.Vector;
 
 public class FunDemoMachine extends FunMachine{
-	protected FunDemoCommand plus;
+	protected FunDemoPlus plus;
+	protected FunDemoDecrement dec;
 	
 	public FunDemoMachine() {
-		plus = new FunDemoCommand(this);
+		plus = new FunDemoPlus(this);
+		dec = new FunDemoDecrement(this);
 	}
 
 	@Override
@@ -31,6 +32,7 @@ public class FunDemoMachine extends FunMachine{
 	@Override
 	public FunCommand primitive(String command){
 		if(plus.name().equals(command)) return plus;
+		if(dec.name().equals(command)) return dec;
 		else return null;
 	}
 
@@ -42,6 +44,7 @@ public class FunDemoMachine extends FunMachine{
 	@Override
 	public FunSymbolCommand symbol_command(String symbol) {
 		if(plus.name().equals(symbol)) return plus;
+		if(dec.name().equals(symbol)) return dec;
 		else return null;
 	}
 
@@ -51,10 +54,11 @@ public class FunDemoMachine extends FunMachine{
 	}
 
 	@Override
-	public SearchCollection<String,String> primitives() {
+	public Collection<String> primitives() {
 		HTKeyMap<String,String> v = new HTKeyMap<String,String>();
 		v.set(plus.name(),plus.name());
-		return v;
+		v.set(dec.name(),dec.name());
+		return v.keys();
 	}
 
 	@Override

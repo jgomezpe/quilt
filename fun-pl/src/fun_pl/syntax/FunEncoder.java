@@ -2,6 +2,7 @@ package fun_pl.syntax;
 
 import fun_pl.util.FunConstants;
 import unalcol.i18n.I18N;
+import unalcol.io.Position2D;
 import unalcol.language.LanguageException;
 import unalcol.language.symbol.Encoder;
 
@@ -13,7 +14,7 @@ public class FunEncoder implements Encoder{
 	public FunEncoder( String symbols ) throws LanguageException{
 		this.symbols = symbols;
 		if(symbols.length()>FunConstants.END_LINK_SYMBOLS) 
-			throw new LanguageException(FunConstants.extra, symbols.substring(FunConstants.START_LINK_SYMBOLS), 
+			throw new LanguageException(new Position2D(0,0,0,0), FunConstants.extra, symbols.substring(FunConstants.START_LINK_SYMBOLS), 
 					(FunConstants.END_LINK_SYMBOLS-FunConstants.START_LINK_SYMBOLS));
 	} 
 	

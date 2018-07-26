@@ -1,7 +1,9 @@
 <?xml version="1.0"?>
 <language id='english'>
   <i18n id='novalue' msg='Undefined value %s'/>
-  <i18n id='code' msg='=%$=,()+'/>
+  <i18n id='code' msg='=%$=,()|@'/>
+  <i18n id='arity' msg='00000021'/>
+  <i18n id='priority' msg='00000012'/>
   <i18n id='extra' msg='Unknown element $s at row $d, column %d..'/>
   <i18n id='unexpected' msg='Unexpected %s at row %d, column %d. Expecting %s.'/>
   <i18n id='noargs' msg='Arguments definition is not valid at row %d, column %d.'/>
@@ -16,11 +18,16 @@
   <i18n id='error' msg='Error'/>
   <i18n id='stitch' msg='Unable to apply sew (%s) operation at row %d, column %d: Quilts %s and %s have different heights.'/>  
   <i18n id='unstitch' msg='Unable to apply unstitch (%s) operation at row %d, column %d.'/>
+  <i18n id='rotate' msg='Unable to apply rotate (%s) operation at row %d, column %d.'/>
+  <i18n id='unrotate' msg='Unable to apply rotate back (%s) operation at row %d, column %d.'/>
   <i18n id='remnant' msg='Remnant'/>
   <i18n id='quilt' msg='Quilt'/>
   <i18n id='primitive' msg='Primitive Function'/>
   <i18n id='noname' msg='No name'/>
   <i18n id='clean' msg='Clean Program and Command areas?'/>
+  <i18n id='.fmc' msg='.qmc'/>
+  <i18n id='.fms' msg='.qms'/>
+  <i18n id='.fmp' msg='.qmp'/>
   <i18n id='new' msg='New'/>
   <i18n id='open' msg='Load'/>
   <i18n id='save' msg='Save'/>
@@ -34,7 +41,8 @@
   <i18n id='author' msg='Developed by Professor Jonatan Gomez Perdomo.\n jgomezpe at unal.edu.co \nUniversidad Nacional de Colombia'/>
   <i18n id='machine' msg='Machine configuration'/>
   <i18n id='style' msg='Editor Text Style'/>
-  <i18n id='rot' msg='rot'/>
+  <i18n id='rot' msg='@'/>
+  <i18n id='sew' msg='|'/>
   <i18n id='rotc' msg='% Rotates a remnant 90 degrees counter clock wise.\n'/>
   <i18n id='sewc' msg='% Sews two remnants with same high.\n'/>
 </language>

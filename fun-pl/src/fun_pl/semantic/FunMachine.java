@@ -2,7 +2,7 @@ package fun_pl.semantic;
 
 import fun_pl.syntax.FunLexerCheck;
 import fun_pl.util.FunConstants;
-import unalcol.io.Position;
+import unalcol.io.Position2D;
 import unalcol.language.LanguageException;
 
 public abstract class FunMachine implements FunLexerCheck{
@@ -41,14 +41,14 @@ public abstract class FunMachine implements FunLexerCheck{
 		
 //	}
 	
-	public Object execute( Position pos, String command, Object... args ) throws LanguageException{
+	public Object execute( Position2D pos, String command, Object... args ) throws LanguageException{
 		if(is_value(command)){
 			if( args.length>0) throw new LanguageException(pos, FunConstants.argnumbermismatch, command);
 			return value(command);
 		}	
 		if( is_primitive(command) ){
 			FunCommand c = primitive(command); 
-			c.init(pos);
+			c.setPos(pos);
 			if( args.length != c.arity() ){
 				if( args.length > 0 ) throw new LanguageException(pos, FunConstants.argnumbermismatch, command);
 				else return command;
@@ -59,11 +59,11 @@ public abstract class FunMachine implements FunLexerCheck{
 				throw e;
 			} 
 		}
-		program.init(pos);
+		program.setPos(pos);
 		try{
 			return program.execute(command, args);
 		}catch(LanguageException e ){
-			if(program.defined(command) && args.length==0 ) return command;
+			if(program.defined(command) && !program.constant(command) && args.length==0 ) return command;
 			else throw e;
 		}	
 	}
