@@ -1,4 +1,4 @@
-package quilt.gui;
+package quilt.render;
 
 import quilt.util.Util;
 import unalcol.gui.paint.Canvas;

@@ -1,7 +1,10 @@
 package quilt.factory;
 
 import fun_pl.semantic.FunCommand;
+import fun_pl.semantic.FunCommandInstance;
 import fun_pl.semantic.FunMachine;
+import fun_pl.semantic.FunMachineInstance;
+import fun_pl.semantic.FunValueInstance;
 import quilt.MatrixQuilt;
 import quilt.NilQuilt;
 import quilt.QuiltInstance;
@@ -19,9 +22,6 @@ import quilt.remnant.PolygonsRemnant;
 import quilt.remnant.PolygonsRemnantInstance;
 import quilt.remnant.StripsRemnant;
 import quilt.remnant.StripsRemnantInstance;
-import unalcol.util.Instance;
-import unalcol.types.collection.Collection;
-import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.keymap.ImmutableKeyMap;
 
 /**
@@ -68,40 +68,30 @@ import unalcol.types.collection.keymap.ImmutableKeyMap;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class QuiltMachineInstance implements Instance<FunMachine> {
+public class QuiltMachineInstance extends FunMachineInstance<Quilt> {
 	public static final String MACHINE="machine";
-	
-	protected QuiltCommandInstance commands = new QuiltCommandInstance();
-	protected QuiltValuesInstance remnants = new QuiltValuesInstance();
-	public QuiltMachineInstance() {
-		commands.register(new Sew(null));
-		commands.register(new Rotate(null));		
-		remnants.register(StripsRemnantInstance.STRIPS, StripsRemnant.class.getName(), new StripsRemnantInstance());	
-		remnants.register(QuiltInstance.QUILT, MatrixQuilt.class.getName(), new QuiltInstance(remnants.factory()));			
-		remnants.register(FilledRemnantInstance.FILLED, FilledRemnant.class.getName(), new FilledRemnantInstance());
-		remnants.register(PolygonsRemnantInstance.POLYGONS, PolygonsRemnant.class.getName(), new PolygonsRemnantInstance());
-		remnants.register(EmptyRemnantInstance.EMPTY, EmptyRemnant.class.getName(), new EmptyRemnantInstance());
-		remnants.register(NilQuiltInstance.NIL, NilQuilt.class.getName(), new NilQuiltInstance());
-		remnants.register(ImageRemnantInstance.IMAGE, ImageRemnant.class.getName(), new ImageRemnantInstance());
-	}
-	
-	public void register(String tag, String type, Instance<Quilt> instance ){ remnants.register(tag, type, instance); }
-	
+
 	@Override
-	public FunMachine load(Object[] args) {
-		if( args.length!=3 || !MACHINE.equals(args[0]) ) return null;
-		ImmutableKeyMap<String, FunCommand> c = commands.load((Object[])args[1]);
-		ImmutableKeyMap<String, Quilt> r = remnants.load((Object[])args[2]);
-		return new QuiltMachine(c, r);
+	public FunMachine init(ImmutableKeyMap<String, FunCommand> commands, ImmutableKeyMap<String, Quilt> remnants) {
+		return new QuiltMachine(commands, remnants);
 	}
 
 	@Override
-	public Object[] store(FunMachine obj) {
-		Collection<String> keys = obj.values();
-		HTKeyMap<String,Quilt> r = new HTKeyMap<String,Quilt>();
-		if( keys!=null ) for( String val:keys ) try{ r.set(val, (Quilt)obj.value(val)); }catch(Exception e){}
-		HTKeyMap<String,FunCommand> c = new HTKeyMap<String,FunCommand>();
-		for( String name:obj.primitives() ) try{ c.set(name, obj.primitive(name)); }catch(Exception e){}
-		return new Object[]{MACHINE,commands.store(c),remnants.store(r)};
+	public void initCommands() {
+		commands = new FunCommandInstance();
+		commands.register(new Sew(null));
+		commands.register(new Rotate(null));
+	}
+
+	@Override
+	public void initValues() {
+		values = new FunValueInstance<Quilt>("remnants");
+		values.register(StripsRemnantInstance.STRIPS, StripsRemnant.class.getName(), new StripsRemnantInstance());	
+		values.register(QuiltInstance.QUILT, MatrixQuilt.class.getName(), new QuiltInstance(values.factory()));			
+		values.register(FilledRemnantInstance.FILLED, FilledRemnant.class.getName(), new FilledRemnantInstance());
+		values.register(PolygonsRemnantInstance.POLYGONS, PolygonsRemnant.class.getName(), new PolygonsRemnantInstance());
+		values.register(EmptyRemnantInstance.EMPTY, EmptyRemnant.class.getName(), new EmptyRemnantInstance());
+		values.register(NilQuiltInstance.NIL, NilQuilt.class.getName(), new NilQuiltInstance());
+		values.register(ImageRemnantInstance.IMAGE, ImageRemnant.class.getName(), new ImageRemnantInstance());
 	}
 }

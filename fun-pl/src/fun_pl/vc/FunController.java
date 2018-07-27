@@ -3,7 +3,7 @@ package fun_pl.vc;
 import fun_pl.FunLanguage;
 import fun_pl.semantic.FunMachine;
 import unalcol.gui.log.Log;
-import unalcol.gui.paint.Render;
+import unalcol.gui.render.Render;
 import unalcol.i18n.I18N;
 import unalcol.util.Instance;
 import unalcol.vc.Controller;

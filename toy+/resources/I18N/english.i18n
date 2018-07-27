@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<language id='english'>
+  <i18n id='invalid' msg='Number %d cannot be reduced.'/>		
+  <i18n id='novalue' msg='Undefined value %s.'/>		
+  <i18n id='code' msg='%$=,()+!'/>		
+  <i18n id='arity' msg='00000021'/>		
+  <i18n id='priority' msg='0000001'/>		
+  <i18n id='extra' msg='Number of link operands %s not admisible, expecting at most %d link operands'/>		
+  <i18n id='unexpected' msg='Unexpected %s at row %d, column %d. Expecting %s'/>		
+  <i18n id='noargs' msg='Not valid definition of arguments at row %d, column %d'/>		
+  <i18n id='validcommand' msg='valid command name'/>		
+  <i18n id='norule' msg='Undefined component %s.'/>		
+  <i18n id='nocommand' msg='Undefined command %s at row %d, column %d.'/>		
+  <i18n id='argmismatch' msg='Mismatch in arguments calling command %s at row %d, column %d. Receiving %s'/>		
+  <i18n id='argnumbermismatch' msg='Mismatch in the number of arguments calling command %s at row %d, column %d. Expecting %d but receiving %d.'/>		
+  <i18n id='novar' msg='Undefined variable %s at row %d, column %d.'/>
+  <i18n id='out' msg='Out'/>
+  <i18n id='error' msg='Error'/>
+  <i18n id='stitch' msg='Unable to apply sew (%s) operation at row %d, column %d: Quilts %s and %s have different heights.'/>  
+  <i18n id='unstitch' msg='Unable to apply unstitch (%s) operation at row %d, column %d.'/>
+  <i18n id='rotate' msg='Unable to apply rotate (%s) operation at row %d, column %d.'/>
+  <i18n id='unrotate' msg='Unable to apply rotate back (%s) operation at row %d, column %d.'/>
+  <i18n id='remnant' msg='Remnant'/>
+  <i18n id='quilt' msg='Quilt'/>
+  <i18n id='primitive' msg='Primitive Function'/>
+  <i18n id='noname' msg='No name'/>
+  <i18n id='clean' msg='Clean Program and Command areas?'/>
+  <i18n id='.fmc' msg='.tmc'/>
+  <i18n id='.fms' msg='.tms'/>
+  <i18n id='.fmp' msg='.tmp'/>
+  <i18n id='new' msg='New'/>
+  <i18n id='open' msg='Load'/>
+  <i18n id='save' msg='Save'/>
+  <i18n id='compile' msg='Compile'/>
+  <i18n id='execute' msg='Execute'/>
+  <i18n id='command' msg='Command:'/>
+  <i18n id='title' msg='Toy+ Environment'/>
+  <i18n id='file' msg='Toy+ files'/>
+  <i18n id='no_errors' msg='No errors...!!!!'/>
+  <i18n id='errors' msg='Problems!!! There are some errors.\nSee error tab for a complete description of the error'/>
+  <i18n id='author' msg='Developed by Professor Jonatan Gomez Perdomo.\n jgomezpe at unal.edu.co \nUniversidad Nacional de Colombia'/>
+  <i18n id='machine' msg='Machine configuration'/>
+  <i18n id='style' msg='Editor Text Style'/>
+  <i18n id='dec' msg='!'/>
+  <i18n id='plus' msg='+'/>
+  <i18n id='decc' msg='% Reduces by one the given natural number.\n'/>
+  <i18n id='plusc' msg='% Adds two natural numbers.\n'/>
+</language>

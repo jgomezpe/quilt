@@ -16,14 +16,13 @@ public class FunToolbarController extends FunController{
 				sb.append('\n');
 			}catch(Exception e){}
 		}
-		System.out.println("[toolBar]"+sb.toString());
 		Log theLog = log();
 		theLog.out(sb.toString());
 		theLog.error("");
 		theLog.display(true);		
 	}
 	
-	public void remnants(){
+	public void values(){
 		Collection<String> remnants = machine.values();
 		StringBuilder sb = new StringBuilder();
 		for( String r:remnants ){

@@ -1,8 +1,8 @@
 package quilt.remnant;
 
 import quilt.Quilt;
-import quilt.gui.Polygon;
-import quilt.gui.PolygonInstance;
+import quilt.render.Polygon;
+import quilt.render.PolygonInstance;
 import unalcol.gui.paint.ColorInstance;
 import unalcol.util.Instance;
 

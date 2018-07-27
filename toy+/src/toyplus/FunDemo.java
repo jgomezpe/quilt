@@ -1,4 +1,4 @@
-package fun_pl.demo;
+package toyplus;
 
 import fun_pl.FunLanguage;
 import fun_pl.semantic.FunCommand;
@@ -34,9 +34,9 @@ public class FunDemo {
 	public static String english(){
 		return "<?xml version='1.0'?>\n" +
 		"  <language id='english'>\n" +
-		"    <i18n id='" + FunDemoPlus.plus + "' msg='+'/>\n" +		
-		"    <i18n id='" + FunDemoDecrement.dec + "' msg='!'/>\n" +		
-		"    <i18n id='" + FunDemoPlus.invalid + "' msg='Number %d cannot be reduced.'/>\n" +		
+		"    <i18n id='" + Plus.name + "' msg='+'/>\n" +		
+		"    <i18n id='" + Decrement.name + "' msg='!'/>\n" +		
+		"    <i18n id='" + Plus.invalid + "' msg='Number %d cannot be reduced.'/>\n" +		
 		"    <i18n id='" + FunConstants.novalue + "' msg='Undefined value %s.'/>\n" +		
 		"    <i18n id='" + FunConstants.code + "' msg='%$=,()+!'/>\n" +		
 		"    <i18n id='" + FunConstants.arity + "' msg='00000021'/>\n" +		
@@ -77,7 +77,7 @@ public class FunDemo {
 	
 	public static void main( String[] args ){
 		i18n(); // Defining the language for error messages
-		FunMachine machine = new FunDemoMachine();
+		FunMachine machine = new ToyPlusMachine();
 		//String code=parser_error(); //Test the compiler using a program written with a grammar error
 		//String code=meaner_error(); //Test the compiler using a program written with a semantic error
 		String code=program(); //Test the compiler without errors

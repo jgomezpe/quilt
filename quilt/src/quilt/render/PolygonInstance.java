@@ -1,10 +1,16 @@
+package quilt.render;
+
+import quilt.util.Util;
+import unalcol.gui.paint.ColorInstance;
+import unalcol.util.Instance;
+
 /**
 *
-* Quilt GUI components
-* <P>Graphical User Interface components of the Quilt machine programming environment.
+* PolygonInstance
+* <P>Load and Store mechanism of Polygons (Persistent methods)
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/gui" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/gui/PolygonInstance.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -42,4 +48,34 @@
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-package quilt.gui;
+public class PolygonInstance implements Instance<Polygon>{
+	public static final String POLYGON="polygon";
+	
+	protected ColorInstance c = new ColorInstance();
+	
+	@Override
+	public Polygon load(Object[] args) {
+		if(args.length<3 || args.length>4 || !POLYGON.equals(args[0]) ) return null;
+		return ( args.length == 3 )? new Polygon(Util.load((Object[])args[1], 0),Util.load((Object[])args[2], 0)) :
+			new Polygon(Util.load((Object[])args[1], 0),Util.load((Object[])args[2], 0),c.load((Object[])args[3]));
+	}
+
+	@Override
+	public Object[] store(Polygon p) {
+		return p.color!=null?new Object[]{POLYGON,c.store(p.color),Util.store(p.x),Util.store(p.y)}:new Object[]{POLYGON,Util.store(p.x),Util.store(p.y)};
+	}
+	
+/*	public static void main( String[] args ){
+		int[] x = new int[]{40,60,60,40};
+		int[] y = new int[]{0,0,100,100};
+		Polygon p = new Polygon(x, y);
+		PolygonInstance pi = new PolygonInstance();
+		Object[] obj = pi.store(p);
+		String str = ObjectParser.store(obj);
+		System.out.println(str);
+		p.rotate(Remnant.UNIT);
+		obj = pi.store(p);
+		str = ObjectParser.store(obj);
+		System.out.println(str);
+	} */	
+}

@@ -1,6 +1,6 @@
 package quilt.util;
 
-import quilt.gui.Strip;
+import quilt.render.Strip;
 
 /**
 *

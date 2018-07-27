@@ -1,19 +1,16 @@
-package quilt.factory;
+package quilt.render;
 
-
-import fun_pl.semantic.FunCommand;
+import unalcol.gui.paint.Color;
+import unalcol.gui.paint.ColorInstance;
 import unalcol.util.Instance;
-import unalcol.types.collection.keymap.HTKeyMap;
-import unalcol.types.collection.keymap.ImmutableKeyMap;
-import unalcol.types.collection.keymap.KeyMap;
 
 /**
 *
-* QuiltCommandInstance
-* <P>Load and Store mechanism of Quilt commands (Persistent methods)
+* StripInstance
+* <P>Load and Store mechanism of Strips (Persistent methods)
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/factory/QuiltCommandInstance.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/gui/StripInstance.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -51,31 +48,27 @@ import unalcol.types.collection.keymap.KeyMap;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class QuiltCommandInstance implements Instance<ImmutableKeyMap<String,FunCommand>> {
-	protected HTKeyMap<String, FunCommand> map = new HTKeyMap<String,FunCommand>();
-	public static final String COMMANDS="commands";
+public class StripInstance implements Instance<Strip>{
+	public static final String STRIP="strip";
+	
+	protected ColorInstance c_instance = new ColorInstance();
 
-	public void register( FunCommand c ){ map.set(c.name(), c); }
-	
-	public void clear(){ map.clear(); }
-	
 	@Override
-	public ImmutableKeyMap<String,FunCommand> load(Object[] args) {
-		if( args.length<2 || !COMMANDS.equals(args[0]) ) return null;
-		KeyMap<String, FunCommand> c = new HTKeyMap<String,FunCommand>();
-		for( int i=1; i<args.length; i++) c.set( (String)args[i], map.get((String)args[i]) ); 
-		return c;
+	public Strip load(Object[] args) {
+		if( args.length<5 || args.length>6 || !STRIP.equals(args[0]) ) return null;
+		if( args.length==6 ){
+			Color c = c_instance.load((Object[])args[1]);
+			int[] control = new int[]{(int)args[2], (int)args[3], (int)args[4], (int)args[5]};
+			return new Strip(control,c);
+		}else{
+			int[] control = new int[]{(int)args[1], (int)args[2], (int)args[3], (int)args[4]};
+			return new Strip(control);
+		}		
 	}
 
 	@Override
-	public Object[] store(ImmutableKeyMap<String,FunCommand> obj) {
-		Object[] code = new Object[obj.size()+1];
-		code[0] = COMMANDS;
-		int i=1;
-		for( FunCommand c:obj ){
-			code[i] = c.name();
-			i++;
-		}
-		return code;
+	public Object[] store(Strip obj) {
+		if( obj.color==null ) return new Object[]{STRIP, obj.start[0], obj.start[1], obj.end[2], obj.end[3]};
+		else  return new Object[]{STRIP, c_instance.store(obj.color), obj.start[0], obj.start[1], obj.end[2], obj.end[3]};
 	}
 }

@@ -1,8 +1,8 @@
 package quilt.remnant;
 
 import quilt.Quilt;
-import quilt.gui.Strip;
-import quilt.gui.StripInstance;
+import quilt.render.Strip;
+import quilt.render.StripInstance;
 import unalcol.gui.paint.Color;
 import unalcol.gui.paint.ColorInstance;
 import unalcol.util.Instance;

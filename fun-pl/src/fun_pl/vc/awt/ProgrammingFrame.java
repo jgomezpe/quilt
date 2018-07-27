@@ -4,6 +4,17 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import fun_pl.semantic.FunMachine;
+import fun_pl.util.Util;
+import fun_pl.vc.FunBackEnd;
+import fun_pl.vc.FunController;
+import fun_pl.vc.GUIFunConstants;
+import unalcol.gui.render.RenderPanel;
+import unalcol.i18n.I18N;
+import unalcol.util.Instance;
+import unalcol.vc.FrontEnd;
+import unalcol.vc.VCModel;
+
 /**
 *
 * ProgrammingFrame
@@ -60,14 +71,14 @@ public class ProgrammingFrame extends JFrame implements TitleComponent {
 	BorderLayout windowLayout = new BorderLayout();
 	BorderLayout windowPaneLayout = new BorderLayout();
 
-	public ProgrammingFrame(String machine_txt){ this(machine_txt,null); }
+	public ProgrammingFrame(String machine_txt, RenderPanel drawPanel){ this(machine_txt,drawPanel,null); }
 	
-	public ProgrammingFrame(String machine_txt, String styles){
+	public ProgrammingFrame(String machine_txt, RenderPanel drawPanel, String styles){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
 		int height = (int)screenSize.getHeight();
 		this.setSize(new Dimension(width*4/5, height*4/5));
-		windowPanel = new ProgrammingPanel(this, styles);
+		windowPanel = new ProgrammingPanel(this, drawPanel, styles);
 		this.getContentPane().setLayout(windowLayout);
 		this.getContentPane().add(windowPanel, java.awt.BorderLayout.CENTER);
 		// Closing the window
@@ -79,4 +90,24 @@ public class ProgrammingFrame extends JFrame implements TitleComponent {
 	}
 	
 	public ProgrammingPanel windowPanel(){ return windowPanel; }
+	
+	public static void load( Instance<FunMachine> instance, RenderPanel render, String conf_file, String styles ){
+		FunController.setInstance(instance);
+		GUIFunConstants.FMC=I18N.get(GUIFunConstants.FMC);
+		GUIFunConstants.FMS=I18N.get(GUIFunConstants.FMS);
+		GUIFunConstants.FMP=I18N.get(GUIFunConstants.FMP);
+		String machine_txt = Util.config(conf_file);
+		ProgrammingFrame frame = new ProgrammingFrame(machine_txt, render, styles);
+		ProgrammingPanel panel = frame.windowPanel();
+		
+		FunBackEnd backend = new FunBackEnd();
+		FrontEnd frontend = new AWTFunFrontEnd(panel);
+		new VCModel(backend,frontend);
+		panel.setBackEnd(backend);
+		panel.setMachine( machine_txt );
+
+		Image img = Util.image("remnant.png");
+		frame.setIconImage(img);
+		frame.setVisible(true);
+	}	
 }

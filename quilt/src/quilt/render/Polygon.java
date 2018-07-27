@@ -1,16 +1,16 @@
-package quilt.gui;
+package quilt.render;
 
+import quilt.util.Util;
+import unalcol.gui.paint.Canvas;
 import unalcol.gui.paint.Color;
-import unalcol.gui.paint.ColorInstance;
-import unalcol.util.Instance;
 
 /**
 *
-* StripInstance
-* <P>Load and Store mechanism of Strips (Persistent methods)
+* Polygon
+* <P>A graphic representation of a polygon with an inner single color.
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/gui/StripInstance.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/gui/Polygon.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -48,27 +48,65 @@ import unalcol.util.Instance;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class StripInstance implements Instance<Strip>{
-	public static final String STRIP="strip";
+public class Polygon implements Comparable<Object>{
+	protected Color color=null;
+	protected int[] x;
+	protected int[] y;
 	
-	protected ColorInstance c_instance = new ColorInstance();
-
-	@Override
-	public Strip load(Object[] args) {
-		if( args.length<5 || args.length>6 || !STRIP.equals(args[0]) ) return null;
-		if( args.length==6 ){
-			Color c = c_instance.load((Object[])args[1]);
-			int[] control = new int[]{(int)args[2], (int)args[3], (int)args[4], (int)args[5]};
-			return new Strip(control,c);
-		}else{
-			int[] control = new int[]{(int)args[1], (int)args[2], (int)args[3], (int)args[4]};
-			return new Strip(control);
-		}		
+	public Polygon(int[] x, int[] y){
+		init(x,y);
 	}
 
-	@Override
-	public Object[] store(Strip obj) {
-		if( obj.color==null ) return new Object[]{STRIP, obj.start[0], obj.start[1], obj.end[2], obj.end[3]};
-		else  return new Object[]{STRIP, c_instance.store(obj.color), obj.start[0], obj.start[1], obj.end[2], obj.end[3]};
+	public Polygon(int[] x, int[] y, Color color){
+		this(x,y);
+		this.color = color;
 	}
+	
+	public void init( int[] x, int[] y ){
+		this.x = new int[x.length];
+		this.y = new int[x.length];
+		
+		int min = 0;
+		for( int i=1; i<x.length; i++ )	if( x[i]<x[min] || (x[i]==x[min] && y[i]<y[min]) ) min = i;
+		double pu = (double)(y[(min+x.length-1)%x.length]-y[min])/(double)(x[(min+x.length-1)%x.length]-x[min]+1);
+		double pd = (double)(y[(min+1)%x.length]-y[min])/(double)(x[(min+1)%x.length]-x[min]+1);
+		int inc = (pd<pu)?1:-1;
+		for( int i=0; i<x.length; i++ ){
+			this.x[i] = x[min];
+			this.y[i] = y[min];
+			min = (min+inc+x.length)%x.length;
+		}
+	}
+
+	public Polygon clone(){
+		return new Polygon(x, y, color);
+	}
+	
+	public void rotate(int SIDE){
+		for( int i=0; i<x.length; i++ ){
+			int[] p = Util.rotate(x[i], y[i], SIDE);
+			x[i] = p[0];
+			y[i] = p[1];
+		}
+		init( x, y );
+	}
+	
+	@Override
+	public int compareTo(Object other) {
+		if( !(other instanceof Polygon) ) return Integer.MAX_VALUE;
+		Polygon p = (Polygon)other;
+		int c = Util.compare(x, p.x);
+		return (c==0)?Util.compare(y, p.y):c;
+	}
+	
+	public void draw( Canvas g, int column, int row ){
+		if( color != null ){ g.setColor(color); }
+		int[] mx = x.clone();
+		int[] my = y.clone();
+		for( int i=0; i<x.length; i++ ){
+			mx[i] +=column;
+			my[i] += row;
+		}
+		g.drawPolygon(mx, my);
+	}	
 }

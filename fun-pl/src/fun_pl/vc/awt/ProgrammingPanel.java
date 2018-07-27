@@ -41,7 +41,7 @@ import unalcol.gui.editor.simple.SyntaxStyle;
 import unalcol.gui.io.FileFilter;
 import unalcol.gui.log.AWTLog;
 import unalcol.gui.log.LogPanel;
-import unalcol.gui.paint.RenderPanel;
+import unalcol.gui.render.RenderPanel;
 import unalcol.i18n.I18N;
 import unalcol.io.Tokenizer;
 import unalcol.types.collection.keymap.HTKeyMap;
@@ -68,7 +68,7 @@ public class ProgrammingPanel  extends JPanel{
 	TitleComponent title_component;
 	
 	JSplitPane splitPane;
-	protected RenderPanel drawPanel = new RenderPanel(FunVCModel.RENDER);
+	protected RenderPanel drawPanel; 
 	
 	// Window area
 	BorderLayout windowLayout = new BorderLayout();
@@ -109,9 +109,10 @@ public class ProgrammingPanel  extends JPanel{
 	
 	public LogPanel getLogPanel(){ return logPanel; }
 
-	public ProgrammingPanel(TitleComponent parent){ this(parent,null); }
+	public ProgrammingPanel(TitleComponent parent, RenderPanel drawPanel){ this(parent,drawPanel,null); }
 	
-	public ProgrammingPanel(TitleComponent parent, String styles){
+	public ProgrammingPanel(TitleComponent parent, RenderPanel drawPanel, String styles){
+		this.drawPanel = drawPanel;
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
 		int height = (int)screenSize.getHeight();
@@ -382,7 +383,7 @@ public class ProgrammingPanel  extends JPanel{
 
 	public void jPrimitiveButton_actionPerformed(ActionEvent actionEvent){ toolbar().primitives(); }
 
-	public void jRemnantButton_actionPerformed(ActionEvent actionEvent) { toolbar().remnants(); }
+	public void jRemnantButton_actionPerformed(ActionEvent actionEvent) { toolbar().values(); }
 	
 	public void jCompileButton_actionPerformed(ActionEvent actionEvent){ editor(FunVCModel.PROGRAM).text(program_editor.editArea().getText()); }
 	

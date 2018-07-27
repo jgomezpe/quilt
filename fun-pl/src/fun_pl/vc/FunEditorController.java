@@ -5,8 +5,7 @@ import fun_pl.semantic.FunProgram;
 import unalcol.gui.editor.EditorController;
 import unalcol.gui.editor.EditorView;
 import unalcol.gui.log.Log;
-import unalcol.gui.paint.Drawable;
-import unalcol.gui.paint.Render;
+import unalcol.gui.render.Render;
 import unalcol.io.Position2D;
 import unalcol.language.LanguageException;
 import unalcol.types.collection.keymap.HTKeyMap;
@@ -74,7 +73,7 @@ public class FunEditorController  extends FunController implements EditorControl
 		try{ command = (FunCommandCall)quiltLang.process( program, false); }catch(LanguageException e){ error(e); }
 		if( command != null ){
 			try{
-				Drawable r = (Drawable)command.execute( new HTKeyMap<String, Object>() );
+				Object r = command.execute( new HTKeyMap<String, Object>() );
 				Render ren = render(); 
 				if( ren != null ) ren.render(r);
 				ok();

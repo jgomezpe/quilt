@@ -1,9 +1,9 @@
 package quilt.remnant;
 
 import quilt.Quilt;
-import quilt.gui.Polygon;
 import quilt.operation.Rotatable;
 import quilt.operation.Rotate;
+import quilt.render.Polygon;
 import quilt.util.Util;
 import unalcol.gui.paint.Color;
 import unalcol.gui.paint.Canvas;

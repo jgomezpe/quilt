@@ -1,21 +1,33 @@
-package fun_pl.demo;
+package toyplus;
 
 import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
+import unalcol.i18n.I18N;
 import unalcol.types.collection.Collection;
 import unalcol.types.collection.array.Array;
 import unalcol.types.collection.keymap.HTKeyMap;
+import unalcol.types.collection.keymap.ImmutableKeyMap;
 import unalcol.types.collection.vector.Vector;
 
-public class FunDemoMachine extends FunMachine{
-	protected FunDemoPlus plus;
-	protected FunDemoDecrement dec;
+public class ToyPlusMachine extends FunMachine{
+	protected Plus plus=null;
+	protected Decrement dec=null;
 	
-	public FunDemoMachine() {
-		plus = new FunDemoPlus(this);
-		dec = new FunDemoDecrement(this);
+	public ToyPlusMachine() {
+		plus = new Plus(this);
+		dec = new Decrement(this);
 	}
+	
+	public ToyPlusMachine(ImmutableKeyMap<String, FunCommand> primitives){
+		for( FunCommand c:primitives) 
+			if( c instanceof FunSymbolCommand ){
+				if( c.name().equals(I18N.get(Plus.name))) this.plus = (Plus)c;
+				if( c.name().equals(I18N.get(Decrement.name))) this.dec = (Decrement)c;
+			}
+	}
+	
+	
 
 	@Override
 	public Object value(String value){ try{ return Integer.parseInt(value); }catch(NumberFormatException e){ return null; } }
@@ -43,8 +55,8 @@ public class FunDemoMachine extends FunMachine{
 
 	@Override
 	public FunSymbolCommand symbol_command(String symbol) {
-		if(plus.name().equals(symbol)) return plus;
-		if(dec.name().equals(symbol)) return dec;
+		if(plus!=null && plus.name().equals(symbol)) return plus;
+		if(dec!=null && dec.name().equals(symbol)) return dec;
 		else return null;
 	}
 
@@ -56,8 +68,8 @@ public class FunDemoMachine extends FunMachine{
 	@Override
 	public Collection<String> primitives() {
 		HTKeyMap<String,String> v = new HTKeyMap<String,String>();
-		v.set(plus.name(),plus.name());
-		v.set(dec.name(),dec.name());
+		if( plus!=null ) v.set(plus.name(),plus.name());
+		if( dec!=null ) v.set(dec.name(),dec.name());
 		return v.keys();
 	}
 
