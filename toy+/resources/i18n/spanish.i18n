@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<language id='español'>  
+  <i18n id='code' msg='%$=,()+!'/>
+  <i18n id='arity' msg='00000021'/>
+  <i18n id='priority' msg='00000012'/>
+  <i18n id='value' msg='Numero natural'/>
+  <i18n id='.fmc' msg='.tmc'/>
+  <i18n id='.fms' msg='.tms'/>
+  <i18n id='.fmp' msg='.tmp'/>
+  <i18n id='title' msg='Ambiente para Toy+'/>
+  <i18n id='file' msg='Archivos Toy+'/>
+  <i18n id='dec' msg='!'/>
+  <i18n id='plus' msg='+'/>
+  <i18n id='decc' msg='% Reduce en una unidad el numero natural dado (si es posible).'/>
+  <i18n id='plusc' msg='% Adiciona dos numeros naturales.'/>
+</language>  

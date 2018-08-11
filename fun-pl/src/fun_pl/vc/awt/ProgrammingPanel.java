@@ -27,7 +27,6 @@ import org.fife.ui.rsyntaxtextarea.Token;
 import fun_pl.FunLanguage;
 import fun_pl.semantic.FunMachine;
 import fun_pl.util.FunConstants;
-import fun_pl.util.Util;
 import fun_pl.vc.FunController;
 import fun_pl.vc.FunEditorController;
 import fun_pl.vc.FunToolbarController;
@@ -42,6 +41,7 @@ import unalcol.gui.io.FileFilter;
 import unalcol.gui.log.AWTLog;
 import unalcol.gui.log.LogPanel;
 import unalcol.gui.render.RenderPanel;
+import unalcol.util.FileResource;
 import unalcol.i18n.I18N;
 import unalcol.io.Tokenizer;
 import unalcol.types.collection.keymap.HTKeyMap;
@@ -255,14 +255,14 @@ public class ProgrammingPanel  extends JPanel{
 			windowPanel.setMinimumSize(minimumSize);
 			drawPanel.setMinimumSize(minimumSize);		
 			this.add(splitPane, java.awt.BorderLayout.CENTER);
-			((ProgrammingFrame)parent).setIconImage( Util.image("quilt.png"));
+			((ProgrammingFrame)parent).setIconImage( FileResource.image("quilt.png"));
 			
 		}catch(Exception e){ e.printStackTrace();  }
 	}
 	
 	protected void initButton( JButton button, String resource, String message ){
 		button.setToolTipText(message);
-		Image img = Util.image(resource);
+		Image img = FileResource.image(resource);
 		button.setIcon(new ImageIcon(img.getScaledInstance((button==jCommandButton)?60:30, 30, Image.SCALE_SMOOTH)));
 		button.setToolTipText(message);
 	}

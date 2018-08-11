@@ -5,12 +5,12 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import fun_pl.semantic.FunMachine;
-import fun_pl.util.Util;
 import fun_pl.vc.FunBackEnd;
 import fun_pl.vc.FunController;
 import fun_pl.vc.GUIFunConstants;
 import unalcol.gui.render.RenderPanel;
 import unalcol.i18n.I18N;
+import unalcol.util.FileResource;
 import unalcol.util.Instance;
 import unalcol.vc.FrontEnd;
 import unalcol.vc.VCModel;
@@ -96,7 +96,7 @@ public class ProgrammingFrame extends JFrame implements TitleComponent {
 		GUIFunConstants.FMC=I18N.get(GUIFunConstants.FMC);
 		GUIFunConstants.FMS=I18N.get(GUIFunConstants.FMS);
 		GUIFunConstants.FMP=I18N.get(GUIFunConstants.FMP);
-		String machine_txt = Util.config(conf_file);
+		String machine_txt = FileResource.config(conf_file);
 		ProgrammingFrame frame = new ProgrammingFrame(machine_txt, render, styles);
 		ProgrammingPanel panel = frame.windowPanel();
 		
@@ -106,7 +106,7 @@ public class ProgrammingFrame extends JFrame implements TitleComponent {
 		panel.setBackEnd(backend);
 		panel.setMachine( machine_txt );
 
-		Image img = Util.image("remnant.png");
+		Image img = FileResource.image("remnant.png");
 		frame.setIconImage(img);
 		frame.setVisible(true);
 	}	

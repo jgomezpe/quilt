@@ -1,33 +1,28 @@
 <?xml version="1.0"?>
 <language id='español'>  
-  <i18n id='novalue' msg='No es un retazo valido'/>
-  <i18n id='code' msg='%$=,()|@'/>
-  <i18n id='arity' msg='00000021'/>
-  <i18n id='priority' msg='00000012'/>
+  <i18n id='novalue' msg='No es un elemento valido'/>
+  <i18n id='code' msg='%$=,()'/>
+  <i18n id='arity' msg='000000'/>
+  <i18n id='priority' msg='000000'/>
   <i18n id='extra' msg='No se reconoce %s, en la fila %d, columna %d.'/>
   <i18n id='unexpected' msg='Inesperado %s en la fila %d, columna %d, esperando %s.'/>
   <i18n id='noargs' msg='Definicion de argumentos no valida en la fila %d, columna %d.'/>
   <i18n id='validcommand' msg='nombre valido de operacion.'/>
-  <i18n id='redefined' msg='No se puede redefinir la operación primitiva o retazo primitivo %s en la fila %d, columna %d.'/>
+  <i18n id='redefined' msg='No se puede redefinir la operación o valor primitivo %s en la fila %d, columna %d.'/>
   <i18n id='norule' msg='Componente no definido %s.'/>
   <i18n id='nocommand' msg='Operacion %s no definida en la fila %d, columna %d.'/>
   <i18n id='argmismatch' msg='Argumento en el llamado a %s en la fila %d, columna %d no concuerda. Recibiendo %s.'/>
   <i18n id='argnumbermismatch' msg='Numero de argumentos no valido en el llamado a %s en la fila %d, columna %d. Esperando %d y llegan %d.'/>
   <i18n id='novar' msg='Variable %s no definida en la fila %d, columna %d.'/>
   <i18n id='error' msg='Error'/>
-  <i18n id='rotate' msg='No se puede realizar la operacion rotar (%s) en la fila %d, columna %d.'/>
-  <i18n id='unrotate' msg='No se puede aplicar la operacion desrotar (%s) en la fila %d, columna %d.'/>
-  <i18n id='stitch' msg='No se puede realizar la operacion de coser (%s) en la fila %d, columna %d, pues las colchas %s y %s tienen diferentes alturas.'/>  
-  <i18n id='unstitch' msg='No se puede realizar la operacion de descoser (%s) en la fila %d, columna %d.'/>
   <i18n id='out' msg='Salida'/>
-  <i18n id='remnant' msg='Retazo'/>
-  <i18n id='quilt' msg='Colcha'/>
+  <i18n id='value' msg='Valor'/>
   <i18n id='primitive' msg='Operacion basica'/>
   <i18n id='noname' msg='Anonimo'/>
   <i18n id='clean' msg='¿Limpiar áreas de Programa y comando?'/>
-  <i18n id='.fmc' msg='.qmc'/>
-  <i18n id='.fms' msg='.qms'/>
-  <i18n id='.fmp' msg='.qmp'/>
+  <i18n id='.fmc' msg='.fmc'/>
+  <i18n id='.fms' msg='.fms'/>
+  <i18n id='.fmp' msg='.fmp'/>
   <i18n id='new' msg='Nuevo'/>
   <i18n id='open' msg='Cargar'/>
   <i18n id='save' msg='Guardar'/>
@@ -41,8 +36,4 @@
   <i18n id='author' msg='Desarrollado por el Profesor Jonatan Gómez Perdomo.\n jgomezpe at unal.edu.co \nUniversidad Nacional de Colombia'/>
   <i18n id='machine' msg='Configuración de la Máquina'/>
   <i18n id='style' msg='Estilo del editor de texto'/>
-  <i18n id='rot' msg='@'/>
-  <i18n id='sew' msg='|'/>
-  <i18n id='rotc' msg='% Rota un retazo 90 grados en dirección contraria al reloj.'/>
-  <i18n id='sewc' msg='% Cose dos retazos que tengan el mismo alto.'/>
 </language>  
