@@ -1,0 +1,22 @@
+{
+ "uses":"funpl",
+ "code":"=%$=,()|@",
+ "arity":"00000021",
+ "priority":"00000012",
+ "stitch":"Unable to apply sew (%s) operation at row %d, column %d: Quilts %s and %s have different heights.",  
+ "unstitch":"Unable to apply unstitch (%s) operation at row %d, column %d.",
+ "rotate":"Unable to apply rotate (%s) operation at row %d, column %d.",
+ "unrotate":"Unable to apply rotate back (%s) operation at row %d, column %d.",
+ "value":"Remnant",
+ "remnant":"Remnant",
+ "quilt":"Quilt",
+ ".fmc":".qmc",
+ ".fms":".qms",
+ ".fmp":".qmp",
+ "title":"Sewer Machine Environment",
+ "file":"Sewer machine files",
+ "rot":"@",
+ "sew":"|",
+ "rotc":"% Rotates a remnant 90 degrees counter clock wise.\n",
+ "sewc":"% Sews two remnants with same high.\n"
+}

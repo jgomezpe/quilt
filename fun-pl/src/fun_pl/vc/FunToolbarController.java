@@ -3,8 +3,9 @@ package fun_pl.vc;
 import fun_pl.FunLanguage;
 import unalcol.gui.log.Log;
 import unalcol.i18n.I18N;
+import unalcol.json.JSON;
+import unalcol.json.JSONParser;
 import unalcol.types.collection.Collection;
-import unalcol.util.ObjectParser;
 
 public class FunToolbarController extends FunController{
 	public FunToolbarController(){ super(FunVCModel.TOOLBAR); } 
@@ -39,9 +40,13 @@ public class FunToolbarController extends FunController{
 	}
 	
 	public void machine(String machine_txt){
-		try{ 
-			FunController.machine = FunController.instance().load(ObjectParser.parse(machine_txt)); 
-			FunController.quiltLang = new FunLanguage(machine);
+		try{
+			JSONParser parser = new JSONParser();
+			Object obj = parser.parse(machine_txt);
+			if( obj instanceof JSON ){
+				FunController.machine = FunController.instance().load((JSON)obj); 
+				FunController.quiltLang = new FunLanguage(machine);
+			}
 		}catch(Exception e){ e.printStackTrace(); }		
 	}	
 }

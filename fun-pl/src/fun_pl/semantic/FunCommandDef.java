@@ -3,7 +3,7 @@ package fun_pl.semantic;
 import fun_pl.syntax.FunEncoder;
 import fun_pl.util.FunConstants;
 import unalcol.language.LanguageException;
-import unalcol.types.collection.keymap.HTKeyMap;
+import unalcol.types.collection.keymap.HashMap;
 import unalcol.types.collection.keymap.KeyMap;
 
 public class FunCommandDef extends FunCommand{
@@ -17,7 +17,7 @@ public class FunCommandDef extends FunCommand{
 	}
 	
 	public KeyMap<String,Object> match( Object... values ) throws LanguageException{
-		if(left.arity()==0) return new HTKeyMap<String,Object>();
+		if(left.arity()==0) return new HashMap<String,Object>();
 		return left.match(values);
 	}
 

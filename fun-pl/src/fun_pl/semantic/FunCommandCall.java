@@ -3,9 +3,9 @@ package fun_pl.semantic;
 import fun_pl.syntax.FunEncoder;
 import fun_pl.util.FunConstants;
 import unalcol.i18n.I18N;
-import unalcol.io.Position2D;
+import unalcol.types.collection.iterator.Position2DTrack;
 import unalcol.language.LanguageException;
-import unalcol.types.collection.keymap.HTKeyMap;
+import unalcol.types.collection.keymap.HashMap;
 import unalcol.types.collection.keymap.KeyMap;
 import unalcol.types.collection.vector.Vector;
 
@@ -15,18 +15,18 @@ public class FunCommandCall extends FunCommand {
 	protected FunCommandCall[] args=null;
 	protected boolean variable = false;
 
-	public FunCommandCall( Position2D pos, FunMachine machine, String name, boolean variable ){
+	public FunCommandCall( Position2DTrack pos, FunMachine machine, String name, boolean variable ){
 		this(pos, machine, name);
 		this.variable = variable;
 	}
 	
-	public FunCommandCall( Position2D pos, FunMachine machine, String name ){
+	public FunCommandCall( Position2DTrack pos, FunMachine machine, String name ){
 		super(pos, machine);
 		this.name = name;
 		this.ho_name = name;
 	}
 	
-	public FunCommandCall( Position2D pos, FunMachine machine, String name, FunCommandCall[] args ){
+	public FunCommandCall( Position2DTrack pos, FunMachine machine, String name, FunCommandCall[] args ){
 		this(pos, machine, name);
 		this.args = args;
 	}	
@@ -66,7 +66,7 @@ public class FunCommandCall extends FunCommand {
 						index.remove(i);
 					}else{					
 						try{
-							FunSymbolCommand c = machine.symbol_command(aname);
+							FunSymbolCommand c = machine.primitive(aname);
 							if(c != null ){
 								Object[] toMatch = new Object[]{null,null};
 								try{ toMatch[0]=args[k].args[0].execute(variables); }catch(Exception x){}
@@ -91,7 +91,7 @@ public class FunCommandCall extends FunCommand {
 		return variables; 
 	}
 
-	public KeyMap<String, Object> match( Object... values ) throws LanguageException{ return match( new HTKeyMap<String,Object>(), values ); }
+	public KeyMap<String, Object> match( Object... values ) throws LanguageException{ return match( new HashMap<String,Object>(), values ); }
 	
 	public Object execute( KeyMap<String,Object> variables ) throws LanguageException{
 		String _ho_name = (String)variables.get(name);

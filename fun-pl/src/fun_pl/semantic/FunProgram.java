@@ -2,8 +2,8 @@ package fun_pl.semantic;
 
 import fun_pl.util.FunConstants;
 import unalcol.language.LanguageException;
-import unalcol.language.LanguageMultiException;
-import unalcol.types.collection.keymap.HTKeyMap;
+import unalcol.language.util.LanguageMultiException;
+import unalcol.types.collection.keymap.HashMap;
 import unalcol.types.collection.vector.Vector;
 
 public class FunProgram extends FunCommand{
@@ -16,7 +16,7 @@ public class FunProgram extends FunCommand{
 		add(commands);
 	}
 
-	protected HTKeyMap<String, Vector<FunCommandDef>> commands = new HTKeyMap<String,Vector<FunCommandDef>>();
+	protected HashMap<String, Vector<FunCommandDef>> commands = new HashMap<String,Vector<FunCommandDef>>();
 	
 	public void add(FunCommandDef def){
 		String name = def.name();

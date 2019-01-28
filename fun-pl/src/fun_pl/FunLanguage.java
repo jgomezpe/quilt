@@ -10,10 +10,10 @@ import fun_pl.syntax.FunParser;
 import fun_pl.util.FunConstants;
 import unalcol.i18n.I18N;
 import unalcol.io.Tokenizer;
+import unalcol.language.CommonLanguage;
 import unalcol.language.LanguageException;
-import unalcol.language.programming.ProgrammingLanguage;
 
-public class FunLanguage extends ProgrammingLanguage<FunCommand>{
+public class FunLanguage extends CommonLanguage<FunCommand>{
 	protected FunMachine machine;
 	public FunLanguage(FunMachine machine) throws LanguageException{ this( machine, encoder()); }
 	
@@ -24,9 +24,9 @@ public class FunLanguage extends ProgrammingLanguage<FunCommand>{
 	}
 	
 	public FunCommand process( String code, boolean program ) throws LanguageException{
-		this.lexer.setSrc(program?0:1);
-		return process( code, (program?FunConstants.COMMAND_DEF_LIST:FunConstants.COMMAND_EXP));
+		return process((program?FunConstants.COMMAND_DEF_LIST:FunConstants.COMMAND_EXP), code, program?1:0);
 	}
+
 	public static FunEncoder encoder() throws LanguageException{
 		return new FunEncoder(I18N.get(FunConstants.code));
 	}

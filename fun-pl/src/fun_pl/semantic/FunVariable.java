@@ -1,12 +1,12 @@
 package fun_pl.semantic;
 
 import fun_pl.util.FunConstants;
-import unalcol.io.Position2D;
+import unalcol.types.collection.iterator.Position2DTrack;
 import unalcol.language.LanguageException;
 import unalcol.types.collection.keymap.KeyMap;
 
 public class FunVariable extends FunCommandCall{
-	public FunVariable(Position2D pos, FunMachine machine, String name) { super(pos, machine, name); }
+	public FunVariable(Position2DTrack pos, FunMachine machine, String name) { super(pos, machine, name); }
 	public Object execute( KeyMap<String,Object> variables ) throws LanguageException{
 		Object obj = variables.get(name()); 
 		if( obj != null ) return obj;

@@ -4,7 +4,7 @@ import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
 import unalcol.i18n.I18N;
-import unalcol.io.Position2D;
+import unalcol.types.collection.iterator.Position2DTrack;
 import unalcol.language.LanguageException;
 
 public class Decrement extends FunSymbolCommand{
@@ -20,7 +20,7 @@ public class Decrement extends FunSymbolCommand{
 		return s-1;
 	}
 	
-	public LanguageException exception(int i, Position2D pos ){
+	public LanguageException exception(int i, Position2DTrack pos ){
 		return new LanguageException(pos, irreducible, pos.row()+1, pos.column()+1, i);
 	}
 	
@@ -32,7 +32,7 @@ public class Decrement extends FunSymbolCommand{
 
 	@Override
 	public Object[] reverse(Object obj, Object[] toMatch, FunCommand[] args) throws LanguageException {
-		Position2D p = this.pos();
+		Position2DTrack p = this.pos();
 		Integer i = (Integer)obj;
 		if( toMatch[0]==null ){
 			if( i<=0 ) throw exception(i, p);

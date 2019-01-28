@@ -5,14 +5,15 @@ import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunCommandCall;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunProgram;
+import fun_pl.semantic.FunSymbolCommand;
 import fun_pl.syntax.FunLexer;
 import fun_pl.util.FunConstants;
 import unalcol.i18n.I18N;
-import unalcol.io.Position2D;
+import unalcol.types.collection.iterator.Position2DTrack;
 import unalcol.language.Typed;
-import unalcol.language.programming.lexer.Token;
-import unalcol.types.collection.array.Array;
-import unalcol.types.collection.keymap.HTKeyMap;
+import unalcol.language.generalized.GeneralizedToken;
+import unalcol.types.collection.Collection;
+import unalcol.types.collection.keymap.HashMap;
 
 public class FunDemo {
 	public static String parser_error(){
@@ -31,39 +32,17 @@ public class FunDemo {
 		return "*(!6,10)";
 	}
 
-	public static String english(){
-		return "<?xml version='1.0'?>\n" +
-		"  <language id='english'>\n" +
-		"    <i18n id='" + Plus.name + "' msg='+'/>\n" +		
-		"    <i18n id='" + Decrement.name + "' msg='!'/>\n" +		
-		"    <i18n id='" + Plus.invalid + "' msg='Number %d cannot be reduced.'/>\n" +		
-		"    <i18n id='" + FunConstants.novalue + "' msg='Undefined value %s.'/>\n" +		
-		"    <i18n id='" + FunConstants.code + "' msg='%$=,()+!'/>\n" +		
-		"    <i18n id='" + FunConstants.arity + "' msg='00000021'/>\n" +		
-		"    <i18n id='" + FunConstants.priority + "' msg='0000001'/>\n" +		
-		"    <i18n id='" + FunConstants.extra + "' msg='Number of link operands %s not admisible, expecting at most %d link operands'/>\n" +		
-		"    <i18n id='" + FunConstants.unexpected + "' msg='Unexpected %s at row %d, column %d. Expecting %s'/>\n" +		
-		"    <i18n id='" + FunConstants.noargs + "' msg='Not valid definition of arguments at row %d, column %d'/>\n" +		
-		"    <i18n id='" + FunConstants.validcommand + "' msg='valid command name'/>\n" +		
-		"    <i18n id='" + FunConstants.norule + "' msg='Undefined component %s.'/>\n" +		
-		"    <i18n id='" + FunConstants.nocommand + "' msg='Undefined command %s at row %d, column %d.'/>\n" +		
-		"    <i18n id='" + FunConstants.argmismatch + "' msg='Mismatch in arguments calling command %s at row %d, column %d. Receiving %s'/>\n" +		
-		"    <i18n id='" + FunConstants.argnumbermismatch + "' msg='Mismatch in the number of arguments calling command %s at row %d, column %d. Expecting %d but receiving %d.'/>\n" +		
-		"    <i18n id='" + FunConstants.novar + "' msg='Undefined variable %s at row %d, column %d.'/>\n"+
-		" </language>";
-	}
-	
 	public static void i18n(){
-		I18N.add("english",english());
-		I18N.use("english");
+		I18N.setLanguage("spanish");
+		I18N.use("toy");
 	}
 	
 	public static FunCommand analize(FunMachine machine, String code, boolean asProgram){
 		try{
 			FunLanguage funLang = new FunLanguage(machine);
-			Array<Token<?>> tokens = funLang.lexer(code);
-			for( Token<?> t:tokens ){
-			    Position2D pos = (Position2D)t.pos();
+			Collection<GeneralizedToken<Integer>> tokens = funLang.lexer(code);
+			for( GeneralizedToken<Integer> t:tokens ){
+			    Position2DTrack pos = (Position2DTrack)t.pos();
 			    System.out.println(t.type()+","+pos.row()+","+pos.column()+","+t.length()+","+FunLexer.get(t.lexeme()));
 			}
 			Typed t = funLang.parser((asProgram?FunConstants.COMMAND_DEF_LIST:FunConstants.COMMAND_EXP),tokens);
@@ -77,7 +56,14 @@ public class FunDemo {
 	
 	public static void main( String[] args ){
 		i18n(); // Defining the language for error messages
-		FunMachine machine = new ToyPlusMachine();
+		HashMap<String, FunSymbolCommand> primitives = new HashMap<String, FunSymbolCommand>();
+		Plus plus = new Plus(null);
+		Decrement dec = new Decrement(null);
+		primitives.set(plus.name(), plus);
+		primitives.set(dec.name(), dec);
+		System.out.println(dec.name());
+		System.out.println(plus.name());
+		FunMachine machine = new ToyPlusMachine(primitives, plus.name());
 		//String code=parser_error(); //Test the compiler using a program written with a grammar error
 		//String code=meaner_error(); //Test the compiler using a program written with a semantic error
 		String code=program(); //Test the compiler without errors
@@ -85,7 +71,7 @@ public class FunDemo {
 		machine.setProgram(program);
 		FunCommandCall command = (FunCommandCall)analize(machine,command(),false);
 		try{
-			System.out.println("The result is:"+command.execute(new HTKeyMap<String, Object>()));
+			System.out.println("The result is:"+command.execute(new HashMap<String, Object>()));
 		}catch(Exception e ){ e.printStackTrace();}
 	}
 }

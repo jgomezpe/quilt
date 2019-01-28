@@ -1,17 +1,17 @@
-package quilt.remnant;
+package quilt.factory;
 
-import quilt.Quilt;
-import unalcol.gui.paint.Color;
-import unalcol.gui.paint.ColorInstance;
-import unalcol.util.Instance;
+import quilt.Remnant;
+import unalcol.json.JSON;
+import unalcol.json.JSON2Instance;
+import unalcol.types.object.Named;
 
 /**
 *
-* FilledRemnantInstance
-* <P>Load and Store mechanism of FilledRemnants (Persistent methods)
+* QuiltInstance
+* <P>Load and store Quilts: (Persistent methods of Quilt)
 *
 * <P>
-* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/remnant/FilledRemnantInstance.java" target="_blank">
+* <A HREF="https://github.com/jgomezpe/quilt/tree/master/quilt/src/quilt/QuiltInstance.java" target="_blank">
 * Source code </A> is available.
 *
 * <h3>License</h3>
@@ -49,25 +49,27 @@ import unalcol.util.Instance;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class FilledRemnantInstance implements Instance<Quilt>{
-	public static final String FILLED="filled";
-	protected ColorInstance c_instance = new ColorInstance();
+public class RemnantInstance implements JSON2Instance<Remnant>{
+	public static final String REMNANT="remnant";
 	
+	protected boolean register=false;
+	
+	public RemnantInstance( boolean register ){ this.register = register; }
+ 	
 	@Override
-	public Quilt load(Object[] args) {
-		if( args.length!=3 || !FILLED.equals(args[0]) ) return null;
-		Color c = c_instance.load((Object[])args[1]);
-		return new FilledRemnant(c,(int)args[2]);
+	public Remnant load(JSON json) {
+		String id = (String)json.get(Named.ID);
+		if( register ) Remnant.add(id, json);
+		return new Remnant(id);
 	}
 
 	@Override
-	public Object[] store(Quilt obj) {
-		if(!( obj instanceof FilledRemnant)) return null;
-		FilledRemnant q = (FilledRemnant)obj;
-		Object[] lines = new Object[3];
-		lines[0] = FILLED;
-		lines[1] = c_instance.store(q.color());
-		lines[2] = q.side();
-		return lines;
+	public JSON store(Remnant remnant) {
+		if( register ) return Remnant.get(remnant.id());
+		else{
+			JSON json = new JSON();
+			json.set(Named.ID, remnant.id());
+			return json;
+		}
 	}	
 }

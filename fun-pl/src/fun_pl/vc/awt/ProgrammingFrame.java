@@ -8,10 +8,10 @@ import fun_pl.semantic.FunMachine;
 import fun_pl.vc.FunBackEnd;
 import fun_pl.vc.FunController;
 import fun_pl.vc.GUIFunConstants;
-import unalcol.gui.render.RenderPanel;
+import unalcol.gui.render.Render;
 import unalcol.i18n.I18N;
+import unalcol.json.JSON2Instance;
 import unalcol.util.FileResource;
-import unalcol.util.Instance;
 import unalcol.vc.FrontEnd;
 import unalcol.vc.VCModel;
 
@@ -71,9 +71,9 @@ public class ProgrammingFrame extends JFrame implements TitleComponent {
 	BorderLayout windowLayout = new BorderLayout();
 	BorderLayout windowPaneLayout = new BorderLayout();
 
-	public ProgrammingFrame(String machine_txt, RenderPanel drawPanel){ this(machine_txt,drawPanel,null); }
+	public ProgrammingFrame(String machine_txt, Render drawPanel){ this(machine_txt,drawPanel,null); }
 	
-	public ProgrammingFrame(String machine_txt, RenderPanel drawPanel, String styles){
+	public ProgrammingFrame(String machine_txt, Render drawPanel, String styles){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
 		int height = (int)screenSize.getHeight();
@@ -91,7 +91,7 @@ public class ProgrammingFrame extends JFrame implements TitleComponent {
 	
 	public ProgrammingPanel windowPanel(){ return windowPanel; }
 	
-	public static void load( Instance<FunMachine> instance, RenderPanel render, String conf_file, String styles ){
+	public static void load( JSON2Instance<FunMachine> instance, Render render, String conf_file, String styles ){
 		FunController.setInstance(instance);
 		GUIFunConstants.FMC=I18N.get(GUIFunConstants.FMC);
 		GUIFunConstants.FMS=I18N.get(GUIFunConstants.FMS);

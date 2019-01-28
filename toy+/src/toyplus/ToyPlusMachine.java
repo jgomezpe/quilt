@@ -1,34 +1,21 @@
 package toyplus;
 
-import fun_pl.semantic.FunCommand;
-import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
-import unalcol.i18n.I18N;
+import fun_pl.semantic.FunMachine;
+//import fun_pl.semantic.FunSymbolCommand;
+//import unalcol.i18n.I18N;
 import unalcol.types.collection.Collection;
 import unalcol.types.collection.array.Array;
-import unalcol.types.collection.keymap.HTKeyMap;
+import unalcol.types.collection.keymap.HashMap;
 import unalcol.types.collection.keymap.ImmutableKeyMap;
 import unalcol.types.collection.vector.Vector;
 
 public class ToyPlusMachine extends FunMachine{
-	protected Plus plus=null;
-	protected Decrement dec=null;
-	
-	public ToyPlusMachine() {
-		plus = new Plus(this);
-		dec = new Decrement(this);
-	}
-	
-	public ToyPlusMachine(ImmutableKeyMap<String, FunCommand> primitives){
-		for( FunCommand c:primitives) 
-			if( c instanceof FunSymbolCommand ){
-				if( c.name().equals(I18N.get(Plus.name))) this.plus = (Plus)c;
-				if( c.name().equals(I18N.get(Decrement.name))) this.dec = (Decrement)c;
-			}
-	}
-	
-	
+	public ToyPlusMachine(ImmutableKeyMap<String, FunSymbolCommand> primitives, String symbol ){ super( primitives, symbol ); }
 
+	@Override
+	public void setValues(ImmutableKeyMap<String, ?> values){}
+	
 	@Override
 	public Object value(String value){ try{ return Integer.parseInt(value); }catch(NumberFormatException e){ return null; } }
 
@@ -42,34 +29,14 @@ public class ToyPlusMachine extends FunMachine{
 	}
 
 	@Override
-	public FunCommand primitive(String command){
-		if(plus.name().equals(command)) return plus;
-		if(dec.name().equals(command)) return dec;
-		else return null;
-	}
-
-	@Override
-	public FunSymbolCommand symbol_command() {
-		return plus;
-	}
-
-	@Override
-	public FunSymbolCommand symbol_command(String symbol) {
-		if(plus!=null && plus.name().equals(symbol)) return plus;
-		if(dec!=null && dec.name().equals(symbol)) return dec;
-		else return null;
-	}
-
-	@Override
 	public boolean can_assign(String variable, Object value) {
 		return true; // (variable.charAt(0)!=FunEncoder.get_symbol(FunEncoder.DOLLAR) || (Integer)value == 1);
 	}
 
 	@Override
 	public Collection<String> primitives() {
-		HTKeyMap<String,String> v = new HTKeyMap<String,String>();
-		if( plus!=null ) v.set(plus.name(),plus.name());
-		if( dec!=null ) v.set(dec.name(),dec.name());
+		HashMap<String,String> v = new HashMap<String,String>();
+		for( String name:primitives.keys()) v.set(name,name);
 		return v.keys();
 	}
 

@@ -40,14 +40,15 @@ import unalcol.gui.editor.simple.SyntaxStyle;
 import unalcol.gui.io.FileFilter;
 import unalcol.gui.log.AWTLog;
 import unalcol.gui.log.LogPanel;
-import unalcol.gui.render.RenderPanel;
+import unalcol.gui.render.Render;
 import unalcol.util.FileResource;
 import unalcol.i18n.I18N;
 import unalcol.io.Tokenizer;
-import unalcol.types.collection.keymap.HTKeyMap;
+import unalcol.json.JSON;
+import unalcol.json.JSON2Instance;
+import unalcol.json.JSONParser;
+import unalcol.types.collection.keymap.HashMap;
 import unalcol.types.collection.keymap.KeyMap;
-import unalcol.util.Instance;
-import unalcol.util.ObjectParser;
 import unalcol.vc.BackEnd;
 
 public class ProgrammingPanel  extends JPanel{
@@ -68,7 +69,7 @@ public class ProgrammingPanel  extends JPanel{
 	TitleComponent title_component;
 	
 	JSplitPane splitPane;
-	protected RenderPanel drawPanel; 
+	protected Render drawPanel; 
 	
 	// Window area
 	BorderLayout windowLayout = new BorderLayout();
@@ -109,9 +110,9 @@ public class ProgrammingPanel  extends JPanel{
 	
 	public LogPanel getLogPanel(){ return logPanel; }
 
-	public ProgrammingPanel(TitleComponent parent, RenderPanel drawPanel){ this(parent,drawPanel,null); }
+	public ProgrammingPanel(TitleComponent parent, Render drawPanel){ this(parent,drawPanel,null); }
 	
-	public ProgrammingPanel(TitleComponent parent, RenderPanel drawPanel, String styles){
+	public ProgrammingPanel(TitleComponent parent, Render drawPanel, String styles){
 		this.drawPanel = drawPanel;
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
@@ -126,7 +127,7 @@ public class ProgrammingPanel  extends JPanel{
 	
 	// FunPL Tokenizers
 	public static KeyMap<Integer, String> awtEditorTokens(){
-		HTKeyMap<Integer, String> tokens = new HTKeyMap<Integer,String>();
+		HashMap<Integer, String> tokens = new HashMap<Integer,String>();
 	    String[] tokens_style = { "undef", "regular", "comment", "symbol", "stitch", "regular", "reserved", "remnant" };
 	    tokens.set(Integer.MIN_VALUE,tokens_style[0]);
 	    tokens.set(FunConstants.VALUE,tokens_style[1]);
@@ -144,7 +145,7 @@ public class ProgrammingPanel  extends JPanel{
 	}
 	
 	public static KeyMap<Integer, Integer> rSyntaxEditorTokens(){
-		KeyMap<Integer, Integer> converter = new HTKeyMap<Integer, Integer>();
+		KeyMap<Integer, Integer> converter = new HashMap<Integer, Integer>();
 	    converter.set(Integer.MIN_VALUE,Token.ERROR_IDENTIFIER);
 	    converter.set(FunConstants.VALUE,Token.IDENTIFIER);
 	    converter.set(FunConstants.COMMENT,Token.COMMENT_EOL);
@@ -175,7 +176,7 @@ public class ProgrammingPanel  extends JPanel{
 
 			// Program area
 			if( styles!=null ) program_editor = new SimpleAWTEditor(FunVCModel.PROGRAM);
-			else program_editor = new RSyntaxEditor(FunVCModel.PROGRAM);
+			else program_editor = new RSyntaxEditor(FunVCModel.PROGRAM,1);
 			//program_editor.setStyle(SyntaxStyle.get(styles));
 			JTextComponent jProgram = program_editor.editArea();
 			jProgram.setToolTipText("");
@@ -215,7 +216,7 @@ public class ProgrammingPanel  extends JPanel{
 			jCommandLabel.setText(i18n(GUIFunConstants.COMMAND));
 			
 			if( styles!=null ) command_editor = new SimpleAWTEditor(FunVCModel.COMMAND);
-			else command_editor = new RSyntaxEditor(FunVCModel.COMMAND);
+			else command_editor = new RSyntaxEditor(FunVCModel.COMMAND,0);
 			if( styles!=null ) ((SimpleAWTEditor)command_editor).setStyle(SyntaxStyle.get(styles));
 			
 			JTextComponent jCommand = command_editor.editArea();
@@ -246,14 +247,14 @@ public class ProgrammingPanel  extends JPanel{
 			
 			//Create a split pane with the two scroll panes in it.
 			splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-			                           windowPanel, drawPanel);
+			                           windowPanel, (JPanel)drawPanel);
 			splitPane.setOneTouchExpandable(true);
 			splitPane.setDividerLocation(width*2/5);
 
 			//Provide minimum sizes for the two components in the split pane
 			Dimension minimumSize = new Dimension(width/5, height/5);
 			windowPanel.setMinimumSize(minimumSize);
-			drawPanel.setMinimumSize(minimumSize);		
+			((JPanel)drawPanel).setMinimumSize(minimumSize);		
 			this.add(splitPane, java.awt.BorderLayout.CENTER);
 			((ProgrammingFrame)parent).setIconImage( FileResource.image("quilt.png"));
 			
@@ -392,12 +393,16 @@ public class ProgrammingPanel  extends JPanel{
 	public void setMachine( String machine_txt ){
 		toolbar().machine(machine_txt);
 		//@TODO: I must have to use Regular expressions not this QuiltMachine here (Editors must support it..)
-		Instance<FunMachine> qm = FunController.instance();
+		JSON2Instance<FunMachine> qm = FunController.instance();
 		try {
-			FunMachine machine = qm.load(ObjectParser.parse(machine_txt));
-			Tokenizer tokenizer = FunLanguage.tokenizer(machine);
-			program_editor.setTokenizer(tokenizer, tokens);
-			command_editor.setTokenizer(tokenizer, tokens);
+			JSONParser parser = new JSONParser();
+			Object obj = parser.parse(machine_txt);
+			if( obj instanceof JSON ){
+				FunMachine machine = qm.load((JSON)obj);
+				Tokenizer tokenizer = FunLanguage.tokenizer(machine);
+				program_editor.setTokenizer(tokenizer, tokens);
+				command_editor.setTokenizer(tokenizer, tokens);
+			}
 		}catch(Exception e){ e.printStackTrace(); }
 	}
 }

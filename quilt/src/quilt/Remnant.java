@@ -1,7 +1,14 @@
 package quilt;
 
+import quilt.operation.RemnantFunction;
 import unalcol.gui.paint.Canvas;
 import unalcol.gui.paint.Color;
+import unalcol.gui.paint.JSONDrawer;
+import unalcol.json.JSON;
+import unalcol.types.collection.Collection;
+import unalcol.types.collection.keymap.HashMap;
+import unalcol.types.collection.vector.Vector;
+import unalcol.types.object.Named;
 
 /**
 *
@@ -47,7 +54,22 @@ import unalcol.gui.paint.Color;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public abstract class Remnant extends Quilt{
+public class Remnant extends Quilt implements Named{
+	protected static HashMap<String,JSON> drawJSON = new HashMap<String,JSON>();
+	public static void add( String remnant, JSON json ){ drawJSON.set(remnant, json); }
+	public static JSON get( String remnant ){ return drawJSON.get(remnant); }
+	
+	protected String command="";
+
+	public Remnant(String id){ this(id,null); }
+	
+	public Remnant(String id, QuiltMachine machine){
+		super(machine);
+		command = id;
+	}
+	
+	public void add( String command ){ this.command = machine.reduce(command + ' ' + this.command);	}
+	
 	public int rows(){ return 1; }
 
 	public int columns(){ return 1; }
@@ -59,9 +81,37 @@ public abstract class Remnant extends Quilt{
 	
 	@Override
 	public Remnant get(int r, int c) {
-		if( 0<=r && r<rows() && 0<=c && c<columns()) return this;
+		if( r==0 &&  c==0 ) return this;
 		return null;
 	}
+	
+	public void translate(JSON json, int dx, int dy) {
+		String command = (String)json.get(JSONDrawer.COMMAND);
+		if( command==null ) return;
+		if( command.equals(JSONDrawer.COMPOUND) ){
+			@SuppressWarnings("unchecked")
+			Collection<Object> objs = (Collection<Object>)json.get(JSONDrawer.COMMANDS);
+			for(Object o:objs) translate((JSON)o, dx, dy);
+		}else{
+			Object x = json.get(JSONDrawer.X); 
+			Object y = json.get(JSONDrawer.Y);
+			if( x instanceof Vector ){
+				@SuppressWarnings("unchecked")
+				Vector<Object> tx = (Vector<Object>)x;
+				@SuppressWarnings("unchecked")
+				Vector<Object> ty = (Vector<Object>)y;
+				for(int i=0; i<tx.size(); i++ ){
+					tx.set(i, (Integer)tx.get(i)+dx);
+					ty.set(i, (Integer)ty.get(i)+dy);
+				}
+			}else{
+				json.set(JSONDrawer.X, dx);
+				json.set(JSONDrawer.Y, dy);
+				json.set(JSONDrawer.WIDTH, Quilt.UNIT);
+				json.set(JSONDrawer.HEIGHT, Quilt.UNIT);
+			}
+		}
+	}	
 
 	public void draw( Canvas g, int column, int row ){
 		column = units(column);
@@ -71,6 +121,36 @@ public abstract class Remnant extends Quilt{
 		g.drawLine(column, row, column+one, row);		
 		g.drawLine(column+one, row, column+one, row+one);		
 		g.drawLine(column+one, row+one, column, row+one);		
-		g.drawLine(column, row+one, column, row);		
-	};	
+		g.drawLine(column, row+one, column, row);	
+		//@TODO apply the operation to the associated JSONs
+		String[] commands = command.split(" ");
+		int n = commands.length;
+		JSON json = (JSON)Remnant.get(commands[n-1]).clone();
+		if( json != null ){
+			for( int i=n-2; i>=0; i--){
+				RemnantFunction rf = (RemnantFunction)machine.primitive(commands[i]);
+				rf.apply(json);
+			}
+			translate(json, column, row);
+			g.drawJSON(json);
+		}
+	}
+
+	@Override
+	public Object clone(){ return new Remnant(command, machine); }
+
+	@Override
+	public boolean equals(Quilt quilt) {
+		if(quilt.rows()==1 && quilt.columns()==1){
+			Remnant r = quilt.get(0, 0);
+			return command.equals(r.command);
+		}
+		return false;
+	}
+	
+	@Override
+	public String id(){ return command; }
+	@Override
+	
+	public void setId(String id){ command = id; }
 }

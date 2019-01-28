@@ -4,9 +4,15 @@ import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
 import fun_pl.util.FunConstants;
+import quilt.MatrixQuilt;
 import quilt.Quilt;
+import quilt.Remnant;
+import unalcol.gui.paint.JSONDrawer;
 import unalcol.i18n.I18N;
+import unalcol.json.JSON;
 import unalcol.language.LanguageException;
+import unalcol.types.collection.Collection;
+import unalcol.types.collection.vector.Vector;
 
 /**
 *
@@ -52,14 +58,24 @@ import unalcol.language.LanguageException;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public class Rotate extends FunSymbolCommand{
+public class Rotate extends FunSymbolCommand implements RemnantFunction{
 	public static final String name="rot";
 	public Rotate(FunMachine machine) { super(machine); }
 
-	@SuppressWarnings("unchecked")
 	public Quilt execute(Quilt quilt){
-		if( quilt instanceof Rotatable ) return ((Rotatable<Quilt>)quilt).rotate(this);
-		else return (Quilt)quilt.clone();
+		if( quilt instanceof MatrixQuilt ){
+			int n=quilt.rows();
+			int m=quilt.columns();
+			Remnant[][] r = new Remnant[m][n];
+			for( int i=0; i<m; i++ )
+				for( int j=0; j<n; j++ )
+					r[i][j] = (Remnant)execute(quilt.get(j, m-1-i));
+			return new MatrixQuilt(r);
+		}else if( quilt instanceof Remnant ){
+			Remnant r = (Remnant)quilt.clone();
+			r.add(name());
+			return r;
+		}else return (Quilt)quilt.clone();
 	}
 	
 	@Override
@@ -85,5 +101,41 @@ public class Rotate extends FunSymbolCommand{
 		Quilt q2 = (Quilt)toMatch[0];
 		if( q2.equals(q)) return new Quilt[]{q2};
 		return null;
+	}
+
+	//@Override
+	public void apply(JSON json) {
+		String command = (String)json.get(JSONDrawer.COMMAND); 
+		if( command.equals(JSONDrawer.COMPOUND) ){
+			@SuppressWarnings("unchecked")
+			Collection<Object> objs = (Collection<Object>)json.get(JSONDrawer.COMMANDS);
+			for(Object o:objs) apply((JSON)o);
+		}else{
+			Object x = json.get(JSONDrawer.X); 
+			Object y = json.get(JSONDrawer.Y);
+			if( x instanceof Vector ){
+				@SuppressWarnings("unchecked")
+				Vector<Object> tx = (Vector<Object>)x;
+				@SuppressWarnings("unchecked")
+				Vector<Object> ty = (Vector<Object>)y;
+				for(int i=0; i<tx.size(); i++ ){
+					Integer t = (Integer)tx.get(i);
+					tx.set(i,ty.get(i));
+					ty.set(i,Quilt.UNIT-t);
+				}
+			}else{
+				if(command.equals(JSONDrawer.IMAGE)){
+					Integer r = (Integer)json.get(JSONDrawer.IMAGE_ROT);
+					if(r==null) r=0;
+					r = (r+270)%360;
+					json.set(JSONDrawer.IMAGE_ROT,r);
+				}else{
+					Integer w = (Integer)json.get(JSONDrawer.WIDTH);
+					Integer h = (Integer)json.get(JSONDrawer.HEIGHT);
+					json.set(JSONDrawer.WIDTH, h);
+					json.set(JSONDrawer.HEIGHT, w);
+				}	
+			}
+		}
 	}
 }

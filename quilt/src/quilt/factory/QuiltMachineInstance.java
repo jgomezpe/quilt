@@ -1,27 +1,17 @@
 package quilt.factory;
 
-import fun_pl.semantic.FunCommand;
-import fun_pl.semantic.FunCommandInstance;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunMachineInstance;
-import fun_pl.semantic.FunValueInstance;
+import fun_pl.semantic.FunSymbolCommand;
 import quilt.MatrixQuilt;
 import quilt.NilQuilt;
-import quilt.QuiltInstance;
 import quilt.QuiltMachine;
+import quilt.Remnant;
 import quilt.Quilt;
 import quilt.operation.Rotate;
 import quilt.operation.Sew;
-import quilt.remnant.EmptyRemnant;
-import quilt.remnant.EmptyRemnantInstance;
-import quilt.remnant.FilledRemnant;
-import quilt.remnant.FilledRemnantInstance;
-import quilt.remnant.ImageRemnant;
-import quilt.remnant.ImageRemnantInstance;
-import quilt.remnant.PolygonsRemnant;
-import quilt.remnant.PolygonsRemnantInstance;
-import quilt.remnant.StripsRemnant;
-import quilt.remnant.StripsRemnantInstance;
+import unalcol.json.JSON;
+import unalcol.types.collection.keymap.HashMap;
 import unalcol.types.collection.keymap.ImmutableKeyMap;
 
 /**
@@ -70,28 +60,53 @@ import unalcol.types.collection.keymap.ImmutableKeyMap;
 */
 public class QuiltMachineInstance extends FunMachineInstance<Quilt> {
 	public static final String MACHINE="machine";
-
-	@Override
-	public FunMachine init(ImmutableKeyMap<String, FunCommand> commands, ImmutableKeyMap<String, Quilt> remnants) {
-		return new QuiltMachine(commands, remnants);
-	}
+	public static final String REDUCTIONS="reductions";
+	public static final String IN="in";
+	public static final String OUT="out";
 
 	@Override
 	public void initCommands() {
-		commands = new FunCommandInstance();
-		commands.register(new Sew(null));
-		commands.register(new Rotate(null));
+		primitives.clear();
+		FunSymbolCommand c = new Sew(null);
+		primitives.set(c.name(),c);
+		c = new Rotate(null);
+		primitives.set(c.name(),c);
 	}
 
 	@Override
 	public void initValues() {
-		values = new FunValueInstance<Quilt>("remnants");
-		values.register(StripsRemnantInstance.STRIPS, StripsRemnant.class.getName(), new StripsRemnantInstance());	
-		values.register(QuiltInstance.QUILT, MatrixQuilt.class.getName(), new QuiltInstance(values.factory()));			
-		values.register(FilledRemnantInstance.FILLED, FilledRemnant.class.getName(), new FilledRemnantInstance());
-		values.register(PolygonsRemnantInstance.POLYGONS, PolygonsRemnant.class.getName(), new PolygonsRemnantInstance());
-		values.register(EmptyRemnantInstance.EMPTY, EmptyRemnant.class.getName(), new EmptyRemnantInstance());
-		values.register(NilQuiltInstance.NIL, NilQuilt.class.getName(), new NilQuiltInstance());
-		values.register(ImageRemnantInstance.IMAGE, ImageRemnant.class.getName(), new ImageRemnantInstance());
+		QuiltInstance qinstance = new QuiltInstance(true);
+		factory.register(QuiltInstance.QUILT, MatrixQuilt.class.getName(), qinstance);
+		factory.register(QuiltInstance.NIL, NilQuilt.class.getName(), qinstance);
+		factory.register(RemnantInstance.REMNANT, Remnant.class.getName(), qinstance);
+	}
+	
+	@Override
+	public FunMachine init(ImmutableKeyMap<String, FunSymbolCommand> commands, String symbol){ return new QuiltMachine(commands, symbol); }
+
+	protected ImmutableKeyMap<String, String> reductions(JSON json){
+		HashMap<String, String> reductions = new HashMap<String,String>();
+		JSON r =(JSON)json.get(REDUCTIONS);
+		if( r!=null ) for( String in:r.keys() ) reductions.set(in, (String)r.get(in));
+		return reductions;
+	}
+	
+	@Override
+	public FunMachine load(JSON json){
+		QuiltMachine machine = (QuiltMachine)super.load(json);
+		machine.setReductions(reductions(json));
+		return machine;
+	}
+	
+	@Override
+	public JSON store(FunMachine machine){
+		JSON json = super.store(machine);
+		ImmutableKeyMap<String, String> reductions = ((QuiltMachine)machine).reductions();
+		if( reductions != null && reductions.size()>0 ){
+			JSON r = new JSON();
+			for( String in:reductions.keys()) r.set(in, reductions.get(in));
+			json.set(REDUCTIONS, r);
+		}
+		return json;
 	}
 }

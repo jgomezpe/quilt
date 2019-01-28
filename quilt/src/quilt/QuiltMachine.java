@@ -2,16 +2,13 @@ package quilt;
 
 import java.util.Iterator;
 
-import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
 import fun_pl.util.FunConstants;
-import quilt.operation.Rotate;
-import quilt.operation.Sew;
 import unalcol.i18n.I18N;
+import unalcol.json.JSON;
 import unalcol.types.collection.Collection;
 import unalcol.types.collection.array.Array;
-import unalcol.types.collection.keymap.HTKeyMap;
 import unalcol.types.collection.keymap.ImmutableKeyMap;
 import unalcol.types.collection.vector.Vector;
 
@@ -62,30 +59,24 @@ import unalcol.types.collection.vector.Vector;
 public class QuiltMachine extends FunMachine{
 	protected FunSymbolCommand sew;
 	protected FunSymbolCommand rot;
-	protected ImmutableKeyMap<String, Quilt> remnants;
-	protected ImmutableKeyMap<String, FunCommand> primitives;
+	protected ImmutableKeyMap<String, ?> remnants;
+	protected ImmutableKeyMap<String, String> reductions;
 
-	public QuiltMachine(){
-		sew = new Sew(this);
-		rot = new Rotate(this);
-		HTKeyMap<String,FunCommand> prims = new HTKeyMap<String,FunCommand>();		
-		prims.set(sew.name(),sew);
-		prims.set(rot.name(),rot);
-		primitives = prims;
-		HTKeyMap<String,Quilt> rems = new HTKeyMap<String,Quilt>();
-		// @TODO: Put the classic remnants 
-		remnants = rems;
-	}
+	public QuiltMachine(ImmutableKeyMap<String, FunSymbolCommand> primitives, String symbol){ super(primitives, symbol); }
 
-	public QuiltMachine(ImmutableKeyMap<String, FunCommand> primitives, ImmutableKeyMap<String,Quilt> remnants){
-		this.remnants = remnants;
-		this.primitives = primitives;
-		for( FunCommand c:primitives) 
-			if( c instanceof FunSymbolCommand ){
-				if( c.name().equals(I18N.get(Sew.name))) this.sew = (FunSymbolCommand)c;
-				if( c.name().equals(I18N.get(Rotate.name))) this.rot = (FunSymbolCommand)c;
-			}
+	@Override
+	public Collection<String> primitives() { return primitives.keys(); }
+	
+	public String reduce( String command ){
+		if( reductions==null) return command;
+		for( String key:reductions.keys() ){
+			if(command.startsWith(key))
+				return reduce(reductions.get(key)+command.substring(key.length()));
+		}
+		return command;
 	}
+	
+	public JSON evaluate( String command ){ return null; }
 	
 	@Override
 	public boolean can_assign(String variable, Object remnant) {
@@ -93,20 +84,6 @@ public class QuiltMachine extends FunMachine{
 			Quilt q = (Quilt)remnant;
 			return (variable.charAt(0)!=I18N.get(FunConstants.code).charAt(FunConstants.DOLLAR) ||q.columns()==1);
 		}else return super.can_assign(variable,remnant);	
-	}
-
-	@Override
-	public FunCommand primitive(String command){ return primitives.get(command); }
-
-	@Override
-	public FunSymbolCommand symbol_command() { return sew; }
-
-	@Override
-	public FunSymbolCommand symbol_command(String command){
-		FunCommand c = primitive(command);
-		if( c==sew ) return sew;
-		if( c==rot ) return rot;
-		else return null;
 	}
 
 	@Override
@@ -134,8 +111,15 @@ public class QuiltMachine extends FunMachine{
 	}
 
 	@Override
-	public Collection<String> primitives() { return primitives.keys(); }
+	public Collection<String> values() { return (remnants!=null)?remnants.keys():null; }
 
 	@Override
-	public Collection<String> values() { return (remnants!=null)?remnants.keys():null; }
+	public void setValues(ImmutableKeyMap<String, ?> values) {
+		this.remnants = values;
+		for( Object q:remnants ) ((Quilt)q).setMachine(this);
+	}
+	
+	public void setReductions( ImmutableKeyMap<String, String> reductions ){ this.reductions = reductions; }
+	
+	public ImmutableKeyMap<String, String> reductions(){ return reductions; }
 }

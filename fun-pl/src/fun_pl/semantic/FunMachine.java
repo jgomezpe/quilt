@@ -2,15 +2,21 @@ package fun_pl.semantic;
 
 import fun_pl.syntax.FunLexerCheck;
 import fun_pl.util.FunConstants;
-import unalcol.io.Position2D;
+import unalcol.types.collection.iterator.Position2DTrack;
+import unalcol.types.collection.keymap.ImmutableKeyMap;
 import unalcol.language.LanguageException;
 
 public abstract class FunMachine implements FunLexerCheck{
-
+	protected ImmutableKeyMap<String, FunSymbolCommand> primitives;
+	protected FunSymbolCommand symbol=null;
 	protected FunProgram program = new FunProgram(this);
 
-	public FunMachine(){}
-	public FunMachine(FunProgram program){ setProgram(program);	}
+	//public FunMachine(){}
+	// public FunMachine(FunProgram program){ setProgram(program);	}
+	public FunMachine( ImmutableKeyMap<String, FunSymbolCommand> primitives, String symbol ){
+		this.primitives = primitives;
+		this.symbol = primitives.get(symbol);
+	}
 	
 	public FunProgram get(){ return program; }
 	public void setProgram( FunProgram program ){
@@ -20,14 +26,14 @@ public abstract class FunMachine implements FunLexerCheck{
 	
 	public void clear(){ this.program.clear(); }
 
-	public abstract FunCommand primitive(String command);
+	public FunSymbolCommand primitive(String command){ return primitives.get(command); }
 
+	public abstract void setValues( ImmutableKeyMap<String, ?> values );
 	public boolean is_value(String val){ return value(val)!=null; }
 	public abstract Object value(String value);
 	
-	public boolean is_symbol_command(String command){ return symbol_command(command)!=null; }
-	public abstract FunSymbolCommand symbol_command();
-	public abstract FunSymbolCommand symbol_command(String symbol);
+	public boolean is_primitive(String command){ return primitives.get(command)!=null; }
+	public FunSymbolCommand symbol(){ return symbol; }
 
 	public boolean can_assign( String variable, Object value ){
 		if(value instanceof String ){
@@ -41,7 +47,7 @@ public abstract class FunMachine implements FunLexerCheck{
 		
 //	}
 	
-	public Object execute( Position2D pos, String command, Object... args ) throws LanguageException{
+	public Object execute( Position2DTrack pos, String command, Object... args ) throws LanguageException{
 		if(is_value(command)){
 			if( args.length>0) throw new LanguageException(pos, FunConstants.argnumbermismatch, command);
 			return value(command);

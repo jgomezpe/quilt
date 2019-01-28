@@ -3,21 +3,20 @@ package fun_pl.syntax;
 import java.util.NoSuchElementException;
 
 import fun_pl.util.FunConstants;
-import unalcol.io.Position2D;
+import unalcol.types.collection.Collection;
+import unalcol.types.collection.iterator.Position2DTrack;
 import unalcol.language.LanguageException;
-import unalcol.language.programming.lexer.Lexer;
-import unalcol.language.programming.lexer.Token;
-import unalcol.language.symbol.AbstractEncoder;
-import unalcol.language.symbol.Encoder;
-import unalcol.types.collection.UnalcolIterator;
-import unalcol.types.collection.array.Array;
+import unalcol.language.Lexer;
+import unalcol.language.Token;
+import unalcol.language.generalized.GeneralizedEncoder;
+import unalcol.language.generalized.GeneralizedToken;
+import unalcol.types.collection.iterator.UnalcolIterator;
 import unalcol.types.collection.vector.Vector;
 
 public class FunLexer implements Lexer{
-	protected int src;
 	protected int offset;
-	protected UnalcolIterator<Position2D, Integer> reader;
-	protected Encoder encoder;
+	protected UnalcolIterator<Integer> reader;
+	protected GeneralizedEncoder<Integer> encoder;
 	
 	protected FunLexerCheck machine;
 	
@@ -25,21 +24,14 @@ public class FunLexer implements Lexer{
 
 	public FunLexer( FunLexerCheck machine ){ this.machine = machine; }
 	
-	@Override
-	public int src(){ return src; }
-
-	@Override
-	public void setSrc(int src){ this.src = src; }	
-	
-	public static String get( int[] lexeme ){
+	public static String get( Vector<Integer> lexeme ){
 		StringBuilder sb = new StringBuilder();
 		for(int i:lexeme) sb.append((char)i);
 		return sb.toString();
 	}
 
-	protected Token<Position2D> check_primitive(Token<Position2D> t) throws LanguageException{
-		int[] tlexeme = t.lexeme();
-		String lexeme = get(tlexeme);
+	protected Token check_primitive(Token t) throws LanguageException{
+		String lexeme = get(t.lexeme());
 		if( machine.composed(lexeme) != null )	t.setType(FunConstants.PRIM_VALUE);
 		else if( machine.is_primitive(lexeme) )	t.setType(FunConstants.PRIM_COMMAND);
 		return t; 
@@ -50,12 +42,12 @@ public class FunLexer implements Lexer{
 		try {
 			original = reader.next();
 			offset++;
-			int c=encoder.apply(original);
+			int c=encoder.encode(original);
 			if( c==FunConstants.COMMENT){
-				c = encoder.apply(reader.next());
+				c = encoder.encode(reader.next());
 				offset++;
 				while( c!=FunConstants.COMMENT && c != FunConstants.EOL && c!=FunConstants.EOF ){
-					c = encoder.apply(reader.next());
+					c = encoder.encode(reader.next());
 					offset++;
 				}
 				if(c==FunConstants.COMMENT) return next();
@@ -66,9 +58,9 @@ public class FunLexer implements Lexer{
 	
 	protected void back(){ if( reader.back() ) offset--; }
 	
-	protected Token<Position2D> variable() throws LanguageException {
+	protected Token variable() throws LanguageException {
 		int off = offset-1;
-		Position2D pos = (Position2D)reader.key();
+		Position2DTrack pos = (Position2DTrack)reader.pos();
 		int row = pos.row();
 		int column = pos.column();
 		Vector<Integer> v = new Vector<Integer>();
@@ -79,12 +71,12 @@ public class FunLexer implements Lexer{
 			c=next();
 		}
 		if( c!=FunConstants.EOF ) back();
-		return new Token<Position2D>(FunConstants.VARIABLE, new Position2D(src,off, row, column), v);
+		return new Token(FunConstants.VARIABLE, new Position2DTrack(pos.src(),off, row, column), v);
 	}
 	
-	protected Token<Position2D> value() throws LanguageException {
+	protected Token value() throws LanguageException {
 		int off = offset-1;
-		Position2D pos = (Position2D)reader.key();
+		Position2DTrack pos = (Position2DTrack)reader.pos();
 		int row = pos.row();
 		int column = pos.column();
 		Vector<Integer> v = new Vector<Integer>();
@@ -96,28 +88,27 @@ public class FunLexer implements Lexer{
 			c=next();
 		}
 		if( c!=FunConstants.EOF ) back();
-		return check_primitive(new Token<Position2D>(FunConstants.VALUE, new Position2D(src, off, row, column), v));
+		return check_primitive(new Token(FunConstants.VALUE, new Position2DTrack(pos.src(), off, row, column), v));
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public Array<Token<?>> apply(UnalcolIterator<?, Integer> reader, AbstractEncoder<Integer> encoder) throws LanguageException {
-	    this.reader = (UnalcolIterator<Position2D,Integer>)reader;
+	public Collection<GeneralizedToken<Integer>> process(UnalcolIterator<Integer> reader) throws LanguageException {
+	    this.reader = (UnalcolIterator<Integer>)reader;
 	    this.encoder = (FunEncoder)encoder;
 	    this.offset = 0;
 		
-	    Vector<Token<?>> v = new Vector<Token<?>>();
+	    Vector<GeneralizedToken<Integer>> v = new Vector<GeneralizedToken<Integer>>();
 	    int c = next();
 	    while(c!=FunConstants.EOF){
-		Position2D pos = (Position2D)reader.key();
+		Position2DTrack pos = (Position2DTrack)reader.pos();
 		int row = pos.row();
 		int column = pos.column();
 		if( FunConstants.DOLLAR < c && c<FunConstants.START_LINK_SYMBOLS ){
-			v.add(new Token<Position2D>(c, new Position2D(src, this.offset-1, row, column), new int[]{original}));
+			v.add(new Token(c, new Position2DTrack(pos.src(), this.offset-1, row, column), new int[]{original}));
 			c = next();				
 		}else
 			if( FunConstants.START_LINK_SYMBOLS <= c && c<=FunConstants.END_LINK_SYMBOLS ){
-				v.add(new Token<Position2D>(c, new Position2D(src,this.offset-1, row, column), new int[]{original}));
+				v.add(new Token(c, new Position2DTrack(pos.src(),this.offset-1, row, column), new int[]{original}));
 				c = next();				
 			}else{
 				switch(c){
@@ -143,5 +134,11 @@ public class FunLexer implements Lexer{
 			}
 		}
 	    return v;
-	}	
+	}
+
+	@Override
+	public GeneralizedEncoder<Integer> encoder(){ return encoder; }
+
+	@Override
+	public void setEncoder(GeneralizedEncoder<Integer> encoder) { this.encoder = encoder; }	
 }

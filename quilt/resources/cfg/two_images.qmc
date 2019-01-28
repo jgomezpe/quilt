@@ -1,1 +1,25 @@
-["machine",["commands","|","rot"],["remnants",["tools",["image","tools.png"]],["machine",["image","machine.png"]]]]
+{
+ "commands":["|","@"],
+ "symbol":"|",
+ "values":
+ [
+  {
+   "id":":"
+  },
+  {
+   "id":"<",
+   "command":"image",
+   "url":"tools.png"
+  },
+  {
+   "id":"/",
+   "command":"image",
+   "url":"machine.png"
+  }
+ ],
+ "reductions":
+ {
+  "@ :":":",
+  "@ @ @ @ ":""
+ }
+}

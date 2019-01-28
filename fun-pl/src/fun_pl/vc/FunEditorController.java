@@ -6,9 +6,9 @@ import unalcol.gui.editor.EditorController;
 import unalcol.gui.editor.EditorView;
 import unalcol.gui.log.Log;
 import unalcol.gui.render.Render;
-import unalcol.io.Position2D;
+import unalcol.types.collection.iterator.Position2DTrack;
 import unalcol.language.LanguageException;
-import unalcol.types.collection.keymap.HTKeyMap;
+import unalcol.types.collection.keymap.HashMap;
 
 public class FunEditorController  extends FunController implements EditorController{
 	protected boolean isprogram;
@@ -17,10 +17,10 @@ public class FunEditorController  extends FunController implements EditorControl
 
 	public FunEditorController(String id){ 
 		super(id);
-		isprogram = isprogram();
+		isprogram = id.equals(FunVCModel.PROGRAM);
 	}
 	
-	protected boolean isprogram(){ return id().equals(FunVCModel.PROGRAM); }
+	protected boolean isprogram(){ return isprogram; }
 
 	@Override
 	public void position(int row, int column) {}
@@ -45,9 +45,9 @@ public class FunEditorController  extends FunController implements EditorControl
 	}
 	
 	protected void error( LanguageException e ){
-		if( e.position() instanceof Position2D ){
-			Position2D pos = (Position2D)e.position();
-			EditorView editor = editor(pos.src()==0);
+		if( e.position() instanceof Position2DTrack ){
+			Position2DTrack pos = (Position2DTrack)e.position();
+			EditorView editor = editor(pos.src()==1);
 			editor.locate(pos.row(), pos.column());
 		}	
 
@@ -73,7 +73,7 @@ public class FunEditorController  extends FunController implements EditorControl
 		try{ command = (FunCommandCall)quiltLang.process( program, false); }catch(LanguageException e){ error(e); }
 		if( command != null ){
 			try{
-				Object r = command.execute( new HTKeyMap<String, Object>() );
+				Object r = command.execute( new HashMap<String, Object>() );
 				Render ren = render(); 
 				if( ren != null ) ren.render(r);
 				ok();
@@ -82,5 +82,7 @@ public class FunEditorController  extends FunController implements EditorControl
 	}
 	
 	@Override
-	public void text(String code){ if( isprogram ) compile(code); else command(code); }
+	public void text(String code){
+		if( isprogram ) compile(code); else command(code); 
+	}
 }

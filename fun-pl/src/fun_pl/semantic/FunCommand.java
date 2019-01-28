@@ -2,13 +2,13 @@ package fun_pl.semantic;
 
 import fun_pl.syntax.FunEncoder;
 import fun_pl.util.FunConstants;
-import unalcol.io.Position2D;
+import unalcol.types.collection.iterator.Position2DTrack;
 import unalcol.language.LanguageException;
 
 public abstract class FunCommand extends FunObject{
 	protected FunMachine machine;
 	
-	public FunCommand( Position2D pos, FunMachine machine ){ 
+	public FunCommand( Position2DTrack pos, FunMachine machine ){ 
 		super(pos);
 		this.machine = machine;
 	}

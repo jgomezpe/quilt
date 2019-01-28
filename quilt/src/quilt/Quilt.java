@@ -50,8 +50,18 @@ import quilt.util.QuiltConstants;
 * @version 1.0
 */
 public abstract class Quilt implements Drawable{
+	
 	public static final int UNIT = 100;
 
+	protected QuiltMachine machine=null;
+	
+	public Quilt(){}
+	
+	public Quilt( QuiltMachine machine ){ this.machine = machine; }
+	
+	public void setMachine( QuiltMachine machine ){ this.machine=machine; }
+	public QuiltMachine machine(){ return machine; }
+	
 	// Size
 	public abstract int rows();
 	public abstract int columns();
@@ -75,7 +85,7 @@ public abstract class Quilt implements Drawable{
 	public abstract void draw( Canvas g, int column, int row );
 	
 	@Override
-	public void draw( Canvas g){ draw(g,0,0); }
+	public void draw( Canvas g ){ draw(g,0,0); }
 	
 	public String toString(){
 		return (rows()==1&&columns()==1)?I18N.get(QuiltConstants.REMNANT)+"[1,1]":I18N.get(QuiltConstants.QUILT)+"["+rows()+","+columns()+"]";

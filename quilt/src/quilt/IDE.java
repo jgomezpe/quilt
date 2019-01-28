@@ -4,7 +4,6 @@ import fun_pl.vc.FunVCModel;
 import fun_pl.vc.awt.ProgrammingFrame;
 import quilt.factory.QuiltMachineInstance;
 import quilt.util.QuiltConstants;
-import unalcol.gui.paint.CanvasRenderPanel;
 import unalcol.i18n.I18N;
 import unalcol.util.FileResource;
 
@@ -55,9 +54,11 @@ import unalcol.util.FileResource;
 public class IDE {
 	public static void main( String[] args ){
 		String language = args.length>=1?args[0]:QuiltConstants.SPANISH;
-		I18N.use(language);
-		String conf_file = args.length>=2?args[1]:"default.qmc";
+		I18N.setLanguage(language);
+		I18N.use("quilt");
+//		String conf_file = args.length>=2?args[1]:"default.qmc";
+		String conf_file = args.length>=2?args[1]:"two_images.qmc";
 		String styles = args.length==3?FileResource.config(args[2]):null;
-		ProgrammingFrame.load(new QuiltMachineInstance(), new CanvasRenderPanel(FunVCModel.RENDER), conf_file, styles);
+		ProgrammingFrame.load(new QuiltMachineInstance(), new QuiltCanvasRender(FunVCModel.RENDER), conf_file, styles);
 	}
 }
