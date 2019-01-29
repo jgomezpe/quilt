@@ -7,7 +7,7 @@ import fun_pl.util.FunConstants;
 import quilt.MatrixQuilt;
 import quilt.Quilt;
 import quilt.Remnant;
-import unalcol.gui.paint.JSONDrawer;
+import unalcol.gui.paint.Canvas;
 import unalcol.i18n.I18N;
 import unalcol.json.JSON;
 import unalcol.language.LanguageException;
@@ -105,14 +105,14 @@ public class Rotate extends FunSymbolCommand implements RemnantFunction{
 
 	//@Override
 	public void apply(JSON json) {
-		String command = (String)json.get(JSONDrawer.COMMAND); 
-		if( command.equals(JSONDrawer.COMPOUND) ){
+		String command = (String)json.get(Canvas.COMMAND); 
+		if( command.equals(Canvas.COMPOUND) ){
 			@SuppressWarnings("unchecked")
-			Collection<Object> objs = (Collection<Object>)json.get(JSONDrawer.COMMANDS);
+			Collection<Object> objs = (Collection<Object>)json.get(Canvas.COMMANDS);
 			for(Object o:objs) apply((JSON)o);
 		}else{
-			Object x = json.get(JSONDrawer.X); 
-			Object y = json.get(JSONDrawer.Y);
+			Object x = json.get(Canvas.X); 
+			Object y = json.get(Canvas.Y);
 			if( x instanceof Vector ){
 				@SuppressWarnings("unchecked")
 				Vector<Object> tx = (Vector<Object>)x;
@@ -124,16 +124,16 @@ public class Rotate extends FunSymbolCommand implements RemnantFunction{
 					ty.set(i,Quilt.UNIT-t);
 				}
 			}else{
-				if(command.equals(JSONDrawer.IMAGE)){
-					Integer r = (Integer)json.get(JSONDrawer.IMAGE_ROT);
+				if(command.equals(Canvas.IMAGE)){
+					Integer r = (Integer)json.get(Canvas.IMAGE_ROT);
 					if(r==null) r=0;
 					r = (r+270)%360;
-					json.set(JSONDrawer.IMAGE_ROT,r);
+					json.set(Canvas.IMAGE_ROT,r);
 				}else{
-					Integer w = (Integer)json.get(JSONDrawer.WIDTH);
-					Integer h = (Integer)json.get(JSONDrawer.HEIGHT);
-					json.set(JSONDrawer.WIDTH, h);
-					json.set(JSONDrawer.HEIGHT, w);
+					Integer w = (Integer)json.get(Canvas.WIDTH);
+					Integer h = (Integer)json.get(Canvas.HEIGHT);
+					json.set(Canvas.WIDTH, h);
+					json.set(Canvas.HEIGHT, w);
 				}	
 			}
 		}

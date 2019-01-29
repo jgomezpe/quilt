@@ -1,8 +1,8 @@
 package quilt;
 
-import unalcol.gui.paint.Canvas;
 import unalcol.gui.paint.Drawable;
 import unalcol.i18n.I18N;
+import unalcol.json.JSON;
 import quilt.util.QuiltConstants;
 
 /**
@@ -82,20 +82,12 @@ public abstract class Quilt implements Drawable{
 	// Drawing
 	public int unit(){ return UNIT; };
 	public int units( int value ){ return value*UNIT; }
-	public abstract void draw( Canvas g, int column, int row );
+	public abstract JSON draw( int column, int row );
 	
 	@Override
-	public void draw( Canvas g ){ draw(g,0,0); }
+	public JSON draw(){ return draw(0,0); }
 	
 	public String toString(){
 		return (rows()==1&&columns()==1)?I18N.get(QuiltConstants.REMNANT)+"[1,1]":I18N.get(QuiltConstants.QUILT)+"["+rows()+","+columns()+"]";
-	}
-	
-	@Override
-	public int scale(int width, int height){
-		int w = Math.min(width, height);
-		int wr = Math.max(columns(), rows());
-		if( wr > 0 ) return w/wr; 
-		else return 0;
-	}
+	}	
 }

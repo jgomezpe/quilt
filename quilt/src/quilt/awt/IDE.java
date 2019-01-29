@@ -1,11 +1,10 @@
-package quilt;
+package quilt.awt;
 
+import fun_pl.FunPlIDE;
 import fun_pl.vc.FunVCModel;
-import fun_pl.vc.awt.ProgrammingFrame;
 import quilt.factory.QuiltMachineInstance;
 import quilt.util.QuiltConstants;
 import unalcol.i18n.I18N;
-import unalcol.util.FileResource;
 
 /**
 *
@@ -58,7 +57,6 @@ public class IDE {
 		I18N.use("quilt");
 //		String conf_file = args.length>=2?args[1]:"default.qmc";
 		String conf_file = args.length>=2?args[1]:"two_images.qmc";
-		String styles = args.length==3?FileResource.config(args[2]):null;
-		ProgrammingFrame.load(new QuiltMachineInstance(), new QuiltCanvasRender(FunVCModel.RENDER), conf_file, styles);
+		FunPlIDE.awt(new QuiltMachineInstance(), new AWTQuiltCanvasRender(FunVCModel.RENDER), conf_file);
 	}
 }

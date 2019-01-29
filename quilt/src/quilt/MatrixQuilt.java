@@ -1,6 +1,8 @@
 package quilt;
 
 import unalcol.gui.paint.Canvas;
+import unalcol.json.JSON;
+import unalcol.types.collection.vector.Vector;
 import quilt.operation.Rotatable;
 import quilt.operation.Rotate;
 
@@ -92,9 +94,14 @@ public class MatrixQuilt extends Quilt implements Rotatable<Quilt>{
 	}
 
 	@Override
-	public void draw(Canvas g, int column, int row) {
+	public JSON draw(int column, int row) {
+		JSON json = new JSON();
+		json.set(Canvas.COMMAND, Canvas.COMPOUND);
+		Vector<JSON> commands = new Vector<JSON>();
 		for( int i=0; i<rows(); i++ )
-			for( int j=0; j<columns(); j++ ) remnant[i][j].draw(g, column+j, row+i);
+			for( int j=0; j<columns(); j++ ) commands.add(remnant[i][j].draw(column+j, row+i));
+		json.set(Canvas.COMMANDS, commands);
+		return json;
 	}	
 
 	@Override

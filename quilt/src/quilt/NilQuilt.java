@@ -1,6 +1,6 @@
 package quilt;
 
-import unalcol.gui.paint.Canvas;
+import unalcol.json.JSON;
 
 public class NilQuilt extends Quilt{
 
@@ -20,5 +20,5 @@ public class NilQuilt extends Quilt{
 	public boolean equals(Quilt quilt) { return quilt!=null && quilt instanceof NilQuilt; }
 
 	@Override
-	public void draw(Canvas g, int column, int row) {}
+	public JSON draw(int column, int row){ return new JSON(); }
 }
