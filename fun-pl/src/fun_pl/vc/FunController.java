@@ -16,10 +16,7 @@ public class FunController extends DefaultComponent implements Controller{
 	protected static FunLanguage quiltLang;
 	protected static JSON2Instance<FunMachine> instance;
 	
-	
-	public FunController(String id){ super(id); }
-	
-	
+	public FunController(String id){ super(id); }	
 
 	protected static String i18n(String code){ return I18N.get(code); }
 	
@@ -40,4 +37,6 @@ public class FunController extends DefaultComponent implements Controller{
 	public static JSON2Instance<FunMachine> instance(){ return instance; }
 	
 	public static void setInstance( JSON2Instance<FunMachine> instance ){ FunController.instance = instance; }
+	
+	public static FunMachine machine(){ return machine; }
 }

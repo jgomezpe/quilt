@@ -1,8 +1,6 @@
 package quilt.awt;
 
 import fun_pl.FunPlIDE;
-import fun_pl.vc.FunVCModel;
-import quilt.factory.QuiltMachineInstance;
 import quilt.util.QuiltConstants;
 import unalcol.i18n.I18N;
 
@@ -57,6 +55,6 @@ public class IDE {
 		I18N.use("quilt");
 //		String conf_file = args.length>=2?args[1]:"default.qmc";
 		String conf_file = args.length>=2?args[1]:"two_images.qmc";
-		FunPlIDE.awt(new QuiltMachineInstance(), new AWTQuiltCanvasRender(FunVCModel.RENDER), conf_file);
+		FunPlIDE.awt("quilt.factory.QuiltMachineInstance", "quilt.awt.AWTQuiltCanvasRender", conf_file);
 	}
 }

@@ -5,6 +5,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import unalcol.gui.render.Render;
+import unalcol.vc.FrontEnd;
 
 /**
 *
@@ -62,14 +63,14 @@ public class ProgrammingFrame extends JFrame implements TitleComponent {
 	BorderLayout windowLayout = new BorderLayout();
 	BorderLayout windowPaneLayout = new BorderLayout();
 
-	public ProgrammingFrame(Render drawPanel){ this(drawPanel,null); }
+	public ProgrammingFrame(FrontEnd frontend, Render drawPanel){ this(frontend, drawPanel,null); }
 	
-	public ProgrammingFrame(Render drawPanel, String styles){
+	public ProgrammingFrame(FrontEnd frontend, Render drawPanel, String styles){
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
 		int height = (int)screenSize.getHeight();
 		this.setSize(new Dimension(width*4/5, height*4/5));
-		windowPanel = new ProgrammingPanel(this, drawPanel, styles);
+		windowPanel = new ProgrammingPanel(frontend, this, drawPanel, styles);
 		this.getContentPane().setLayout(windowLayout);
 		this.getContentPane().add(windowPanel, java.awt.BorderLayout.CENTER);
 		// Closing the window

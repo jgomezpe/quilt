@@ -25,7 +25,6 @@ import javax.swing.text.JTextComponent;
 import org.fife.ui.rsyntaxtextarea.Token;
 
 import fun_pl.FunLanguage;
-import fun_pl.semantic.FunMachine;
 import fun_pl.util.FunConstants;
 import fun_pl.vc.FunController;
 import fun_pl.vc.FunEditorController;
@@ -44,12 +43,9 @@ import unalcol.gui.render.Render;
 import unalcol.util.FileResource;
 import unalcol.i18n.I18N;
 import unalcol.io.Tokenizer;
-import unalcol.json.JSON;
-import unalcol.json.JSON2Instance;
-import unalcol.json.JSONParser;
 import unalcol.types.collection.keymap.HashMap;
 import unalcol.types.collection.keymap.KeyMap;
-import unalcol.vc.BackEnd;
+import unalcol.vc.FrontEnd;
 
 public class ProgrammingPanel  extends JPanel{
 	/**
@@ -105,14 +101,15 @@ public class ProgrammingPanel  extends JPanel{
 	BorderLayout logCommandLayout = new BorderLayout();
 	JPanel logCommandArea = new JPanel();
 	
-	protected BackEnd backend;
 	protected KeyMap<Integer, ?> tokens;
+	protected FrontEnd frontend;
 	
 	public LogPanel getLogPanel(){ return logPanel; }
 
-	public ProgrammingPanel(TitleComponent parent, Render drawPanel){ this(parent,drawPanel,null); }
+	public ProgrammingPanel(FrontEnd frontend, TitleComponent parent, Render drawPanel){ this(frontend,parent,drawPanel,null); }
 	
-	public ProgrammingPanel(TitleComponent parent, Render drawPanel, String styles){
+	public ProgrammingPanel(FrontEnd frontend, TitleComponent parent, Render drawPanel, String styles){
+		this.frontend = frontend;
 		this.drawPanel = drawPanel;
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
@@ -120,8 +117,6 @@ public class ProgrammingPanel  extends JPanel{
 		this.setSize(new Dimension(width*4/5, height*4/5));
 		build(parent, width, height, styles);
 	}
-	
-	public void setBackEnd( BackEnd backend ){ this.backend = backend; }
 	
 	public static String i18n(String code){ return unalcol.i18n.I18N.get(code); }
 	
@@ -376,11 +371,11 @@ public class ProgrammingPanel  extends JPanel{
 	protected FunToolbarController toolbar=null;
 	
 	protected FunToolbarController toolbar(){
-		if( toolbar==null )	toolbar = (FunToolbarController)backend.component(FunVCModel.TOOLBAR);
+		if( toolbar==null )	toolbar = (FunToolbarController)frontend.backend().component(FunVCModel.TOOLBAR);
 		return toolbar;
 	}
 
-	protected FunEditorController editor(String id){ return (FunEditorController)backend.component(id); }
+	protected FunEditorController editor(String id){ return (FunEditorController)frontend.backend().component(id); }
 
 	public void jPrimitiveButton_actionPerformed(ActionEvent actionEvent){ toolbar().primitives(); }
 
@@ -390,20 +385,15 @@ public class ProgrammingPanel  extends JPanel{
 	
 	public void jCommandButton_actionPerformed(ActionEvent actionEvent){  editor(FunVCModel.COMMAND).text(command_editor.editArea().getText());  }
 	
+	public void setMachine(){
+		Tokenizer tokenizer = FunLanguage.tokenizer(FunController.machine());
+		program_editor.setTokenizer(tokenizer, tokens);
+		command_editor.setTokenizer(tokenizer, tokens);
+	}
+	
 	public void setMachine( String machine_txt ){
 		toolbar().machine(machine_txt);
-		//@TODO: I must have to use Regular expressions not this QuiltMachine here (Editors must support it..)
-		JSON2Instance<FunMachine> qm = FunController.instance();
-		try {
-			JSONParser parser = new JSONParser();
-			Object obj = parser.parse(machine_txt);
-			if( obj instanceof JSON ){
-				FunMachine machine = qm.load((JSON)obj);
-				Tokenizer tokenizer = FunLanguage.tokenizer(machine);
-				program_editor.setTokenizer(tokenizer, tokens);
-				command_editor.setTokenizer(tokenizer, tokens);
-			}
-		}catch(Exception e){ e.printStackTrace(); }
+		setMachine();
 	}
 }
 

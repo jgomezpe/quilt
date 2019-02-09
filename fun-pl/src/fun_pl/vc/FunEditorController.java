@@ -6,6 +6,7 @@ import unalcol.gui.editor.EditorController;
 import unalcol.gui.editor.EditorView;
 import unalcol.gui.log.Log;
 import unalcol.gui.render.Render;
+import unalcol.js.Util;
 import unalcol.types.collection.iterator.Position2DTrack;
 import unalcol.language.LanguageException;
 import unalcol.types.collection.keymap.HashMap;
@@ -37,10 +38,9 @@ public class FunEditorController  extends FunController implements EditorControl
 	
 	protected void ok(){
 		Log theLog = log();
+		System.out.println("[FunEditorController.ok]"+theLog);
 		if( theLog != null ){
 			theLog.out(i18n(GUIFunConstants.NO_ERRORS));
-			theLog.error("");
-			theLog.display(true);
 		}	
 	}
 	
@@ -52,10 +52,9 @@ public class FunEditorController  extends FunController implements EditorControl
 		}	
 
 		Log theLog = log();
+		System.out.println("[FunEditorController.err]"+e.getMessage());
 		if( theLog != null ){
-			theLog.out(i18n(GUIFunConstants.ERROR));
 			theLog.error(e.getMessage());
-			theLog.display(false);
 		}	
 	}
 	
@@ -64,6 +63,7 @@ public class FunEditorController  extends FunController implements EditorControl
 			machine.clear();
 			FunProgram prog = (FunProgram)quiltLang.process( program, true );
 			machine.setProgram(prog);
+			System.out.println("[FunEditorController]ok");
 			ok();
 		}catch(LanguageException e){ error(e); }
 	}
@@ -83,6 +83,7 @@ public class FunEditorController  extends FunController implements EditorControl
 	
 	@Override
 	public void text(String code){
+		System.out.println("[FunEditorController]"+code);
 		if( isprogram ) compile(code); else command(code); 
 	}
 }

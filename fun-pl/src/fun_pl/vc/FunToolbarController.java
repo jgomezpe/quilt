@@ -20,8 +20,6 @@ public class FunToolbarController extends FunController{
 		}
 		Log theLog = log();
 		theLog.out(sb.toString());
-		theLog.error("");
-		theLog.display(true);		
 	}
 	
 	public void values(){
@@ -35,8 +33,6 @@ public class FunToolbarController extends FunController{
 		else sb.append(I18N.get(GUIFunConstants.VALUE));
 		Log theLog = log();
 		theLog.out(sb.toString());
-		theLog.error("");
-		theLog.display(true);
 	}
 	
 	public void machine(String machine_txt){

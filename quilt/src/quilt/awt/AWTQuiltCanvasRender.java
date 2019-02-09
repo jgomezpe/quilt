@@ -13,6 +13,8 @@ public class AWTQuiltCanvasRender extends AWTCanvasRender implements QuiltCanvas
 	 */
 	private static final long serialVersionUID = 5282523442224484114L;
 	
+	public AWTQuiltCanvasRender(){ super(); }
+	
 	public AWTQuiltCanvasRender( String id ){ super( id ); }
 	
 	/**
