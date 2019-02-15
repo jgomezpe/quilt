@@ -3,19 +3,20 @@ package fun_pl.syntax;
 import java.util.NoSuchElementException;
 
 import fun_pl.util.FunConstants;
-import unalcol.types.collection.Collection;
-import unalcol.types.collection.iterator.Position2DTrack;
+import unalcol.collection.Collection;
+import unalcol.iterator.Position2DTrack;
 import unalcol.language.LanguageException;
 import unalcol.language.Lexer;
 import unalcol.language.Token;
 import unalcol.language.generalized.GeneralizedEncoder;
 import unalcol.language.generalized.GeneralizedToken;
-import unalcol.types.collection.iterator.UnalcolIterator;
-import unalcol.types.collection.vector.Vector;
+import unalcol.iterator.BT;
+import unalcol.iterator.Backable;
+import unalcol.collection.Vector;
 
 public class FunLexer implements Lexer{
 	protected int offset;
-	protected UnalcolIterator<Integer> reader;
+	protected BT<Integer> reader;
 	protected GeneralizedEncoder<Integer> encoder;
 	
 	protected FunLexerCheck machine;
@@ -92,15 +93,15 @@ public class FunLexer implements Lexer{
 	}
 	
 	@Override
-	public Collection<GeneralizedToken<Integer>> process(UnalcolIterator<Integer> reader) throws LanguageException {
-	    this.reader = (UnalcolIterator<Integer>)reader;
+	public Collection<GeneralizedToken<Integer>> process(Backable<Integer> reader) throws LanguageException {
+	    this.reader = (BT<Integer>)reader;
 	    this.encoder = (FunEncoder)encoder;
 	    this.offset = 0;
 		
 	    Vector<GeneralizedToken<Integer>> v = new Vector<GeneralizedToken<Integer>>();
 	    int c = next();
 	    while(c!=FunConstants.EOF){
-		Position2DTrack pos = (Position2DTrack)reader.pos();
+		Position2DTrack pos = (Position2DTrack)this.reader.pos();
 		int row = pos.row();
 		int column = pos.column();
 		if( FunConstants.DOLLAR < c && c<FunConstants.START_LINK_SYMBOLS ){

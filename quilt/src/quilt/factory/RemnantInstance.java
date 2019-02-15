@@ -3,7 +3,7 @@ package quilt.factory;
 import quilt.Remnant;
 import unalcol.json.JSON;
 import unalcol.json.JSON2Instance;
-import unalcol.types.object.Named;
+import unalcol.object.Named;
 
 /**
 *
@@ -58,9 +58,11 @@ public class RemnantInstance implements JSON2Instance<Remnant>{
  	
 	@Override
 	public Remnant load(JSON json) {
-		String id = (String)json.get(Named.ID);
-		if( register ) Remnant.add(id, json);
-		return new Remnant(id);
+		try{
+			String id = (String)json.get(Named.ID);
+			if( register ) Remnant.add(id, json);
+			return new Remnant(id);
+		}catch(Exception e){ return null; }	
 	}
 
 	@Override

@@ -2,17 +2,17 @@ package fun_pl.syntax;
 
 import fun_pl.util.FunConstants;
 import unalcol.i18n.I18N;
-import unalcol.types.collection.iterator.Position2DTrack;
-import unalcol.types.collection.iterator.UnalcolIterator;
+import unalcol.iterator.Position2DTrack;
+import unalcol.iterator.Backable;
 import unalcol.language.LanguageException;
 import unalcol.language.Typed;
 import unalcol.language.TypedValue;
 import unalcol.language.generalized.GeneralizedToken;
 import unalcol.language.Token;
 import unalcol.language.Parser;
-import unalcol.types.collection.Collection;
-import unalcol.types.collection.array.Array;
-import unalcol.types.collection.vector.Vector;
+import unalcol.collection.Collection;
+import unalcol.collection.Array;
+import unalcol.collection.Vector;
 
 public class FunParser implements Parser{
 	protected int rule;
@@ -28,11 +28,13 @@ public class FunParser implements Parser{
 	public void setRule( int rule ){ this.rule = rule; }
 	
 	protected Token get(){
-		if( offset >= tokens.size() ){
-			if( tokens.size()==0 ) return new Token(new Position2DTrack(0,0,0,0)); 
-			else return new Token( (Position2DTrack)tokens.get(tokens.size()-1).pos() ); 
-		}
-		return (Token)tokens.get(offset); 
+		try{
+			if( offset >= tokens.size() ){
+				if( tokens.size()==0 ) return new Token(new Position2DTrack(0,0,0,0)); 
+				else return new Token( (Position2DTrack)tokens.get(tokens.size()-1).pos() ); 
+			}
+			return (Token)tokens.get(offset);
+		}catch(Exception e){ return null; }	
 	}
 	
 	protected Token next(){
@@ -121,32 +123,34 @@ public class FunParser implements Parser{
 			v.add(wrap_command_exp());
 			t=get();
 		}
-		// @TODO: Check priority
-		while( v.size()>3 ){
-			int start = 0;
-			int end = 2;
-			int priority=I18N.get(FunConstants.priority).charAt(v.get(1).type())-'0';
-			int k=end+1;
-			while(k<v.size()){
-				int p = I18N.get(FunConstants.priority).charAt(v.get(k).type())-'0'; 
-				if(p!=priority){
-					if( p<priority ){
-						Vector<Typed> v2 = new Vector<Typed>();
-						for( int i=start; i<=end; i++ ){
-							v2.add(v.get(start));
-							v.remove(start);
+		try{
+				// @TODO: Check priority
+			while( v.size()>3 ){
+				int start = 0;
+				int end = 2;
+				int priority=I18N.get(FunConstants.priority).charAt(v.get(1).type())-'0';
+				int k=end+1;
+				while(k<v.size()){
+					int p = I18N.get(FunConstants.priority).charAt(v.get(k).type())-'0'; 
+					if(p!=priority){
+						if( p<priority ){
+							Vector<Typed> v2 = new Vector<Typed>();
+							for( int i=start; i<=end; i++ ){
+								v2.add(v.get(start));
+								v.remove(start);
+							}
+							v.add(start, new TypedValue<Vector<Typed>>(FunConstants.COMMAND_EXP, v2));
+							k=v.size();
+						}else{
+							start=end;
+							end+=2;
+							priority=p;
 						}
-						v.add(start, new TypedValue<Vector<Typed>>(FunConstants.COMMAND_EXP, v2));
-						k=v.size();
-					}else{
-						start=end;
-						end+=2;
-						priority=p;
 					}
+					k+=2;
 				}
-				k+=2;
 			}
-		}
+		}catch(Exception e){}
 		return new TypedValue<Vector<Typed>>(FunConstants.COMMAND_EXP, v);
 	} 
 	
@@ -222,12 +226,12 @@ public class FunParser implements Parser{
 		}
 		
 		Position2DTrack pos = new Position2DTrack(0,0,0,0);
-		if( this.tokens.size()>0 ) pos = (Position2DTrack)((Token)this.tokens.get(0)).pos();
+		if( this.tokens.size()>0 ) try{ pos = (Position2DTrack)((Token)this.tokens.get(0)).pos(); }catch(Exception e){}
 		throw new LanguageException(pos, FunConstants.norule, 1, 1);
 	}
 
 	@Override
-	public Typed process(UnalcolIterator<GeneralizedToken<Integer>> iterator) throws LanguageException {
+	public Typed process(Backable<GeneralizedToken<Integer>> iterator) throws LanguageException {
 		this.tokens = new Vector<GeneralizedToken<Integer>>();
 		while( iterator.hasNext() ) this.tokens.add(iterator.next());
 		return null;

@@ -2,7 +2,7 @@ package fun_pl.vc;
 
 import fun_pl.semantic.FunMachine;
 import unalcol.json.JSON2Instance;
-import unalcol.types.collection.keymap.HashMap;
+import unalcol.collection.keymap.HashMap;
 import unalcol.util.FileResource;
 import unalcol.vc.BackEnd;
 import unalcol.vc.Component;

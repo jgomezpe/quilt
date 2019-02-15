@@ -43,8 +43,8 @@ import unalcol.gui.render.Render;
 import unalcol.util.FileResource;
 import unalcol.i18n.I18N;
 import unalcol.io.Tokenizer;
-import unalcol.types.collection.keymap.HashMap;
-import unalcol.types.collection.keymap.KeyMap;
+import unalcol.collection.keymap.HashMap;
+import unalcol.collection.KeyMap;
 import unalcol.vc.FrontEnd;
 
 public class ProgrammingPanel  extends JPanel{

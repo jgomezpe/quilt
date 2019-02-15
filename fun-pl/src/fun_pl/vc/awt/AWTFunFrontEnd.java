@@ -4,7 +4,7 @@ import java.awt.Image;
 
 import fun_pl.vc.FunVCModel;
 import unalcol.gui.render.Render;
-import unalcol.types.collection.keymap.HashMap;
+import unalcol.collection.keymap.HashMap;
 import unalcol.util.FileResource;
 import unalcol.vc.Component;
 import unalcol.vc.FrontEnd;

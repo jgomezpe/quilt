@@ -6,10 +6,9 @@ import unalcol.gui.editor.EditorController;
 import unalcol.gui.editor.EditorView;
 import unalcol.gui.log.Log;
 import unalcol.gui.render.Render;
-import unalcol.js.Util;
-import unalcol.types.collection.iterator.Position2DTrack;
+import unalcol.iterator.Position2DTrack;
 import unalcol.language.LanguageException;
-import unalcol.types.collection.keymap.HashMap;
+import unalcol.collection.keymap.HashMap;
 
 public class FunEditorController  extends FunController implements EditorController{
 	protected boolean isprogram;
@@ -70,12 +69,17 @@ public class FunEditorController  extends FunController implements EditorControl
 	
 	public void command( String program ){
 		FunCommandCall command=null;
+		System.out.println("[FunEditorController.command]"+"step0 "+program);
 		try{ command = (FunCommandCall)quiltLang.process( program, false); }catch(LanguageException e){ error(e); }
 		if( command != null ){
 			try{
+				System.out.println("[FunEditorController.command]"+"step1");
 				Object r = command.execute( new HashMap<String, Object>() );
+				System.out.println("[FunEditorController.command]"+"step2");
 				Render ren = render(); 
+				System.out.println("[FunEditorController.command]"+"step3"+ren);
 				if( ren != null ) ren.render(r);
+				System.out.println("[FunEditorController.command]"+"step4");
 				ok();
 			}catch(LanguageException e){ error(e); }
 		}	
@@ -83,7 +87,7 @@ public class FunEditorController  extends FunController implements EditorControl
 	
 	@Override
 	public void text(String code){
-		System.out.println("[FunEditorController]"+code);
+		System.out.println("[FunEditorController]"+isprogram+"-->"+code+"<--");
 		if( isprogram ) compile(code); else command(code); 
 	}
 }

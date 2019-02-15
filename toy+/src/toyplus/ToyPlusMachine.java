@@ -4,17 +4,17 @@ import fun_pl.semantic.FunSymbolCommand;
 import fun_pl.semantic.FunMachine;
 //import fun_pl.semantic.FunSymbolCommand;
 //import unalcol.i18n.I18N;
-import unalcol.types.collection.Collection;
-import unalcol.types.collection.array.Array;
-import unalcol.types.collection.keymap.HashMap;
-import unalcol.types.collection.keymap.ImmutableKeyMap;
-import unalcol.types.collection.vector.Vector;
+import unalcol.collection.Collection;
+import unalcol.collection.Array;
+import unalcol.collection.keymap.HashMap;
+import unalcol.collection.keymap.Immutable;
+import unalcol.collection.Vector;
 
 public class ToyPlusMachine extends FunMachine{
-	public ToyPlusMachine(ImmutableKeyMap<String, FunSymbolCommand> primitives, String symbol ){ super( primitives, symbol ); }
+	public ToyPlusMachine(Immutable<String, FunSymbolCommand> primitives, String symbol ){ super( primitives, symbol ); }
 
 	@Override
-	public void setValues(ImmutableKeyMap<String, ?> values){}
+	public void setValues(Immutable<String, ?> values){}
 	
 	@Override
 	public Object value(String value){ try{ return Integer.parseInt(value); }catch(NumberFormatException e){ return null; } }

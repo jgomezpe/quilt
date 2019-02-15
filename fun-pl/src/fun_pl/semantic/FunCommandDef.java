@@ -3,8 +3,8 @@ package fun_pl.semantic;
 import fun_pl.syntax.FunEncoder;
 import fun_pl.util.FunConstants;
 import unalcol.language.LanguageException;
-import unalcol.types.collection.keymap.HashMap;
-import unalcol.types.collection.keymap.KeyMap;
+import unalcol.collection.keymap.HashMap;
+import unalcol.collection.KeyMap;
 
 public class FunCommandDef extends FunCommand{
 	protected FunCommandCall left;

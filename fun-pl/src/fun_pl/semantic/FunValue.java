@@ -1,9 +1,9 @@
 package fun_pl.semantic;
 
 import fun_pl.util.FunConstants;
-import unalcol.types.collection.iterator.Position2DTrack;
+import unalcol.iterator.Position2DTrack;
 import unalcol.language.LanguageException;
-import unalcol.types.collection.keymap.KeyMap;
+import unalcol.collection.KeyMap;
 
 public class FunValue extends FunCommandCall{
 	protected Object obj = null;

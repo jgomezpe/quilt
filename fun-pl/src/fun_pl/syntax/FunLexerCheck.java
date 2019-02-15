@@ -2,9 +2,9 @@ package fun_pl.syntax;
 
 import java.util.Iterator;
 
-import unalcol.types.collection.Collection;
-import unalcol.types.collection.array.Array;
-import unalcol.types.collection.vector.Vector;
+import unalcol.collection.Collection;
+import unalcol.collection.Array;
+import unalcol.collection.Vector;
 
 public interface FunLexerCheck{
 	public Collection<String> primitives();

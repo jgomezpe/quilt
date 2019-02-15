@@ -5,7 +5,7 @@ import unalcol.gui.log.Log;
 import unalcol.i18n.I18N;
 import unalcol.json.JSON;
 import unalcol.json.JSONParser;
-import unalcol.types.collection.Collection;
+import unalcol.collection.Collection;
 
 public class FunToolbarController extends FunController{
 	public FunToolbarController(){ super(FunVCModel.TOOLBAR); } 

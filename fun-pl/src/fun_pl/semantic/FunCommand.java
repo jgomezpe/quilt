@@ -2,7 +2,7 @@ package fun_pl.semantic;
 
 import fun_pl.syntax.FunEncoder;
 import fun_pl.util.FunConstants;
-import unalcol.types.collection.iterator.Position2DTrack;
+import unalcol.iterator.Position2DTrack;
 import unalcol.language.LanguageException;
 
 public abstract class FunCommand extends FunObject{

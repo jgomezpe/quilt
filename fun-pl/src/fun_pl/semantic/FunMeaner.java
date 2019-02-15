@@ -3,14 +3,14 @@ package fun_pl.semantic;
 import fun_pl.syntax.FunEncoder;
 import fun_pl.syntax.FunLexer;
 import fun_pl.util.FunConstants;
-import unalcol.types.collection.iterator.Position2DTrack;
+import unalcol.iterator.Position2DTrack;
 import unalcol.language.LanguageException;
 import unalcol.language.Typed;
 import unalcol.language.TypedValue;
 import unalcol.language.Token;
 import unalcol.language.Meaner;
-import unalcol.types.collection.array.Array;
-import unalcol.types.collection.vector.Vector;
+import unalcol.collection.Array;
+import unalcol.collection.Vector;
 
 public class FunMeaner implements Meaner<FunCommand>{
 	protected FunMachine machine;
@@ -31,24 +31,41 @@ public class FunMeaner implements Meaner<FunCommand>{
 		String value = FunLexer.get(t.lexeme());
 		Array<String> compose = machine.composed(value);
 		Position2DTrack pos = (Position2DTrack)t.pos();
-		FunCommandCall c = new FunValue(pos, machine, compose.get(0));
-		for( int i=1; i<compose.size(); i++ )
-			c = new FunCommandCall(c.pos, machine, machine.symbol().name(), new FunCommandCall[]{c, new FunValue(pos, machine, compose.get(i))} );
-		return c;
+		try{
+			FunCommandCall c = new FunValue(pos, machine, compose.get(0));
+			for( int i=1; i<compose.size(); i++ )
+				c = new FunCommandCall(c.pos, machine, machine.symbol().name(), new FunCommandCall[]{c, new FunValue(pos, machine, compose.get(i))} );
+			return c;
+		}catch(Exception e){ return null; }	
 	}
 
 	@SuppressWarnings("unchecked")
 	protected FunCommandCall command(TypedValue<Vector<Typed>> t) throws LanguageException{
 		Vector<Typed> v = t.value();
-		String name = FunLexer.get(((Token)v.get(0)).lexeme());
 		FunCommandCall[] args = new FunCommandCall[v.size()-1];
-		for( int i=0; i<args.length; i++) args[i] = command_exp((TypedValue<Vector<Typed>>)v.get(i+1));
-		return new FunCommandCall( (Position2DTrack)(((Token)v.get(0)).pos()), machine, name, args);
+		int i=0;
+		int j=-1;
+		String name = null;
+		Position2DTrack pos = null;
+		for( Typed xt : v ){
+			if( i>0 ) args[j] = command_exp((TypedValue<Vector<Typed>>)xt);
+			else{
+				name = FunLexer.get(((Token)xt).lexeme());
+				pos =  (Position2DTrack)(((Token)xt).pos());
+			}
+			i++;
+			j++;
+		}
+		return new FunCommandCall(pos, machine, name, args);
+	}
+	
+	protected Object get( Vector<?> v, int i ){
+		try{ return v.get(i); }catch(Exception e){ return null; }
 	}
 	
 	protected FunCommandCall command_exp(TypedValue<Vector<Typed>> t) throws LanguageException{
 		Vector<Typed> vo = t.value();
-		if( vo.size()==1 ) return (FunCommandCall)apply(vo.get(0));
+		if( vo.size()==1 ) return (FunCommandCall)apply((Typed)get(vo, 0));
 		Vector<Object> v = new Vector<Object>();
 		for(Typed c:vo) v.add(c);
 		for( int i=FunConstants.START_LINK_SYMBOLS; i<encoder.symbols_number() && v.size()>1; i++ ){
@@ -56,12 +73,14 @@ public class FunMeaner implements Meaner<FunCommand>{
 			int pk=0;
 			int nk=2;
 			while(k<v.size()){
-				Token token = (Token)v.get(k); 
+				Token token = (Token)get(v,k); 
 				if(token.type()==i){
 					String name = FunLexer.get(token.lexeme()); // machine.symbol_command(FunLexer.get(token.lexeme())).name();
 					FunCommandCall[] args = new FunCommandCall[2];
-					args[0]=(v.get(pk) instanceof Typed)?(FunCommandCall)apply((Typed)v.get(pk)):(FunCommandCall)v.get(pk);
-					args[1]=(v.get(nk) instanceof Typed)?(FunCommandCall)apply((Typed)v.get(nk)):(FunCommandCall)v.get(nk);
+					Object obj = get(v,pk); 
+					args[0]=( obj instanceof Typed)?(FunCommandCall)apply((Typed)obj):(FunCommandCall)obj;
+					obj = get(v,nk); 
+					args[1]=(obj instanceof Typed)?(FunCommandCall)apply((Typed)obj):(FunCommandCall)obj;
 					FunCommandCall c = new FunCommandCall(args[0].pos(), machine, name, args); 
 					v.set(pk,c);
 					v.remove(k);
@@ -74,7 +93,7 @@ public class FunMeaner implements Meaner<FunCommand>{
 				}
 			}
 		}
-		return (FunCommandCall)v.get(0);
+		return (FunCommandCall)get(v,0);
 		/*
 		FunCommandCall c = (FunCommandCall)apply(v.get(v.size()-1));
 		for( int i=v.size()-2; i>0; i-=2 ){
@@ -87,7 +106,7 @@ public class FunMeaner implements Meaner<FunCommand>{
 	
 	protected FunCommand command_def(TypedValue<Vector<Typed>> t) throws LanguageException{
 		Vector<Typed> v = t.value();
-		return new FunCommandDef(machine, (FunCommandCall)apply(v.get(0)), (FunCommandCall)apply(v.get(1)));
+		return new FunCommandDef(machine, (FunCommandCall)apply((Typed)get(v,0)), (FunCommandCall)apply((Typed)get(v,1)));
 	}
 
 	protected FunProgram command_def_list(TypedValue<Vector<Typed>> t) throws LanguageException{

@@ -6,7 +6,7 @@ import quilt.Quilt;
 import quilt.Remnant;
 import unalcol.json.JSON;
 import unalcol.json.JSON2Instance;
-import unalcol.types.collection.vector.Vector;
+import unalcol.collection.Vector;
 
 public class QuiltInstance implements JSON2Instance<Quilt>{
 	public static final String QUILT="quilt";
@@ -20,16 +20,16 @@ public class QuiltInstance implements JSON2Instance<Quilt>{
 	@Override
 	public Quilt load(JSON json) {
 		if( json.size()==0 ) return new NilQuilt();
-		@SuppressWarnings("unchecked")
-		Vector<Object> rows = (Vector<Object>)json.get(REMNANTS);
+		Object[] rows = json.getArray(REMNANTS);
 		if(rows==null) return rinstance.load(json);
-		else if( rows.size()==0 ) return new NilQuilt();  
-		Remnant[][] matrix = new Remnant[rows.size()][];
-		for( int i=0; i<matrix.length; i++ ){
-			@SuppressWarnings("unchecked")
-			Vector<Object> row = (Vector<Object>)rows.get(i);
-			matrix[i] = new Remnant[row.size()];
-			for( int j=0; j<matrix[i].length; j++ ) matrix[i][j] = rinstance.load((JSON)row.get(j));
+		else if( rows.length==0 ) return new NilQuilt();  
+		Remnant[][] matrix = new Remnant[rows.length][];
+		int i=0; 
+		for( Object r:rows ){
+			Object[] row = (Object[])r;
+			matrix[i] = new Remnant[row.length];
+			for( int j=0; j<matrix[i].length; j++ ) matrix[i][j] = rinstance.load((JSON)row[j]);
+			i++;
 		}
 		if( matrix.length==1 && matrix[0].length==1) return matrix[0][0];
 		else return new MatrixQuilt(matrix);

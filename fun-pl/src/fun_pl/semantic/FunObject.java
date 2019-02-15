@@ -1,6 +1,6 @@
 package fun_pl.semantic;
 
-import unalcol.types.collection.iterator.Position2DTrack;
+import unalcol.iterator.Position2DTrack;
 
 public abstract class FunObject{
 	protected Position2DTrack pos;

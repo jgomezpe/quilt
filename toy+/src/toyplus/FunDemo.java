@@ -9,11 +9,12 @@ import fun_pl.semantic.FunSymbolCommand;
 import fun_pl.syntax.FunLexer;
 import fun_pl.util.FunConstants;
 import unalcol.i18n.I18N;
-import unalcol.types.collection.iterator.Position2DTrack;
+import unalcol.i18n.LanguageLoader;
+import unalcol.iterator.Position2DTrack;
 import unalcol.language.Typed;
 import unalcol.language.generalized.GeneralizedToken;
-import unalcol.types.collection.Collection;
-import unalcol.types.collection.keymap.HashMap;
+import unalcol.collection.Collection;
+import unalcol.collection.keymap.HashMap;
 
 public class FunDemo {
 	public static String parser_error(){
@@ -33,8 +34,11 @@ public class FunDemo {
 	}
 
 	public static void i18n(){
-		I18N.setLanguage("spanish");
-		I18N.use("toy");
+		LanguageLoader l = new LanguageLoader("spanish");
+		l.use("toy");
+		I18N.use(l);
+		System.out.println("[FunDemo.i18n]"+l.get("code"));
+		System.out.println(I18N.get("code"));
 	}
 	
 	public static FunCommand analize(FunMachine machine, String code, boolean asProgram){
@@ -67,9 +71,13 @@ public class FunDemo {
 		//String code=parser_error(); //Test the compiler using a program written with a grammar error
 		//String code=meaner_error(); //Test the compiler using a program written with a semantic error
 		String code=program(); //Test the compiler without errors
+		System.out.println("Program starting analisys...");
 		FunProgram program = (FunProgram)analize(machine, code, true);
+		System.out.println("Program Analyzed...");
 		machine.setProgram(program);
+		System.out.println("Command starting analisys...");
 		FunCommandCall command = (FunCommandCall)analize(machine,command(),false);
+		System.out.println("Command Analyzed...");
 		try{
 			System.out.println("The result is:"+command.execute(new HashMap<String, Object>()));
 		}catch(Exception e ){ e.printStackTrace();}

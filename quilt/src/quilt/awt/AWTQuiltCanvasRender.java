@@ -27,8 +27,10 @@ public class AWTQuiltCanvasRender extends AWTCanvasRender implements QuiltCanvas
 		int n=objects.size();
 		int q=1;
 		if(n==1){
-			Quilt quilt = (Quilt)objects.get(0);
-			q=Math.max(quilt.columns(), quilt.rows());
+			try{
+				Quilt quilt = (Quilt)objects.get(0);
+				q=Math.max(quilt.columns(), quilt.rows());
+			}catch(Exception e){}
 		}
 		getCanvas().setScale(w/(double)(Quilt.UNIT*q));
 		super.paintComponent(g);

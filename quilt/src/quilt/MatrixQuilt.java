@@ -2,7 +2,7 @@ package quilt;
 
 import unalcol.gui.paint.Canvas;
 import unalcol.json.JSON;
-import unalcol.types.collection.vector.Vector;
+import unalcol.collection.Vector;
 import quilt.operation.Rotatable;
 import quilt.operation.Rotate;
 
@@ -100,7 +100,7 @@ public class MatrixQuilt extends Quilt implements Rotatable<Quilt>{
 		Vector<JSON> commands = new Vector<JSON>();
 		for( int i=0; i<rows(); i++ )
 			for( int j=0; j<columns(); j++ ) commands.add(remnant[i][j].draw(column+j, row+i));
-		json.set(Canvas.COMMANDS, commands);
+		json.set(Canvas.COMMANDS, commands.toArray());
 		return json;
 	}	
 

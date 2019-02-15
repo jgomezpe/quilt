@@ -4,12 +4,11 @@ package fun_pl.semantic;
 import unalcol.json.Factory;
 import unalcol.json.JSON;
 import unalcol.json.JSON2Instance;
-import unalcol.types.collection.Collection;
-import unalcol.types.collection.keymap.HashMap;
-import unalcol.types.collection.keymap.ImmutableKeyMap;
-import unalcol.types.collection.keymap.KeyMap;
-import unalcol.types.collection.vector.Vector;
-import unalcol.types.object.Named;
+import unalcol.collection.keymap.HashMap;
+import unalcol.collection.keymap.Immutable;
+import unalcol.collection.KeyMap;
+import unalcol.collection.Vector;
+import unalcol.object.Named;
 
 public abstract class FunMachineInstance<T> implements JSON2Instance<FunMachine> {
 	public static final String MACHINE="machine";
@@ -28,34 +27,35 @@ public abstract class FunMachineInstance<T> implements JSON2Instance<FunMachine>
 	public abstract void initCommands();
 	public abstract void initValues();
 	
-	public abstract FunMachine init( ImmutableKeyMap<String, FunSymbolCommand> commands, String symbol );
+	public abstract FunMachine init( Immutable<String, FunSymbolCommand> commands, String symbol );
 	
 	protected KeyMap<String, FunSymbolCommand> commands(JSON json){
 		KeyMap<String, FunSymbolCommand> commands = new HashMap<String,FunSymbolCommand>();
-		@SuppressWarnings("unchecked")
-		Collection<Object> v = (Collection<Object>)json.get(COMMANDS);
-		for( Object o:v ){
-			String c = (String)o;
-			commands.set( c, this.primitives.get(c) ); 
-		}
+		Object[] v = json.getArray(COMMANDS);
+		if( v!=null )
+			for( Object o:v ){
+				String c = (String)o;
+				try{ commands.set( c, this.primitives.get(c) ); }catch(Exception e){} 
+			}
 		return commands;
 	}
 	
-	protected ImmutableKeyMap<String, T> values(JSON json){
+	protected Immutable<String, T> values(JSON json){
 		HashMap<String, T> values = new HashMap<String,T>();
-		@SuppressWarnings("unchecked")
-		Collection<Object> v = (Collection<Object>)json.get(VALUES);
-		for( Object o:v ){
-			T value = factory.load((JSON)o); 
-			values.set(((Named)value).id(), value);
-		}
+		Object[] v = json.getArray(VALUES);
+		if( v!=null )
+			for( Object o:v ){
+				System.out.println("[FunMachineInstance.values"+o);
+				T value = factory.load((JSON)o); 
+				values.set(((Named)value).id(), value);
+			}
 		return values;
 	}
 	
 	@Override
 	public FunMachine load(JSON json){
 		KeyMap<String, FunSymbolCommand> primitives = commands(json);
-		String symbol = (String)json.get(SYMBOL);
+		String symbol = json.getString(SYMBOL);
 		if( symbol==null ) for( String s:primitives.keys() ) symbol=s;
 		FunMachine machine = init(primitives, symbol);
 		machine.setValues(values(json));

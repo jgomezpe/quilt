@@ -2,20 +2,20 @@ package fun_pl.semantic;
 
 import fun_pl.syntax.FunLexerCheck;
 import fun_pl.util.FunConstants;
-import unalcol.types.collection.iterator.Position2DTrack;
-import unalcol.types.collection.keymap.ImmutableKeyMap;
+import unalcol.iterator.Position2DTrack;
+import unalcol.collection.keymap.Immutable;
 import unalcol.language.LanguageException;
 
 public abstract class FunMachine implements FunLexerCheck{
-	protected ImmutableKeyMap<String, FunSymbolCommand> primitives;
+	protected Immutable<String, FunSymbolCommand> primitives;
 	protected FunSymbolCommand symbol=null;
 	protected FunProgram program = new FunProgram(this);
 
 	//public FunMachine(){}
 	// public FunMachine(FunProgram program){ setProgram(program);	}
-	public FunMachine( ImmutableKeyMap<String, FunSymbolCommand> primitives, String symbol ){
+	public FunMachine( Immutable<String, FunSymbolCommand> primitives, String symbol ){
 		this.primitives = primitives;
-		this.symbol = primitives.get(symbol);
+		try{ this.symbol = primitives.get(symbol); }catch(Exception e){}
 	}
 	
 	public FunProgram get(){ return program; }
@@ -26,13 +26,13 @@ public abstract class FunMachine implements FunLexerCheck{
 	
 	public void clear(){ this.program.clear(); }
 
-	public FunSymbolCommand primitive(String command){ return primitives.get(command); }
+	public FunSymbolCommand primitive(String command){ try{ return primitives.get(command); }catch(Exception e){ return null; } }
 
-	public abstract void setValues( ImmutableKeyMap<String, ?> values );
+	public abstract void setValues( Immutable<String, ?> values );
 	public boolean is_value(String val){ return value(val)!=null; }
 	public abstract Object value(String value);
 	
-	public boolean is_primitive(String command){ return primitives.get(command)!=null; }
+	public boolean is_primitive(String command){ return primitives.valid(command); }
 	public FunSymbolCommand symbol(){ return symbol; }
 
 	public boolean can_assign( String variable, Object value ){

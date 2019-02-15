@@ -3,10 +3,8 @@ package quilt;
 import quilt.operation.RemnantFunction;
 import unalcol.gui.paint.Canvas;
 import unalcol.json.JSON;
-import unalcol.types.collection.Collection;
-import unalcol.types.collection.keymap.HashMap;
-import unalcol.types.collection.vector.Vector;
-import unalcol.types.object.Named;
+import unalcol.collection.keymap.HashMap;
+import unalcol.object.Named;
 
 /**
 *
@@ -55,7 +53,7 @@ import unalcol.types.object.Named;
 public class Remnant extends Quilt implements Named{
 	protected static HashMap<String,JSON> drawJSON = new HashMap<String,JSON>();
 	public static void add( String remnant, JSON json ){ drawJSON.set(remnant, json); }
-	public static JSON get( String remnant ){ return drawJSON.get(remnant); }
+	public static JSON get( String remnant ){ try{ return drawJSON.get(remnant); }catch(Exception e){ return null; } }
 	
 	protected String command="";
 
@@ -84,27 +82,31 @@ public class Remnant extends Quilt implements Named{
 	}
 	
 	public void translate(JSON json, int dx, int dy) {
-		String command = (String)json.get(Canvas.COMMAND);
+		System.out.println("[Remnant.translate]"+json);
+		String command = json.getString(Canvas.COMMAND);
 		if( command==null ) return;
 		if( command.equals(Canvas.COMPOUND) ){
-			@SuppressWarnings("unchecked")
-			Collection<Object> objs = (Collection<Object>)json.get(Canvas.COMMANDS);
+			Object[] objs = json.getArray(Canvas.COMMANDS);
 			for(Object o:objs) translate((JSON)o, dx, dy);
 		}else{
-			Object x = json.get(Canvas.X); 
-			Object y = json.get(Canvas.Y);
-			if( x instanceof Vector ){
-				@SuppressWarnings("unchecked")
-				Vector<Object> tx = (Vector<Object>)x;
-				@SuppressWarnings("unchecked")
-				Vector<Object> ty = (Vector<Object>)y;
-				for(int i=0; i<tx.size(); i++ ){
-					tx.set(i, (Integer)tx.get(i)+dx);
-					ty.set(i, (Integer)ty.get(i)+dy);
+			Object x; 
+			Object y;
+			x = json.getArray(Canvas.X);
+			if( x!=null ) y = json.getArray(Canvas.Y);
+			else{
+				x = json.getInt(Canvas.X);
+				y = json.getInt(Canvas.Y);
+			}
+			if( x instanceof Object[] ){
+				Object[] tx = (Object[])x;
+				Object[] ty = (Object[])y;
+				for(int i=0; i<tx.length; i++ ){
+					tx[i] = (Integer)tx[i]+dx;
+					ty[i] = (Integer)ty[i]+dy;
 				}
 			}else{
-				json.set(Canvas.X, dx);
-				json.set(Canvas.Y, dy);
+				json.set(Canvas.X, (Integer)x+dx);
+				json.set(Canvas.Y, (Integer)y+dy);
 				json.set(Canvas.WIDTH, Quilt.UNIT);
 				json.set(Canvas.HEIGHT, Quilt.UNIT);
 			}
@@ -124,16 +126,18 @@ public class Remnant extends Quilt implements Named{
 		border.set(Canvas.HEIGHT, one);
 		String[] commands = command.split(" ");
 		int n = commands.length;
+		System.out.println("[Remnant.draw]"+(JSON)Remnant.get(commands[n-1]));
 		JSON json = (JSON)Remnant.get(commands[n-1]).clone();
+		System.out.println("[Remnant.draw]"+json);
 		if( json != null ){
 			for( int i=n-2; i>=0; i--){
 				RemnantFunction rf = (RemnantFunction)machine.primitive(commands[i]);
 				rf.apply(json);
 			}
 			translate(json, column, row);
-			Vector<JSON> v = new Vector<JSON>();
-			v.add(border);
-			v.add(json);
+			Object[] v = new Object[2];
+			v[0]=border;
+			v[1]=json;
 			json = new JSON();
 			json.set(Canvas.COMMAND, Canvas.COMPOUND);
 			json.set(Canvas.COMMANDS, v);

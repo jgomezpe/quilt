@@ -1,7 +1,7 @@
 package fun_pl.syntax;
 
-import unalcol.types.collection.Collection;
-import unalcol.types.collection.vector.Vector;
+import unalcol.collection.Collection;
+import unalcol.collection.Vector;
 
 public class SimpleFunLexerCheck implements FunLexerCheck{
 	protected Collection<String> primitives;

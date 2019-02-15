@@ -4,7 +4,7 @@ import fun_pl.semantic.FunCommand;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunSymbolCommand;
 import unalcol.i18n.I18N;
-import unalcol.types.collection.iterator.Position2DTrack;
+import unalcol.iterator.Position2DTrack;
 import unalcol.language.LanguageException;
 
 public class Decrement extends FunSymbolCommand{

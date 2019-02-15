@@ -7,10 +7,10 @@ import fun_pl.semantic.FunSymbolCommand;
 import fun_pl.util.FunConstants;
 import unalcol.i18n.I18N;
 import unalcol.json.JSON;
-import unalcol.types.collection.Collection;
-import unalcol.types.collection.array.Array;
-import unalcol.types.collection.keymap.ImmutableKeyMap;
-import unalcol.types.collection.vector.Vector;
+import unalcol.collection.Collection;
+import unalcol.collection.Array;
+import unalcol.collection.keymap.Immutable;
+import unalcol.collection.Vector;
 
 /**
 *
@@ -59,20 +59,17 @@ import unalcol.types.collection.vector.Vector;
 public class QuiltMachine extends FunMachine{
 	protected FunSymbolCommand sew;
 	protected FunSymbolCommand rot;
-	protected ImmutableKeyMap<String, ?> remnants;
-	protected ImmutableKeyMap<String, String> reductions;
+	protected Immutable<String, ?> remnants;
+	protected Immutable<String, String> reductions;
 
-	public QuiltMachine(ImmutableKeyMap<String, FunSymbolCommand> primitives, String symbol){ super(primitives, symbol); }
+	public QuiltMachine(Immutable<String, FunSymbolCommand> primitives, String symbol){ super(primitives, symbol); }
 
 	@Override
 	public Collection<String> primitives() { return primitives.keys(); }
 	
 	public String reduce( String command ){
-		if( reductions==null) return command;
-		for( String key:reductions.keys() ){
-			if(command.startsWith(key))
-				return reduce(reductions.get(key)+command.substring(key.length()));
-		}
+		try{ for( String key:reductions.keys() ) if(command.startsWith(key)) return reduce(reductions.get(key)+command.substring(key.length())); }
+		catch(Exception e){}	
 		return command;
 	}
 	
@@ -87,7 +84,7 @@ public class QuiltMachine extends FunMachine{
 	}
 
 	@Override
-	public Object value(String remnant){ return remnants.get(remnant); }
+	public Object value(String remnant){ try{ return remnants.get(remnant); }catch(Exception e){ return null; } }
 
 	@Override
 	public Array<String> composed(String compose){
@@ -114,12 +111,12 @@ public class QuiltMachine extends FunMachine{
 	public Collection<String> values() { return (remnants!=null)?remnants.keys():null; }
 
 	@Override
-	public void setValues(ImmutableKeyMap<String, ?> values) {
+	public void setValues(Immutable<String, ?> values) {
 		this.remnants = values;
 		for( Object q:remnants ) ((Quilt)q).setMachine(this);
 	}
 	
-	public void setReductions( ImmutableKeyMap<String, String> reductions ){ this.reductions = reductions; }
+	public void setReductions( Immutable<String, String> reductions ){ this.reductions = reductions; }
 	
-	public ImmutableKeyMap<String, String> reductions(){ return reductions; }
+	public Immutable<String, String> reductions(){ return reductions; }
 }

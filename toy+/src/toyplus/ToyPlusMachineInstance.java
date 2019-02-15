@@ -3,7 +3,7 @@ package toyplus;
 import fun_pl.semantic.FunMachine;
 import fun_pl.semantic.FunMachineInstance;
 import fun_pl.semantic.FunSymbolCommand;
-import unalcol.types.collection.keymap.ImmutableKeyMap;
+import unalcol.collection.keymap.Immutable;
 
 public class ToyPlusMachineInstance extends FunMachineInstance<Integer> {
 	public static final String MACHINE="machine";
@@ -23,7 +23,7 @@ public class ToyPlusMachineInstance extends FunMachineInstance<Integer> {
 	public void initValues(){}
 
 	@Override
-	public FunMachine init(ImmutableKeyMap<String, FunSymbolCommand> commands, String symbol) {
+	public FunMachine init(Immutable<String, FunSymbolCommand> commands, String symbol) {
 		return new ToyPlusMachine(commands, symbol);
 	}
 }

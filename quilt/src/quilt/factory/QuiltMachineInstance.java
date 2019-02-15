@@ -11,8 +11,8 @@ import quilt.Quilt;
 import quilt.operation.Rotate;
 import quilt.operation.Sew;
 import unalcol.json.JSON;
-import unalcol.types.collection.keymap.HashMap;
-import unalcol.types.collection.keymap.ImmutableKeyMap;
+import unalcol.collection.keymap.HashMap;
+import unalcol.collection.keymap.Immutable;
 
 /**
 *
@@ -82,12 +82,14 @@ public class QuiltMachineInstance extends FunMachineInstance<Quilt> {
 	}
 	
 	@Override
-	public FunMachine init(ImmutableKeyMap<String, FunSymbolCommand> commands, String symbol){ return new QuiltMachine(commands, symbol); }
+	public FunMachine init(Immutable<String, FunSymbolCommand> commands, String symbol){ return new QuiltMachine(commands, symbol); }
 
-	protected ImmutableKeyMap<String, String> reductions(JSON json){
+	protected Immutable<String, String> reductions(JSON json){
 		HashMap<String, String> reductions = new HashMap<String,String>();
-		JSON r =(JSON)json.get(REDUCTIONS);
-		if( r!=null ) for( String in:r.keys() ) reductions.set(in, (String)r.get(in));
+		try{
+			JSON r =(JSON)json.get(REDUCTIONS);
+			for( String in:r.keys() ) reductions.set(in, (String)r.get(in));
+		}catch(Exception e){}
 		return reductions;
 	}
 	
@@ -101,10 +103,10 @@ public class QuiltMachineInstance extends FunMachineInstance<Quilt> {
 	@Override
 	public JSON store(FunMachine machine){
 		JSON json = super.store(machine);
-		ImmutableKeyMap<String, String> reductions = ((QuiltMachine)machine).reductions();
+		Immutable<String, String> reductions = ((QuiltMachine)machine).reductions();
 		if( reductions != null && reductions.size()>0 ){
 			JSON r = new JSON();
-			for( String in:reductions.keys()) r.set(in, reductions.get(in));
+			try{ for( String in:reductions.keys()) r.set(in, reductions.get(in)); }catch(Exception e){}
 			json.set(REDUCTIONS, r);
 		}
 		return json;

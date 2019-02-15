@@ -2,9 +2,9 @@ package fun_pl.semantic;
 
 import fun_pl.util.FunConstants;
 import unalcol.language.LanguageException;
-import unalcol.language.util.LanguageMultiException;
-import unalcol.types.collection.keymap.HashMap;
-import unalcol.types.collection.vector.Vector;
+import unalcol.language.LanguageMultiException;
+import unalcol.collection.keymap.HashMap;
+import unalcol.collection.Vector;
 
 public class FunProgram extends FunCommand{
 	public static String MAIN="main";
@@ -20,8 +20,10 @@ public class FunProgram extends FunCommand{
 	
 	public void add(FunCommandDef def){
 		String name = def.name();
-		Vector<FunCommandDef> vdef = commands.get(name);
-		if( vdef == null ){
+		Vector<FunCommandDef> vdef;
+		try{ 
+			vdef = commands.get(name);
+		}catch(Exception e){
 			vdef = new Vector<FunCommandDef>();
 			commands.set(name, vdef);
 		}
@@ -34,13 +36,14 @@ public class FunProgram extends FunCommand{
 	
 	public void clear(){ commands.clear(); }
 	
-	public boolean defined(String command){	return commands.get(command)!=null;	} 
+	public boolean defined(String command){	return commands.valid(command);	} 
 	
 	protected Vector<FunCommandDef> candidates(String command, int arity ){
 		Vector<FunCommandDef> candidates = new Vector<FunCommandDef>();
-		Vector<FunCommandDef> v = commands.get(command);
-		if( v!=null )
-		for( FunCommandDef c:v ) if( c.arity()==arity ) candidates.add(c);
+		try{
+			Vector<FunCommandDef> v = commands.get(command);
+			for( FunCommandDef c:v ) if( c.arity()==arity ) candidates.add(c);
+		}catch(Exception e){}
 		return candidates;
 	}
 	
@@ -62,16 +65,19 @@ public class FunProgram extends FunCommand{
 		if(candidates.size()==0) throw exception(FunConstants.argnumbermismatch, command);
 		LanguageMultiException e=null;
 		int i=0; 
-		while( i<candidates.size() ){ 
-			try{ 
-				candidates.get(i).match(values);
-				i++;
-			}catch(LanguageException ex){
-				if( e!=null ){
-					e.add(ex);
-				}else e = new LanguageMultiException(ex);
-				candidates.remove(i);
-			}
+		while( i<candidates.size() ){
+			try{
+				FunCommandDef cand = candidates.get(i);
+				try{ 
+					cand.match(values);
+					i++;
+				}catch(LanguageException ex){
+					if( e!=null ){
+						e.add(ex);
+					}else e = new LanguageMultiException(ex);
+					candidates.remove(i);
+				}
+			}catch(Exception ex){}
 		}	
 		if( candidates.size() == 0 ) throw e;
 		e = null;

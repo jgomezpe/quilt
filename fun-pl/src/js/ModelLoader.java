@@ -10,12 +10,13 @@ import fun_pl.vc.FunBackEnd;
 import fun_pl.vc.FunVCModel;
 import fun_pl.vc.GUIFunConstants;
 import unalcol.js.Util;
+import unalcol.js.gui.JSCanvasRender;
 import unalcol.js.gui.JSEditorView;
 import unalcol.js.gui.JSLog;
 import unalcol.js.vc.JSModel;
 import unalcol.js.vc.JSModelLoader;
-import unalcol.types.collection.keymap.HashMap;
-import unalcol.types.collection.keymap.KeyMap;
+import unalcol.collection.keymap.HashMap;
+import unalcol.collection.KeyMap;
 
 public class ModelLoader implements JSModelLoader{
 	
@@ -44,6 +45,7 @@ public class ModelLoader implements JSModelLoader{
 		comp.set(FunVCModel.LOG, new JSLog(FunVCModel.LOG));
 		comp.set(FunVCModel.PROGRAM, new JSEditorView(FunVCModel.PROGRAM));
 		comp.set(FunVCModel.COMMAND, new JSEditorView(FunVCModel.COMMAND));
+		comp.set(FunVCModel.RENDER, new JSCanvasRender(FunVCModel.RENDER));
 		return comp;
 	}
 }

@@ -4,7 +4,7 @@ import fun_pl.FunLanguage;
 import fun_pl.syntax.SimpleFunLexerCheck;
 import unalcol.io.Tokenizer;
 import unalcol.language.LanguageException;
-import unalcol.types.collection.Collection;
+import unalcol.collection.Collection;
 
 public class QuiltView {
 	protected Tokenizer tokenizer;

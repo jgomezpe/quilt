@@ -11,8 +11,6 @@ import unalcol.gui.paint.Canvas;
 import unalcol.i18n.I18N;
 import unalcol.json.JSON;
 import unalcol.language.LanguageException;
-import unalcol.types.collection.Collection;
-import unalcol.types.collection.vector.Vector;
 
 /**
 *
@@ -105,37 +103,40 @@ public class Rotate extends FunSymbolCommand implements RemnantFunction{
 
 	//@Override
 	public void apply(JSON json) {
-		String command = (String)json.get(Canvas.COMMAND); 
+		String command = json.getString(Canvas.COMMAND); 
 		if( command.equals(Canvas.COMPOUND) ){
-			@SuppressWarnings("unchecked")
-			Collection<Object> objs = (Collection<Object>)json.get(Canvas.COMMANDS);
+			Object[] objs = json.getArray(Canvas.COMMANDS);
 			for(Object o:objs) apply((JSON)o);
 		}else{
-			Object x = json.get(Canvas.X); 
-			Object y = json.get(Canvas.Y);
-			if( x instanceof Vector ){
-				@SuppressWarnings("unchecked")
-				Vector<Object> tx = (Vector<Object>)x;
-				@SuppressWarnings("unchecked")
-				Vector<Object> ty = (Vector<Object>)y;
-				for(int i=0; i<tx.size(); i++ ){
-					Integer t = (Integer)tx.get(i);
-					tx.set(i,ty.get(i));
-					ty.set(i,Quilt.UNIT-t);
+			Object x; 
+			Object y;
+			x = json.getArray(Canvas.X);
+			if( x!=null ) y = json.getArray(Canvas.Y);
+			else{
+				x = json.getInt(Canvas.X);
+				y = json.getInt(Canvas.Y);
+			}
+			if( x instanceof Object[] ){
+				Object[] tx = (Object[])x;
+				Object[] ty = (Object[])y;
+				for(int i=0; i<tx.length; i++ ){
+					Integer t = (Integer)tx[i];
+					tx[i]=ty[i];
+					ty[i]=Quilt.UNIT-t;
 				}
 			}else{
 				if(command.equals(Canvas.IMAGE)){
-					Integer r = (Integer)json.get(Canvas.IMAGE_ROT);
-					if(r==null) r=0;
+					int r = (Integer)json.getInt(Canvas.IMAGE_ROT);
 					r = (r+270)%360;
 					json.set(Canvas.IMAGE_ROT,r);
-				}else{
-					Integer w = (Integer)json.get(Canvas.WIDTH);
-					Integer h = (Integer)json.get(Canvas.HEIGHT);
-					json.set(Canvas.WIDTH, h);
-					json.set(Canvas.HEIGHT, w);
-				}	
+				}
+				int w = json.getInt(Canvas.WIDTH);
+				int h = json.getInt(Canvas.HEIGHT);
+				json.set(Canvas.WIDTH, h);
+				json.set(Canvas.HEIGHT, w);
 			}
 		}
+		try{
+		}catch(Exception e){}
 	}
 }

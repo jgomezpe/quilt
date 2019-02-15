@@ -2,7 +2,7 @@ package fun_pl.syntax;
 
 import fun_pl.util.FunConstants;
 import unalcol.i18n.I18N;
-import unalcol.types.collection.iterator.Position2DTrack;
+import unalcol.iterator.Position2DTrack;
 import unalcol.language.LanguageException;
 import unalcol.language.Encoder;
 

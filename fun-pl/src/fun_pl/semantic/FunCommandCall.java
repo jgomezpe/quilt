@@ -3,11 +3,11 @@ package fun_pl.semantic;
 import fun_pl.syntax.FunEncoder;
 import fun_pl.util.FunConstants;
 import unalcol.i18n.I18N;
-import unalcol.types.collection.iterator.Position2DTrack;
+import unalcol.iterator.Position2DTrack;
 import unalcol.language.LanguageException;
-import unalcol.types.collection.keymap.HashMap;
-import unalcol.types.collection.keymap.KeyMap;
-import unalcol.types.collection.vector.Vector;
+import unalcol.collection.keymap.HashMap;
+import unalcol.collection.KeyMap;
+import unalcol.collection.Vector;
 
 public class FunCommandCall extends FunCommand {
 	protected String name;
@@ -35,8 +35,7 @@ public class FunCommandCall extends FunCommand {
 	public FunCommandCall[] args(){ return args; }
 	
 	public KeyMap<String, Object> match( KeyMap<String, Object> variables, Object... values ) throws LanguageException{
-		String _ho_name = (String)variables.get(name);
-		ho_name = (_ho_name!=null)?_ho_name:name; 
+		try{ ho_name = (String)variables.get(name); }catch(Exception e){ ho_name = name; }
 		int arity = arity();
 		if( arity == 0 ){
 			Object obj=machine.execute(this.pos(), ho_name);
@@ -50,42 +49,43 @@ public class FunCommandCall extends FunCommand {
 		int n = 0;
 		int m = 0;
 		while( index.size()>0 && (index.size()!=m || n!=variables.size())){
-			m = index.size();
-			n = variables.size();
-			int i=0; 
-			while( i<index.size() ){
-				int k = index.get(i);
-				String aname = args[k].name();
-				if( args[k] instanceof FunVariable ){
-					((FunVariable)args[k]).match(variables,values[k]);
-					index.remove(i);
-				}else{
-					if( args[k] instanceof FunValue ){
-						Object obj = args[k].execute(variables);
-						if( obj==null || !obj.equals(values[k]) ) throw exception(FunConstants.argmismatch,values[k]);
+				m = index.size();
+				n = variables.size();
+				int i=0; 
+				while( i<index.size() ){
+					int k;
+					try{ k = index.get(i); }catch(Exception e){k=1;}
+					String aname = args[k].name();
+					if( args[k] instanceof FunVariable ){
+						((FunVariable)args[k]).match(variables,values[k]);
 						index.remove(i);
-					}else{					
-						try{
-							FunSymbolCommand c = machine.primitive(aname);
-							if(c != null ){
-								Object[] toMatch = new Object[]{null,null};
-								try{ toMatch[0]=args[k].args[0].execute(variables); }catch(Exception x){}
-								try{ toMatch[1]=args[k].args[1].execute(variables); }catch(Exception x){}
-								c.setPos(args[k].pos);
-								Object[] objs = c.reverse(values[k], toMatch,args[k].args);
-								args[k].match(variables, objs);
-							}else{
-								Object obj = args[k].execute(variables);
-								if( obj==null || !obj.equals(values[k]) ) throw args[k].exception(FunConstants.argmismatch, values[k]);
-							}
+					}else{
+						if( args[k] instanceof FunValue ){
+							Object obj = args[k].execute(variables);
+							if( obj==null || !obj.equals(values[k]) ) throw exception(FunConstants.argmismatch,values[k]);
 							index.remove(i);
-						}catch( LanguageException e ){
-							ex = e;
-							i++;
+						}else{					
+							try{
+								FunSymbolCommand c = machine.primitive(aname);
+								if(c != null ){
+									Object[] toMatch = new Object[]{null,null};
+									try{ toMatch[0]=args[k].args[0].execute(variables); }catch(Exception x){}
+									try{ toMatch[1]=args[k].args[1].execute(variables); }catch(Exception x){}
+									c.setPos(args[k].pos);
+									Object[] objs = c.reverse(values[k], toMatch,args[k].args);
+									args[k].match(variables, objs);
+								}else{
+									Object obj = args[k].execute(variables);
+									if( obj==null || !obj.equals(values[k]) ) throw args[k].exception(FunConstants.argmismatch, values[k]);
+								}
+								index.remove(i);
+							}catch( LanguageException e ){
+								ex = e;
+								i++;
+							}
 						}
 					}
-				}
-			}	
+				}	
 		}
 		if( index.size() > 0 ) throw ex;
 		return variables; 
@@ -94,8 +94,7 @@ public class FunCommandCall extends FunCommand {
 	public KeyMap<String, Object> match( Object... values ) throws LanguageException{ return match( new HashMap<String,Object>(), values ); }
 	
 	public Object execute( KeyMap<String,Object> variables ) throws LanguageException{
-		String _ho_name = (String)variables.get(name);
-		ho_name = (_ho_name!=null)?_ho_name:name; 
+		try{ ho_name = (String)variables.get(name); }catch(Exception e){ ho_name = name; }
 		int a = arity();
 		Object[] obj = new Object[a];
 		for( int i=0; i<a; i++ ) obj[i] = args[i].execute(variables);
