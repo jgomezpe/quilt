@@ -45,7 +45,6 @@ public abstract class FunMachineInstance<T> implements JSON2Instance<FunMachine>
 		Object[] v = json.getArray(VALUES);
 		if( v!=null )
 			for( Object o:v ){
-				System.out.println("[FunMachineInstance.values"+o);
 				T value = factory.load((JSON)o); 
 				values.set(((Named)value).id(), value);
 			}

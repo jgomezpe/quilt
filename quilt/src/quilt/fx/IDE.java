@@ -11,7 +11,8 @@ public class IDE {
 		l.use("quilt");
 		I18N.use(l);
 		String conf_file = args.length>=2?args[1]:"default.qmc";
-		String url = "http://localhost/index.html?mode=fx&pack=quilt&cfg="+conf_file+"&instance=quilt.factory.QuiltMachineInstance";
+		String url = "http://localhost/index.html?mode=fx&pack=quilt&cfg="+conf_file+"&instance=quilt.factory.QuiltMachineInstance"+
+						"&render=quilt.js.JSQuiltCanvasRender";
 		
 		FunPlIDE.fx(url);
 	}

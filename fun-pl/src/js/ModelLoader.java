@@ -16,6 +16,7 @@ import unalcol.js.gui.JSLog;
 import unalcol.js.vc.JSModel;
 import unalcol.js.vc.JSModelLoader;
 import unalcol.collection.keymap.HashMap;
+import unalcol.gui.paint.CanvasRender;
 import unalcol.collection.KeyMap;
 
 public class ModelLoader implements JSModelLoader{
@@ -45,7 +46,24 @@ public class ModelLoader implements JSModelLoader{
 		comp.set(FunVCModel.LOG, new JSLog(FunVCModel.LOG));
 		comp.set(FunVCModel.PROGRAM, new JSEditorView(FunVCModel.PROGRAM));
 		comp.set(FunVCModel.COMMAND, new JSEditorView(FunVCModel.COMMAND));
-		comp.set(FunVCModel.RENDER, new JSCanvasRender(FunVCModel.RENDER));
+		try{
+			URL aURL = new URL( url );
+			String path = aURL.getProtocol()+"://"+aURL.getHost()+"/";
+			String[] query = aURL.getQuery().split("&"); 
+			String render = Util.value(query, "render");
+			String pack = Util.value(query, "pack");
+			if(pack.length()>0 ) pack = pack + "/";
+			String model = Util.value(query, "model");
+			if( model==null || model.length()==0 ) model = "model.jar";
+			@SuppressWarnings("resource")
+			URLClassLoader loader =  new URLClassLoader(new URL[]{new URL(path+"plugins/"+pack+model)}, JSModel.class.getClassLoader());
+			Class<?> cl = loader.loadClass(render);
+			CanvasRender cr = (CanvasRender)cl.newInstance();
+			cr.setId(FunVCModel.RENDER);
+			comp.set(FunVCModel.RENDER,cr);
+		}catch(Exception e){ 
+			comp.set(FunVCModel.RENDER, new JSCanvasRender(FunVCModel.RENDER));
+		}	
 		return comp;
 	}
 }

@@ -2,6 +2,8 @@ package quilt;
 
 import quilt.operation.RemnantFunction;
 import unalcol.gui.paint.Canvas;
+import unalcol.gui.paint.Color;
+import unalcol.gui.paint.ColorInstance;
 import unalcol.json.JSON;
 import unalcol.collection.keymap.HashMap;
 import unalcol.object.Named;
@@ -82,7 +84,6 @@ public class Remnant extends Quilt implements Named{
 	}
 	
 	public void translate(JSON json, int dx, int dy) {
-		System.out.println("[Remnant.translate]"+json);
 		String command = json.getString(Canvas.COMMAND);
 		if( command==null ) return;
 		if( command.equals(Canvas.COMPOUND) ){
@@ -111,24 +112,31 @@ public class Remnant extends Quilt implements Named{
 				json.set(Canvas.HEIGHT, Quilt.UNIT);
 			}
 		}
-	}	
+	}
+	
+	
+	public JSON border( int row, int column ){
+		int one = unit();
+		JSON border = new JSON();
+		border.set(Canvas.COMMAND, Canvas.RECT );
+		border.set(Canvas.WIDTH, one);
+		border.set(Canvas.HEIGHT, one);
+		ColorInstance ci = new ColorInstance();
+		JSON color = ci.store( new Color(0, 0, 0, 0) );
+		border.set(ColorInstance.COLOR, color);
+		border.set(Canvas.X, column);
+		border.set(Canvas.Y, row);
+		return border;
+	}
 
 	@Override
 	public JSON draw( int column, int row ){
 		column = units(column);
 		row = units(row);
-		int one = unit();
-		JSON border = new JSON();
-		border.set(Canvas.COMMAND, Canvas.RECT );
-		border.set(Canvas.X, column);
-		border.set(Canvas.Y, row);
-		border.set(Canvas.WIDTH, one);
-		border.set(Canvas.HEIGHT, one);
+		JSON border = border(row,column);
 		String[] commands = command.split(" ");
 		int n = commands.length;
-		System.out.println("[Remnant.draw]"+(JSON)Remnant.get(commands[n-1]));
 		JSON json = (JSON)Remnant.get(commands[n-1]).clone();
-		System.out.println("[Remnant.draw]"+json);
 		if( json != null ){
 			for( int i=n-2; i>=0; i--){
 				RemnantFunction rf = (RemnantFunction)machine.primitive(commands[i]);

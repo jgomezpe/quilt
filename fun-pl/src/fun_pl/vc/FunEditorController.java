@@ -37,10 +37,7 @@ public class FunEditorController  extends FunController implements EditorControl
 	
 	protected void ok(){
 		Log theLog = log();
-		System.out.println("[FunEditorController.ok]"+theLog);
-		if( theLog != null ){
-			theLog.out(i18n(GUIFunConstants.NO_ERRORS));
-		}	
+		if( theLog != null ) theLog.out(i18n(GUIFunConstants.NO_ERRORS));
 	}
 	
 	protected void error( LanguageException e ){
@@ -51,10 +48,7 @@ public class FunEditorController  extends FunController implements EditorControl
 		}	
 
 		Log theLog = log();
-		System.out.println("[FunEditorController.err]"+e.getMessage());
-		if( theLog != null ){
-			theLog.error(e.getMessage());
-		}	
+		if( theLog != null ) theLog.error(e.getMessage());
 	}
 	
 	public void compile( String program ){
@@ -62,24 +56,18 @@ public class FunEditorController  extends FunController implements EditorControl
 			machine.clear();
 			FunProgram prog = (FunProgram)quiltLang.process( program, true );
 			machine.setProgram(prog);
-			System.out.println("[FunEditorController]ok");
 			ok();
 		}catch(LanguageException e){ error(e); }
 	}
 	
 	public void command( String program ){
 		FunCommandCall command=null;
-		System.out.println("[FunEditorController.command]"+"step0 "+program);
 		try{ command = (FunCommandCall)quiltLang.process( program, false); }catch(LanguageException e){ error(e); }
 		if( command != null ){
 			try{
-				System.out.println("[FunEditorController.command]"+"step1");
 				Object r = command.execute( new HashMap<String, Object>() );
-				System.out.println("[FunEditorController.command]"+"step2");
 				Render ren = render(); 
-				System.out.println("[FunEditorController.command]"+"step3"+ren);
 				if( ren != null ) ren.render(r);
-				System.out.println("[FunEditorController.command]"+"step4");
 				ok();
 			}catch(LanguageException e){ error(e); }
 		}	
@@ -87,7 +75,6 @@ public class FunEditorController  extends FunController implements EditorControl
 	
 	@Override
 	public void text(String code){
-		System.out.println("[FunEditorController]"+isprogram+"-->"+code+"<--");
 		if( isprogram ) compile(code); else command(code); 
 	}
 }
