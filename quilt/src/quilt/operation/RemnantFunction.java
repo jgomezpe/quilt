@@ -1,7 +1,7 @@
 package quilt.operation;
 
-import unalcol.json.JSON;
+import unalcol.gui.paint.Command;
 
 public interface RemnantFunction {
-	public void apply(JSON json);
+	public void apply(Command json);
 }

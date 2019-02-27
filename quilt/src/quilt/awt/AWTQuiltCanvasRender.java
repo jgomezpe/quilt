@@ -23,16 +23,20 @@ public class AWTQuiltCanvasRender extends AWTCanvasRender implements QuiltCanvas
 	 */
 	protected void paintComponent(Graphics g){
 		Dimension d = this.getSize();
-		int w = (int)Math.min(d.getWidth(), d.getHeight());
+		double w = d.getWidth();
+		double h = d.getHeight();
+		double wq = 1;
+		double hq = 1;
 		int n=objects.size();
-		int q=1;
 		if(n==1){
 			try{
 				Quilt quilt = (Quilt)objects.get(0);
-				q=Math.max(quilt.columns(), quilt.rows());
+				wq=quilt.columns();
+				hq=quilt.rows();
 			}catch(Exception e){}
 		}
-		getCanvas().setScale(w/(double)(Quilt.UNIT*q));
+		if( w/wq < h/hq ) getCanvas().setScale(w/(Quilt.UNIT*wq));
+		else getCanvas().setScale(h/(Quilt.UNIT*hq));
 		super.paintComponent(g);
 	}
 }

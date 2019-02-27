@@ -1,9 +1,8 @@
 package quilt;
 
 import quilt.operation.RemnantFunction;
-import unalcol.gui.paint.Canvas;
 import unalcol.gui.paint.Color;
-import unalcol.gui.paint.ColorInstance;
+import unalcol.gui.paint.Command;
 import unalcol.json.JSON;
 import unalcol.collection.keymap.HashMap;
 import unalcol.object.Named;
@@ -83,72 +82,63 @@ public class Remnant extends Quilt implements Named{
 		return null;
 	}
 	
-	public void translate(JSON json, int dx, int dy) {
-		String command = json.getString(Canvas.COMMAND);
+	public void translate(Command json, int dx, int dy) {
+		String command = json.type();
 		if( command==null ) return;
-		if( command.equals(Canvas.COMPOUND) ){
-			Object[] objs = json.getArray(Canvas.COMMANDS);
-			for(Object o:objs) translate((JSON)o, dx, dy);
+		if( command.equals(Command.COMPOUND) ){
+			Command[] objs = json.commands();
+			for(Command o:objs) translate(o, dx, dy);
 		}else{
-			Object x; 
-			Object y;
-			x = json.getArray(Canvas.X);
-			if( x!=null ) y = json.getArray(Canvas.Y);
-			else{
-				x = json.getInt(Canvas.X);
-				y = json.getInt(Canvas.Y);
-			}
+			Object x = json.x(); 
+			Object y = json.y();
+			if( x==null ) return;
 			if( x instanceof Object[] ){
 				Object[] tx = (Object[])x;
 				Object[] ty = (Object[])y;
 				for(int i=0; i<tx.length; i++ ){
-					tx[i] = (Integer)tx[i]+dx;
-					ty[i] = (Integer)ty[i]+dy;
+					tx[i] = unalcol.real.Util.cast(tx[i])+dx;
+					ty[i] = unalcol.real.Util.cast(ty[i])+dy;
 				}
 			}else{
-				json.set(Canvas.X, (Integer)x+dx);
-				json.set(Canvas.Y, (Integer)y+dy);
-				json.set(Canvas.WIDTH, Quilt.UNIT);
-				json.set(Canvas.HEIGHT, Quilt.UNIT);
+				json.set(Command.X, unalcol.real.Util.cast(x)+dx);
+				json.set(Command.Y, unalcol.real.Util.cast(y)+dy);
 			}
 		}
 	}
 	
 	
-	public JSON border( int row, int column ){
+	public Command border( int row, int column ){
 		int one = unit();
-		JSON border = new JSON();
-		border.set(Canvas.COMMAND, Canvas.RECT );
-		border.set(Canvas.WIDTH, one);
-		border.set(Canvas.HEIGHT, one);
-		ColorInstance ci = new ColorInstance();
-		JSON color = ci.store( new Color(0, 0, 0, 0) );
-		border.set(ColorInstance.COLOR, color);
-		border.set(Canvas.X, column);
-		border.set(Canvas.Y, row);
+		Command border = new Command(Command.COMPOUND);
+		Object[] v = new Object[2];
+		Color c = new Color(0, 0, 0, 255);
+		v[0]=Command.strokeStyle(c);
+		v[1]=Command.rect(column, row, one, one);
+		border.set(Command.COMMANDS, v);
 		return border;
 	}
 
 	@Override
-	public JSON draw( int column, int row ){
+	public Command draw( int column, int row ){
 		column = units(column);
 		row = units(row);
-		JSON border = border(row,column);
+		Command border = border(row,column);
 		String[] commands = command.split(" ");
 		int n = commands.length;
-		JSON json = (JSON)Remnant.get(commands[n-1]).clone();
-		if( json != null ){
-			for( int i=n-2; i>=0; i--){
+		JSON c = Remnant.get(commands[n-1]);
+		Command json;
+		if( c != null ){
+			 json = new Command(c);
+			 for( int i=n-2; i>=0; i--){
 				RemnantFunction rf = (RemnantFunction)machine.primitive(commands[i]);
 				rf.apply(json);
 			}
 			translate(json, column, row);
 			Object[] v = new Object[2];
-			v[0]=border;
-			v[1]=json;
-			json = new JSON();
-			json.set(Canvas.COMMAND, Canvas.COMPOUND);
-			json.set(Canvas.COMMANDS, v);
+			v[1]=border;
+			v[0]=json;
+			json = new Command(Command.COMPOUND);
+			json.set(Command.COMMANDS, v);
 		}else json = border;
 		return json;
 	}

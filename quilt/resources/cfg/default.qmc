@@ -1,37 +1,58 @@
 {
- "commands":["|","@"],
- "symbol":"|",
- "values":
- [
-  {
-   "id":":"
-  },
-  {
-   "id":"<",
-   "command":"polygon",
-   "color":{"red":255, "green":0, "blue":0, "alpha":255}, 
-   "x":[40,40,100,100,60,60],
-   "y":[0,60,60,40,40,0]
-  },
-  {
-   "id":"/",
-   "command":"polygon",
-   "color":{"red":255, "green":0, "blue":0, "alpha":255}, 
-   "x":[40,60,100,100],
-   "y":[0,0,40,60]
-  },
-  {
-   "id":"-",
-   "command":"polygon",
-   "color":{"red":255, "green":0, "blue":0, "alpha":255}, 
-   "x":[0,0,100,100],
-   "y":[40,60,60,40]
-  }
- ],
- "reductions":
- {
-  "@ :":":",
-  "@ @ -":"-",
-  "@ @ @ @ ":""
- }
+	"commands":["|","@"],
+	"symbol":"|",
+	"values":[
+		{ "id":":" },
+		{
+			"id":"<",
+			"command":"compound",
+			"commands":[
+				{
+					"command":"fillStyle",
+					"color":{"red":255, "green":0, "blue":0, "alpha":255}
+				},
+				{
+					"command":"polygon",
+   					"x":[40,40,100,100,60,60],
+					"y":[0,60,60,40,40,0]
+			  	}
+			]
+		},	
+		{
+			"id":"/",
+			"command":"compound",
+			"commands":[
+				{
+					"command":"fillStyle",
+					"color":{"red":255, "green":0, "blue":0, "alpha":255}
+				},
+				{
+					"command":"polygon",
+					"x":[40,60,100,100],
+   					"y":[0,0,40,60]
+  				}
+  			]
+  		},		
+		{
+			"id":"-",
+			"command":"compound",
+			"commands":[
+				{
+					"command":"fillStyle",
+					"color":{"red":255, "green":0, "blue":0, "alpha":255}
+				},
+				{
+					"command":"polygon",
+					"x":[0,0,100,100],
+					"y":[40,60,60,40]
+  				}
+  			]
+  		}		
+	],
+	"reductions":
+ 	{
+		"@ :":":",
+		"@ @ -":"-",
+		"@ @ @ @ ":""
+ 	}
 }

@@ -7,9 +7,8 @@ import fun_pl.util.FunConstants;
 import quilt.MatrixQuilt;
 import quilt.Quilt;
 import quilt.Remnant;
-import unalcol.gui.paint.Canvas;
+import unalcol.gui.paint.Command;
 import unalcol.i18n.I18N;
-import unalcol.json.JSON;
 import unalcol.language.LanguageException;
 
 /**
@@ -102,41 +101,34 @@ public class Rotate extends FunSymbolCommand implements RemnantFunction{
 	}
 
 	//@Override
-	public void apply(JSON json) {
-		String command = json.getString(Canvas.COMMAND); 
-		if( command.equals(Canvas.COMPOUND) ){
-			Object[] objs = json.getArray(Canvas.COMMANDS);
-			for(Object o:objs) apply((JSON)o);
+	public void apply(Command json) {
+		String command = json.type(); 
+		if( command.equals(Command.COMPOUND) ){
+			Command[] objs = json.commands();
+			for(Command o:objs) apply(o);
 		}else{
 			Object x; 
 			Object y;
-			x = json.getArray(Canvas.X);
-			if( x!=null ) y = json.getArray(Canvas.Y);
-			else{
-				x = json.getInt(Canvas.X);
-				y = json.getInt(Canvas.Y);
-			}
+			x = json.x();
+			y = json.y();
+			if( x==null ) return;
 			if( x instanceof Object[] ){
 				Object[] tx = (Object[])x;
 				Object[] ty = (Object[])y;
 				for(int i=0; i<tx.length; i++ ){
-					Integer t = (Integer)tx[i];
+					Object t = tx[i];
 					tx[i]=ty[i];
-					ty[i]=Quilt.UNIT-t;
+					ty[i]=Quilt.UNIT-unalcol.real.Util.cast(t);
 				}
 			}else{
-				if(command.equals(Canvas.IMAGE)){
-					int r = (Integer)json.getInt(Canvas.IMAGE_ROT);
-					r = (r+270)%360;
-					json.set(Canvas.IMAGE_ROT,r);
-				}
-				int w = json.getInt(Canvas.WIDTH);
-				int h = json.getInt(Canvas.HEIGHT);
-				json.set(Canvas.WIDTH, h);
-				json.set(Canvas.HEIGHT, w);
+				json.set(Command.X, y);
+				json.set(Command.Y, x);
+			}
+			if(command.equals(Command.IMAGE)){
+				int r = (Integer)json.getInt(Command.IMAGE_ROT);
+				r = (r+270)%360;
+				json.set(Command.IMAGE_ROT,r);
 			}
 		}
-		try{
-		}catch(Exception e){}
 	}
 }

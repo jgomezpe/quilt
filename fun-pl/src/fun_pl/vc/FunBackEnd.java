@@ -16,7 +16,7 @@ public class FunBackEnd extends KeyMapSide implements BackEnd{
 			@SuppressWarnings("unchecked")
 			JSON2Instance<FunMachine> instance = (JSON2Instance<FunMachine>)cl.newInstance();
 			FunController.setInstance(instance);
-			String machine_txt = FileResource.config(conf_file);
+			String machine_txt = FileResource.config(loader, conf_file);
 			toolbar().machine(machine_txt);
 		} catch(Exception e) { e.printStackTrace(); };
 	}

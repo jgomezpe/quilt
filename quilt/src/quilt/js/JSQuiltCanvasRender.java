@@ -21,6 +21,6 @@ public class JSQuiltCanvasRender extends JSCanvasRender implements QuiltCanvasRe
 		int width = q.columns()* Quilt.UNIT;
 		int height = q.rows()* Quilt.UNIT;
 		System.out.println("[JSQuiltCanvasRender]"+width+","+height);
-		execute("fitCanvas", width, height);
+		execute("canvas.fit", width, height);
 	}
 }
