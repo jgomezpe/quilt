@@ -10,9 +10,9 @@ public class IDE {
 		LanguageLoader l = new LanguageLoader(language);
 		l.use("quilt");
 		I18N.use(l);
+		System.out.println(I18N.get("instance"));
 		String conf_file = args.length>=2?args[1]:"default.qmc";
-		String url = "http://localhost/index.html?mode=fx&pack=quilt&cfg="+conf_file+"&instance=quilt.factory.QuiltMachineInstance"+
-						"&render=quilt.js.JSQuiltCanvasRender";
+		String url = "http://localhost/index.html?mode=fx&pack=quilt&cfg="+conf_file;
 		
 		FunPlIDE.fx(url);
 	}

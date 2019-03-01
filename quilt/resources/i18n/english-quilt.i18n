@@ -18,5 +18,7 @@
  "rot":"@",
  "sew":"|",
  "rotc":"% Rotates a remnant 90 degrees counter clock wise.\n",
- "sewc":"% Sews two remnants with same high.\n"
+ "sewc":"% Sews two remnants with same high.\n",
+  "instance":"quilt.factory.QuiltMachineInstance",
+  "render":"quilt.js.JSQuiltCanvasRender"
 }

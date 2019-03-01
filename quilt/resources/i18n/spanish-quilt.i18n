@@ -18,5 +18,7 @@
  "rot":"@",
  "sew":"|",
  "rotc":"% Rota un retazo 90 grados en dirección contraria al reloj.",
- "sewc":"% Cose dos retazos que tengan el mismo alto."
+ "sewc":"% Cose dos retazos que tengan el mismo alto.",
+  "instance":"quilt.factory.QuiltMachineInstance",
+  "render":"quilt.js.JSQuiltCanvasRender"
 }  

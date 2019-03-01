@@ -27,5 +27,7 @@
   "errors":"Problems!!! There are some errors.\nSee error tab for a complete description of the error",
   "author":"Developed by Professor Jonatan Gomez Perdomo.\n jgomezpe at unal.edu.co \nUniversidad Nacional de Colombia",
   "machine":"Machine configuration",
-  "style":"Editor Text Style"
+  "style":"Editor Text Style",
+  "instance":"MachineInstance",
+  "render":CanvasRender"  
 }

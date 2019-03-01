@@ -25,17 +25,28 @@ public class ModelLoader implements JSModelLoader{
 	protected URLClassLoader loader = null;
 	protected boolean i18n = false;
 	
+	protected void checkI18N(String[] query){
+		if( !i18n ){
+			String language = Util.value(query, "lang");
+			if( language==null || language.length()==0 ) language = "spanish";
+			LanguageLoader l = new LanguageLoader(language);
+			l.use(loader, Util.value(query, "pack"));
+			I18N.use(l);
+			i18n = true;
+			GUIFunConstants.FMC=I18N.get(GUIFunConstants.FMC);
+			GUIFunConstants.FMS=I18N.get(GUIFunConstants.FMS);
+			GUIFunConstants.FMP=I18N.get(GUIFunConstants.FMP);
+		}	
+	}
+	
 	@Override
 	public BackEnd backend(String url) {
 		try{
 			URL aURL = new URL( url );
 			String path = aURL.getProtocol()+"://"+aURL.getHost()+"/";
 			String[] query = aURL.getQuery().split("&"); 
-			String instance = Util.value(query, "instance");
 			String pack = Util.value(query, "pack");
 			if(pack.length()>0 ) pack = pack + "/";
-			String conf_file = Util.value(query, "cfg");
-			if(conf_file==null || conf_file.length()==0 ) conf_file = "default"+GUIFunConstants.FMC;
 			String model = Util.value(query, "model");
 			if( model==null || model.length()==0 ) model = "model.jar";
 			 
@@ -44,15 +55,13 @@ public class ModelLoader implements JSModelLoader{
 				if( this.getClass().getClassLoader() instanceof URLClassLoader ) loader = (URLClassLoader)this.getClass().getClassLoader();
 				else loader = new URLClassLoader(new URL[]{new URL(path+"plugins/"+pack+model)}, JSModel.class.getClassLoader());
 			}
+			
+			checkI18N(query);
 
-			if( !i18n ){
-				String language = Util.value(query, "lang");
-				if( language==null || language.length()==0 ) language = "spanish";
-				LanguageLoader l = new LanguageLoader(language);
-				l.use(loader, Util.value(query, "pack"));
-				I18N.use(l);
-				i18n = true;
-			}	
+			String instance = I18N.get("instance");
+			String conf_file = Util.value(query, "cfg");
+			if(conf_file==null || conf_file.length()==0 ) conf_file = "default"+GUIFunConstants.FMC;
+			System.out.println(conf_file);
 
 			return new FunBackEnd(loader, instance, conf_file);
 		}catch(Exception e){ e.printStackTrace(); }	
@@ -69,7 +78,6 @@ public class ModelLoader implements JSModelLoader{
 			URL aURL = new URL( url );
 			String path = aURL.getProtocol()+"://"+aURL.getHost()+"/";
 			String[] query = aURL.getQuery().split("&"); 
-			String render = Util.value(query, "render");
 			String pack = Util.value(query, "pack");
 			if(pack.length()>0 ) pack = pack + "/";
 			String model = Util.value(query, "model");
@@ -79,15 +87,9 @@ public class ModelLoader implements JSModelLoader{
 				else loader = new URLClassLoader(new URL[]{new URL(path+"plugins/"+pack+model)}, JSModel.class.getClassLoader());
 			}
 
-			if( !i18n ){
-				String language = Util.value(query, "lang");
-				if( language==null || language.length()==0 ) language = "spanish";
-				LanguageLoader l = new LanguageLoader(language);
-				l.use(loader, Util.value(query, "pack"));
-				I18N.use(l);
-				i18n = true;
-			}	
+			checkI18N(query);
 
+			String render = I18N.get("render");
 			Class<?> cl = loader.loadClass(render);
 			CanvasRender cr = (CanvasRender)cl.newInstance();
 			cr.setId(FunVCModel.RENDER);
