@@ -112,6 +112,41 @@ public class FunParser implements Parser{
 		}
 	}
 	
+	protected int highestPriorityIndex(Vector<Typed> v){
+		try{
+			int index = 1;
+			int priority = I18N.get(FunConstants.priority).charAt(v.get(1).type())-'0';
+			for( int i=3; i<v.size(); i+=2 ){
+				int p = I18N.get(FunConstants.priority).charAt(v.get(i).type())-'0';
+				if( p>priority ){
+					index = i;
+					priority = p;
+				}
+			}
+			return index;
+		}catch(Exception e){}
+		return 1;
+	}
+	
+	protected Typed command_exp(Vector<Typed> v){
+		if(v.size()<=3)	return new TypedValue<Vector<Typed>>(FunConstants.COMMAND_EXP, v);
+		try{
+			int index = highestPriorityIndex(v);
+			Vector<Typed> left = new Vector<Typed>();
+			for( int i=0; i<index; i++ ) left.add(v.get(i));
+			Typed l = command_exp(left);
+			Vector<Typed> right = new Vector<Typed>();
+			for( int i=index+1; i<v.size(); i++ ) right.add(v.get(i));			
+			Typed r = command_exp(right);
+			Vector<Typed> n = new Vector<Typed>();
+			n.add(l);
+			n.add(v.get(index));
+			n.add(r);
+			return new TypedValue<Vector<Typed>>(FunConstants.COMMAND_EXP, n);
+		}catch(Exception e){}	
+		return null;
+	}
+	
 	protected Typed command_exp() throws LanguageException {
 		Vector<Typed> v = new Vector<Typed>();
 		Typed c = wrap_command_exp();
@@ -123,35 +158,7 @@ public class FunParser implements Parser{
 			v.add(wrap_command_exp());
 			t=get();
 		}
-		try{
-				// @TODO: Check priority
-			while( v.size()>3 ){
-				int start = 0;
-				int end = 2;
-				int priority=I18N.get(FunConstants.priority).charAt(v.get(1).type())-'0';
-				int k=end+1;
-				while(k<v.size()){
-					int p = I18N.get(FunConstants.priority).charAt(v.get(k).type())-'0'; 
-					if(p!=priority){
-						if( p<priority ){
-							Vector<Typed> v2 = new Vector<Typed>();
-							for( int i=start; i<=end; i++ ){
-								v2.add(v.get(start));
-								v.remove(start);
-							}
-							v.add(start, new TypedValue<Vector<Typed>>(FunConstants.COMMAND_EXP, v2));
-							k=v.size();
-						}else{
-							start=end;
-							end+=2;
-							priority=p;
-						}
-					}
-					k+=2;
-				}
-			}
-		}catch(Exception e){}
-		return new TypedValue<Vector<Typed>>(FunConstants.COMMAND_EXP, v);
+		return command_exp(v);
 	} 
 	
 	protected void args(Vector<Typed> v) throws LanguageException{
