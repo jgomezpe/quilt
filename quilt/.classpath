@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="/home/jgomez/git/unalcol/libs/gui.jar"/>
-	<classpathentry kind="lib" path="/home/jgomez/git/unalcol/libs/defs.jar"/>
-	<classpathentry kind="lib" path="/home/jgomez/git/quilt/libs/funpl.jar"/>
-	<classpathentry kind="lib" path="/home/jgomez/git/unalcol/libs/langcore.jar"/>
-	<classpathentry kind="lib" path="/home/jgomez/git/unalcol/libs/core.jar"/>
-	<classpathentry kind="lib" path="/home/jgomez/git/unalcol/libs/vc.jar"/>
+	<classpathentry kind="lib" path="/Users/jgomez/git/libs/lib/aplikigo.jar"/>
+	<classpathentry kind="lib" path="/Users/jgomez/git/libs/lib/kitee.jar"/>
+	<classpathentry kind="lib" path="/Users/jgomez/git/libs/lib/lifya.jar"/>
+	<classpathentry kind="lib" path="/Users/jgomez/git/libs/lib/rsyntaxtextarea-3.0.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/Users/jgomez/git/libs/lib/speco.jar"/>
+	<classpathentry kind="lib" path="/Users/jgomez/git/libs/lib/funpl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

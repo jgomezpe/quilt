@@ -1,1 +1,0 @@
-["machine",["commands","|","rot"],["remnants",["empty",["empty"]],["corner",["polygons",["color",255,0,0,255],["polygon",[40,40,100,100,60,60],[0,60,60,40,40,0]]]],["diagonal",["polygons",["color",255,0,0,255],["polygon",[40,60,100,100],[0,0,40,60]]]],["horizontal",["polygons",["color",255,0,0,255],["polygon",[0,0,100,100],[40,60,60,40]]]]],["parser",["symbols","+-*/%"]]]

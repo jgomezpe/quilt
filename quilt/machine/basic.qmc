@@ -1,0 +1,71 @@
+{
+  "fun":{
+     "commands":["@","|"],
+     "value":{"type":"Classic", "commands":[":","-","<","/"]},
+     "type":".qmp",
+     "config":".qmc"
+  },
+  "render":{
+    "canvas":{
+      "commands":[
+        { "command":":" },
+        { 
+            "command":"_", 
+            "commands":[
+                {
+                    "command":"strokeStyle",
+                    "color":{"red":0, "green":0, "blue":0, "alpha":255}
+                },
+                {
+                    "command":"polyline",
+                    "x":[0,0,1,1,0],
+                    "y":[0,1,1,0,0]
+                }
+            ]
+        },
+        {
+            "command":"<",
+            "commands":[
+                {
+                    "command":"fillStyle",
+                    "color":{"red":255, "green":0, "blue":0, "alpha":255}
+                },
+                {
+                    "command":"polygon",
+                    "x":[0.4,0.4,1,1,0.6,0.6],
+                    "y":[0,0.6,0.6,0.4,0.4,0]
+                }
+            ]
+        },  
+        {
+            "command":"/",
+            "commands":[
+                {
+                    "command":"fillStyle",
+                    "color":{"red":255, "green":0, "blue":0, "alpha":255}
+                },
+                {
+                    "command":"polygon",
+                    "x":[0.4,0.6,1,1],
+                    "y":[0,0,0.4,0.6]
+                }
+            ]
+        },      
+        {
+            "command":"-",
+            "commands":[
+                {
+                    "command":"fillStyle",
+                    "color":{"red":255, "green":0, "blue":0, "alpha":255}
+                },
+                {
+                    "command":"polygon",
+                    "x":[0,0,1,1],
+                    "y":[0.4,0.6,0.6,0.4]
+                }
+            ]
+        }       
+      ]      
+    }
+  }
+}

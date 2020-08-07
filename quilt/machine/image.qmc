@@ -1,0 +1,41 @@
+{
+  "fun":{
+     "commands":["@","|"],
+     "value":{"type":"Classic", "commands":[":","-"]},
+     "type":".qmp",
+     "config":".qmc"
+  },
+  "render":{
+    "canvas":{
+      "commands":[
+         { 
+            "command":"_", 
+            "commands":[
+                {
+                    "command":"strokeStyle",
+                    "color":{"red":0, "green":0, "blue":0, "alpha":255}
+                },
+                {
+                    "command":"polyline",
+                    "x":[0,0,1,1,0],
+                    "y":[0,1,1,0,0]
+                }
+            ]
+        },
+        { "command":":" },
+        {
+            "command":"-",
+            "commands":[
+                {
+                    "command":"image",
+                    "x":[0,1],
+                    "y":[0,1],
+                    "r":0.0,
+                    "url":"image/remnant.png"
+                }
+            ]
+        }       
+      ]      
+    }
+  }
+}
