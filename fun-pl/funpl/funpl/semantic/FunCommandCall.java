@@ -37,7 +37,7 @@ public class FunCommandCall extends FunCommand {
 
 		int arity = arity();
 		if( arity == 0 ){
-			Object obj=machine.execute(this.pos(), ho_name);
+			Object obj=machine.execute(this.src, this.pos(), ho_name);
 			if(obj==null || values.length!=1 || !obj.equals(values[0])) throw exception(FunConstants.argmismatch + values[0]);
 			return variables;
 		}
@@ -100,11 +100,30 @@ public class FunCommandCall extends FunCommand {
 		int a = arity();
 		Object[] obj = new Object[a];
 		for( int i=0; i<a; i++ ) obj[i] = args[i].execute(variables);
-		return machine.execute(this.pos, ho_name, obj);
+		return machine.execute(this.src, this.pos, ho_name, obj);
 	}
 
+	public void getVars(KeyMap<String,Object> vars) {
+	    if(this instanceof FunVariable) {
+		vars.set(name,name);
+	    }else {
+		if( args != null )
+		    for( int i=0; i<args.length; i++ )
+			args[i].getVars(vars);
+	    }
+	}
+	
+	public KeyMap<String,Object> getVars() {
+	    HashMap<String, Object> vars = new HashMap<String, Object>();
+	    getVars(vars);
+	    return vars;
+	}
+	
 	public Object execute( Object... value ) throws Exception{
-		return machine.execute( this.pos, ho_name, value ); 
+		HashMap<String,Object> vars = (HashMap<String, Object>)getVars();
+		if(vars.size()!=1) throw exception(FunConstants.argnumbermismatch);
+		for(String k:vars.keys()) vars.set(k,value[0]);		
+		return execute(vars); 
 	}
 
 	@Override

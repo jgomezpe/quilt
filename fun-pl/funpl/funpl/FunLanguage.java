@@ -15,8 +15,8 @@ public class FunLanguage extends Language<FunCommand>{
 	protected FunMachine machine;
 	public FunLanguage(FunLexer lexer, FunParser parser, FunMachine machine){ super( lexer, parser, new FunMeaner(machine)); }
 	
-	public FunCommand process( String code, boolean program ) throws IOException{
+	public FunCommand process( CharacterSequence code, boolean program ) throws IOException{
 	    	parser.setRule(program?FunConstants.DEF_LIST:FunConstants.EXPRESSION);
-	    	return this.process(new CharacterSequence(code, program?"program":"command"));
+	    	return this.process(code);
 	}
 }

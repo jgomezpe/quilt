@@ -2,7 +2,7 @@ package qm;
 
 import funpl.FunAPI;
 import nsgl.gui.paint.Command;
-import nsgl.json.JXON;
+import nsgl.json.JSON;
 import qm.operation.Rotate;
 import qm.operation.Sew;
 import qm.quilt.Store;
@@ -11,9 +11,9 @@ public class API extends FunAPI{
 	public static final String VALUE = "value";
 	public static final String TYPE = "type";
     @Override
-    public void config(JXON jxon) {
+    public void config(JSON jxon) {
     	super.config(jxon);
-    	JXON values = jxon.getJXON(VALUE);
+    	JSON values = jxon.getJSON(VALUE);
     	String remnant = values.getString(TYPE);
     	Object[] id = values.getArray(Command.COMMANDS);
     	String[] v = new String[id.length];

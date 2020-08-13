@@ -1,7 +1,7 @@
 package qm.remnant;
 
 import nsgl.gui.paint.Command;
-import nsgl.json.JXON;
+import nsgl.json.JSON;
 
 public class Classic extends Remnant{
 	protected int rot = 0;
@@ -20,11 +20,11 @@ public class Classic extends Remnant{
 	}
 
 	@Override
-	public JXON draw() {
-		JXON json = super.draw();
+	public JSON draw() {
+		JSON json = super.draw();
 		if( rot > 0 ) {
 			double r = (Math.PI*rot)/2.0;
-			JXON wrap = Command.create(Command.ROTATE);
+			JSON wrap = Command.create(Command.ROTATE);
 			wrap.set(Command.R, r);
 			wrap.set(Command.X, 0.5);
 			wrap.set(Command.Y, 0.5);

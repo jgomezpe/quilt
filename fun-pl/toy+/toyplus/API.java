@@ -2,12 +2,13 @@ package toyplus;
 
 import funpl.FunAPI;
 import nsgl.gui.paint.Command;
-import nsgl.json.JXON;
+import nsgl.json.JSON;
 
 public class API extends FunAPI{
     @Override
-    public void config(JXON jxon) {
+    public void config(JSON jxon) {
 	super.config(jxon);
+	canStartWithNumber = false;
 	value = new NatValues();
 	this.setValue(value.regex(), value);
 	this.setAssignment(new Assignment());

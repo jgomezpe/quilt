@@ -11,9 +11,11 @@ import funpl.semantic.FunMachine;
 import funpl.semantic.FunProgram;
 import funpl.semantic.FunValueInterpreter;
 import funpl.syntax.FunParser;
+import funpl.util.FunConstants;
+import nsgl.character.CharacterSequence;
 import nsgl.generic.hashmap.*;
 import nsgl.generic.keymap.KeyMap;
-import nsgl.json.JXON;
+import nsgl.json.JSON;
 import nsgl.parse.Regex;
 
 public class FunAPI {
@@ -23,9 +25,10 @@ public class FunAPI {
 	protected KeyMap<String,int[]> operator = new HashMap<String, int[]>();
 	protected FunValueInterpreter value;
 	protected FunAssignment assignment=null;
-	protected boolean canStartWithNumber=false;
+	protected boolean canStartWithNumber=true;
 	protected String filetype = ".fmp";
 	protected String conftype = ".fmc";
+	protected Object output = null;
 
 	public FunAPI() { machine = new FunMachine(); }
 	
@@ -36,10 +39,12 @@ public class FunAPI {
 	    assignment = null;
 	}
 	
-	public void config(JXON json) {
+	public void config(JSON json) {
 	    this.clear();
 	    filetype = json.getString(GUIFunConstants.FMP);
 	    conftype = json.getString(GUIFunConstants.FMC);
+	    if( json.get(FunConstants.NUMBERID) != null )
+		canStartWithNumber = json.getBool(FunConstants.NUMBERID);
 	}
 	
 	public String type() { return filetype; }
@@ -82,7 +87,7 @@ public class FunAPI {
 	    	for( String k:primitive.keys()) {
 	    	    sb.append(pipe);
 	    	    pipe = sep;
-	    	    sb.append(primitive.get(k).comment());
+	    	    sb.append(primitive.get(k).toString());
 	    	}
 	    	return sb.toString(); 	    
 	}
@@ -101,17 +106,34 @@ public class FunAPI {
 		lang = new FunLanguage(lexer,parser,machine);
 	}
 
-	public void compile( String program ) throws IOException{
+	public void compile( CharacterSequence program ) throws IOException{
 	    	init();
+	    	machine.addSrc(program);
 		FunProgram prog = (FunProgram)lang.process( program, true );
 		machine.setProgram(prog);
 	}
 	
-	public Object run( String command ) throws Exception{
+	public Object run( CharacterSequence command ) throws Exception{
 		if( lang==null ) init();
+	    	machine.addSrc(command);
 		FunCommandCall cmd=null;
 		cmd = (FunCommandCall)lang.process( command, false);
-		if( cmd != null ) return cmd.execute( new HashMap<String, Object>() );
+		if( cmd != null ) {
+		    output = cmd.execute( new HashMap<String, Object>() );
+		    return output;
+		}
+		return null;
+	}	
+
+	public Object apply( CharacterSequence command ) throws Exception{
+		if( lang==null ) init();
+	    	machine.addSrc(command);
+		FunCommandCall cmd=null;
+		cmd = (FunCommandCall)lang.process( command, false);
+		if( cmd != null ) {
+		    output = cmd.execute( output );
+		    return output;
+		}
 		return null;
 	}	
 }

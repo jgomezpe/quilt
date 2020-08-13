@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import nsgl.generic.Collection;
 import nsgl.gui.paint.Command;
 import nsgl.gui.paint.Drawable;
-import nsgl.json.JXON;
+import nsgl.json.JSON;
 import qm.quilt.Quilt;
 
 public class Render extends nsgl.gui.awt.CanvasRender {
@@ -57,7 +57,7 @@ public class Render extends nsgl.gui.awt.CanvasRender {
 	public void render(){
 		Collection<Drawable> c = objects();
 		for( Drawable d:c ) {
-			JXON json = Command.create(Command.SCALE);
+			JSON json = Command.create(Command.SCALE);
 			json.set(Command.X, scale);
 			json.set(Command.COMMANDS, new Object[] {d.draw()});
 			getCanvas().draw(json);

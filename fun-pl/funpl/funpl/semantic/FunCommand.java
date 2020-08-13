@@ -1,6 +1,7 @@
 package funpl.semantic;
 
 import funpl.util.FunConstants;
+import nsgl.string.I18N;
 
 public abstract class FunCommand extends FunObject{
 	
@@ -13,7 +14,7 @@ public abstract class FunCommand extends FunObject{
 	
 	public Object[] reverse(Object value, Object[] original) throws Exception{ return null; }
 	
-	public String comment(){ return null; }
+	public String comment(){ return I18N.process("·"+name()+"·"); }
 	public String toString(){
 		StringBuilder sb=new StringBuilder();
 		String c = comment();

@@ -14,9 +14,9 @@ public abstract class FunObject{
 	public void setMachine(FunMachine machine){ this.machine = machine; }
 	public FunMachine machine(){ return machine; }
 
-	protected Exception exception( String code){
+	protected Exception exception(String code){
 	    	int[] pos = machine.pos(this.src, this.pos);
-		return new Exception(this.src+"["+pos[0]+","+pos[1]+"]: "+code);
+		return new Exception(this.src+"["+(pos[0]+1)+","+(pos[1]+1)+"]: "+code);
 	}
 	
 	public FunObject( int pos ){ this.pos = pos; }

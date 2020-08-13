@@ -3,6 +3,7 @@ package funpl.util;
 public class FunConstants {
 	// FunMachine
 	public static final String novalue = "·No valid value· ";
+	public static final String NUMBERID = "numberid";
 
 	// FunEncoder
 	public static final String code="code";

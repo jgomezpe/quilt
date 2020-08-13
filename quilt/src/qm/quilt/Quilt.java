@@ -2,7 +2,7 @@ package qm.quilt;
 
 import nsgl.gui.paint.Command;
 import nsgl.gui.paint.Drawable;
-import nsgl.json.JXON;
+import nsgl.json.JSON;
 import qm.remnant.Remnant;
 
 /**
@@ -62,10 +62,10 @@ public interface Quilt extends Drawable{
 	Object clone();
 		
 	// Drawing
-	default JXON draw( int column, int row ) {
-		JXON json = draw();
+	default JSON draw( int column, int row ) {
+		JSON json = draw();
 		if( column!=0 || row != 0 ) {
-			JXON wrap = Command.create(Command.TRANSLATE);
+			JSON wrap = Command.create(Command.TRANSLATE);
 			wrap.set(Command.X, column);
 			wrap.set(Command.Y, row);
 			Object[] commands = new Object[1];
@@ -76,7 +76,7 @@ public interface Quilt extends Drawable{
 		return json;
 	}
 	
-	JXON draw();
+	JSON draw();
 	
 	void rotate();	
 	void undo_rotate();	

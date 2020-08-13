@@ -14,12 +14,13 @@ public class GUIFunConstants {
 	public static final String COMPILE = "·Compile·";
 	public static final String EXECUTE = "·Execute·";
 	public static final String COMMAND = "·Command·:";
+	public static final String APPLY = "·Apply to output·:";
 	public static final String TITLE = "·Title·";
 	public static final String FILE = "·File·";
 	public static final String NO_ERRORS = "no_errors";
 	public static final String ERRORS = "errors";
 	public static final String MACHINE = "·Machine·";
-	public static final String STYLE = "·Editor Style·";		
+	public static final String STYLE = "·Editor Style·";
 	public static String FUN = "fun";		
 	public static String FMC = "config";		
 	public static String FMP = "type";		

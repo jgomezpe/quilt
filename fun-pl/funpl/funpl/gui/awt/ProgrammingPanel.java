@@ -38,7 +38,7 @@ import nsgl.gui.awt.FileFilter;
 import nsgl.gui.awt.JFontChooser;
 import nsgl.gui.awt.LogPanel;
 import nsgl.gui.awt.rsyntax.Editor;
-import nsgl.json.JXON;
+import nsgl.json.JSON;
 import nsgl.language.lexeme.Space;
 import nsgl.language.lexeme.Symbol;
 import nsgl.stream.Resource;
@@ -63,43 +63,50 @@ public class ProgrammingPanel  extends JPanel{
 	TitleComponent title_component;
 	
 	JSplitPane splitPane;
-	protected Render render; 
-	
+		
 	// Window area
 	BorderLayout windowLayout = new BorderLayout();
 	JPanel windowPanel = new JPanel();
 	BorderLayout windowPaneLayout = new BorderLayout();
 	
 	// The program area
-	Editor program_editor;
+	Editor programEditor;
 	
 	// The tool bar
-	JToolBar jToolBar = new JToolBar();
-	JButton jNewButton = new JButton();
-	JButton jOpenButton = new JButton();
-	JButton jSaveButton = new JButton();
-	JButton jCompileButton = new JButton();
-	JButton jRemnantButton = new JButton();
-	JButton jPrimitiveButton = new JButton();
-	JButton jMachineButton = new JButton();
-	JButton jStyleButton = new JButton();
-	JButton jLangButton = new JButton();
+	JToolBar toolBar = new JToolBar();
+	JButton newBtn = new JButton();
+	JButton openBtn = new JButton();
+	JButton saveBtn = new JButton();
+	JButton compileBtn = new JButton();
+	JButton remnantBtn = new JButton();
+	JButton operBtn = new JButton();
+	JButton machineBtn = new JButton();
+	JButton styleBtn = new JButton();
+	JButton langBtn = new JButton();
 	
 	// The log area
 	LogPanel logPanel = new LogPanel();
 	Console log;   
-	
-	// The command area
-	JPanel jCommandBar = new JPanel();
-	BorderLayout commandLayout = new BorderLayout();
-	JLabel jCommandLabel = new JLabel();
-	Editor command_editor;
-	JButton jCommandButton = new JButton();
+
 
 	//Log command area
 	BorderLayout logCommandLayout = new BorderLayout();
 	JPanel logCommandArea = new JPanel();
 	
+	// Output area
+	JPanel outPanel = new JPanel();
+	BorderLayout outLayout = new BorderLayout();
+	protected Render render; 
+	
+	// The command area
+	JPanel commandBar = new JPanel();
+	BorderLayout commandLayout = new BorderLayout();
+	JLabel commandLabel = new JLabel();
+	Editor commandEditor;
+	JButton commandBtn = new JButton();
+	JButton applyBtn = new JButton();
+	JPanel commandBtnsPanel = new JPanel();
+
 	// Resources
 	Resource resource = new Resource();
 	
@@ -139,13 +146,13 @@ public class ProgrammingPanel  extends JPanel{
 	    try {
 		String api_code = readFile(file);
 		if(api_code!=null) {
-		    	JXON json = new JXON(api_code);
-			api.config(json.getJXON(GUIFunConstants.FUN));
-			render.config(json.getJXON(Render.TAG));
+		    	JSON json = new JSON(api_code);
+			api.config(json.getJSON(GUIFunConstants.FUN));
+			render.config(json.getJSON(Render.TAG));
 			KeyMap<String, Integer> map = rSyntaxEditorTokens();
 			FunLexer lexer = api.lexer();
-			program_editor.setLexer(lexer, map);
-			command_editor.setLexer(api.lexer(), map);	
+			programEditor.setLexer(lexer, map);
+			commandEditor.setLexer(lexer, map);	
 		}
 	    }catch(Exception e) { log.error(i18n(e.getMessage())); }
 	}
@@ -154,18 +161,19 @@ public class ProgrammingPanel  extends JPanel{
 		title =i18n(GUIFunConstants.TITLE);
 		if( fileName == null ) fileName = i18n(GUIFunConstants.NONAME);
 		this.title_component.setTitle(title + " [" + fileName + "]");
-		jNewButton.setToolTipText(i18n(GUIFunConstants.NEW));
-		jOpenButton.setToolTipText(i18n(GUIFunConstants.OPEN));
-		jSaveButton.setToolTipText(i18n(GUIFunConstants.SAVE));
-		jCompileButton.setToolTipText(i18n(GUIFunConstants.COMPILE));
-		jRemnantButton.setToolTipText(i18n(GUIFunConstants.VALUE));
-		jPrimitiveButton.setToolTipText(i18n(GUIFunConstants.PRIMITIVE));
-		jMachineButton.setToolTipText(i18n(GUIFunConstants.MACHINE));
-		jStyleButton.setToolTipText(i18n(GUIFunConstants.STYLE));
-		jCommandButton.setToolTipText(i18n(GUIFunConstants.EXECUTE));
-		jLangButton.setToolTipText(i18n(GUIFunConstants.LANGUAGE));
+		newBtn.setToolTipText(i18n(GUIFunConstants.NEW));
+		openBtn.setToolTipText(i18n(GUIFunConstants.OPEN));
+		saveBtn.setToolTipText(i18n(GUIFunConstants.SAVE));
+		compileBtn.setToolTipText(i18n(GUIFunConstants.COMPILE));
+		remnantBtn.setToolTipText(i18n(GUIFunConstants.VALUE));
+		operBtn.setToolTipText(i18n(GUIFunConstants.PRIMITIVE));
+		machineBtn.setToolTipText(i18n(GUIFunConstants.MACHINE));
+		styleBtn.setToolTipText(i18n(GUIFunConstants.STYLE));
+		commandBtn.setToolTipText(i18n(GUIFunConstants.EXECUTE));
+		langBtn.setToolTipText(i18n(GUIFunConstants.LANGUAGE));
 		logPanel.setLanguage(i18n(GUIFunConstants.OUT), i18n(GUIFunConstants.ERROR));
-		jCommandLabel.setText(i18n(GUIFunConstants.COMMAND));
+		commandLabel.setText(i18n(GUIFunConstants.COMMAND));
+		applyBtn.setToolTipText(i18n(GUIFunConstants.APPLY));
 	}
 	
 	public void build( TitleComponent parent, String api, int width, int height ){
@@ -175,77 +183,87 @@ public class ProgrammingPanel  extends JPanel{
 			this.setLayout(windowLayout);
 
 			// Program area
-			program_editor = new Editor("program");
+			programEditor = new Editor("program");
 			
 			//program_editor.setStyle(SyntaxStyle.get(styles));
-			JTextComponent jProgram = program_editor.editArea();
+			JTextComponent jProgram = programEditor.editArea();
 			jProgram.setToolTipText("");
 			jProgram.setText("");
-			program_editor.scroll().setMaximumSize(new Dimension(261, 261));
-			program_editor.scroll().setMinimumSize(new Dimension(261, 261));
+			programEditor.scroll().setMaximumSize(new Dimension(261, 261));
+			programEditor.scroll().setMinimumSize(new Dimension(261, 261));
 			
 			// Tool bar 
-			initButton(jNewButton, "new.png");
-			jNewButton.addActionListener(new ProgrammingPanel_jNewButton_actionAdapter(this));
-			initButton(jOpenButton, "open.png");
-			jOpenButton.addActionListener(new ProgrammingPanel_jOpenButton_actionAdapter(this));
-			initButton(jSaveButton, "save.png");
-			jSaveButton.addActionListener(new ProgrammingPanel_jSaveButton_actionAdapter(this));
-			initButton(jCompileButton, "compile.png");
-			jCompileButton.addActionListener(new ProgrammingPanel_jCompileButton_actionAdapter(this));
-			initButton(jRemnantButton, "remnant.png");
-			jRemnantButton.addActionListener(new ProgrammingPanel_jRemnantButton_actionAdapter(this));
-			initButton(jPrimitiveButton, "tools.png");
-			jPrimitiveButton.addActionListener(new ProgrammingPanel_jPrimitiveButton_actionAdapter(this));
-			initButton(jMachineButton, "machine.png");
-			jMachineButton.addActionListener(new ProgrammingPanel_jMachineButton_actionAdapter(this));
-			initButton(jStyleButton, "style.png");
-			jStyleButton.addActionListener(new ProgrammingPanel_jStyleButton_actionAdapter(this));
-			initButton(jLangButton, "language.png");
-			jLangButton.addActionListener(new ProgrammingPanel_jLangButton_actionAdapter(this));
-			jToolBar.add(jNewButton);
-			jToolBar.add(jOpenButton);
-			jToolBar.add(jSaveButton);
-			jToolBar.add(jCompileButton);
-			jToolBar.add(jRemnantButton);
-			jToolBar.add(jPrimitiveButton);
-			jToolBar.add(jMachineButton);
-			jToolBar.add(jStyleButton);
-			jToolBar.add(jLangButton);
+			initButton(newBtn, "new.png");
+			newBtn.addActionListener(new ProgrammingPanel_newBtn_actionAdapter(this));
+			initButton(openBtn, "open.png");
+			openBtn.addActionListener(new ProgrammingPanel_openBtn_actionAdapter(this));
+			initButton(saveBtn, "save.png");
+			saveBtn.addActionListener(new ProgrammingPanel_saveBtn_actionAdapter(this));
+			initButton(compileBtn, "compile.png");
+			compileBtn.addActionListener(new ProgrammingPanel_compileBtn_actionAdapter(this));
+			initButton(remnantBtn, "remnant.png");
+			remnantBtn.addActionListener(new ProgrammingPanel_remnantBtn_actionAdapter(this));
+			initButton(operBtn, "tools.png");
+			operBtn.addActionListener(new ProgrammingPanel_opersBtn_actionAdapter(this));
+			initButton(machineBtn, "machine.png");
+			machineBtn.addActionListener(new ProgrammingPanel_machineBtn_actionAdapter(this));
+			initButton(styleBtn, "style.png");
+			styleBtn.addActionListener(new ProgrammingPanel_styleBtn_actionAdapter(this));
+			initButton(langBtn, "language.png");
+			langBtn.addActionListener(new ProgrammingPanel_langBtn_actionAdapter(this));
+			toolBar.add(newBtn);
+			toolBar.add(openBtn);
+			toolBar.add(saveBtn);
+			toolBar.add(compileBtn);
+			toolBar.add(remnantBtn);
+			toolBar.add(operBtn);
+			toolBar.add(machineBtn);
+			toolBar.add(styleBtn);
+			toolBar.add(langBtn);
 
-			// Command area
-			jCommandBar.setLayout(commandLayout);
-			jCommandBar.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-			
-			command_editor = new Editor("command");
-			
-			JTextComponent jCommand = command_editor.editArea();
-			jCommand.setToolTipText("");
-			jCommand.setText("");
-			
-			initButton(jCommandButton, "quilt-run.png");
-			jCommandButton.addActionListener(new ProgrammingPanel_jCommandButton_actionAdapter(this));
-			jCommandBar.add(jCommandLabel, java.awt.BorderLayout.WEST);
-			jCommandBar.add(command_editor.scroll(), java.awt.BorderLayout.CENTER);
-			jCommandBar.add(jCommandButton, java.awt.BorderLayout.EAST);
 
 			//Log area
 			log = new Console(logPanel);
 			logCommandArea.setLayout(logCommandLayout);	
 			logCommandArea.add(logPanel, java.awt.BorderLayout.CENTER);
-			logCommandArea.add(jCommandBar, java.awt.BorderLayout.NORTH);
+			// logCommandArea.add(jCommandBar, java.awt.BorderLayout.NORTH);
 			logCommandArea.setMinimumSize(new Dimension(width/5, height/5));
 			logCommandArea.setPreferredSize(new Dimension(width/5, height/5));
 
 			// Window area
 			windowPanel.setLayout(windowPaneLayout);
-			windowPanel.add(program_editor.scroll(), java.awt.BorderLayout.CENTER);
-			windowPanel.add(jToolBar, java.awt.BorderLayout.NORTH);
+			windowPanel.add(programEditor.scroll(), java.awt.BorderLayout.CENTER);
+			windowPanel.add(toolBar, java.awt.BorderLayout.NORTH);
 			windowPanel.add(logCommandArea, java.awt.BorderLayout.SOUTH);
+
+			// Command area
+			commandBar.setLayout(commandLayout);
+			commandBar.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+			
+			commandEditor = new Editor("command");
+			
+			JTextComponent jCommand = commandEditor.editArea();
+			jCommand.setToolTipText("");
+			jCommand.setText("");
+			
+			initButton(commandBtn, "quilt-run.png");
+			commandBtn.addActionListener(new ProgrammingPanel_commandBtn_actionAdapter(this));
+			commandBar.add(commandLabel, java.awt.BorderLayout.WEST);
+			commandBar.add(commandEditor.scroll(), java.awt.BorderLayout.CENTER);			// jCommandBar.add(jCommandButton, java.awt.BorderLayout.EAST);
+			initButton(applyBtn, "redo.png");
+			applyBtn.addActionListener(new ProgrammingPanel_applyBtn_actionAdapter(this));
+			commandBtnsPanel.add(commandBtn);
+			commandBtnsPanel.add(applyBtn);
+			commandBar.add(commandBtnsPanel,java.awt.BorderLayout.EAST);
+			
+			// Out area
+			outPanel.setLayout(outLayout);
+			outPanel.add((JPanel)render, java.awt.BorderLayout.CENTER);
+			outPanel.add(commandBar, java.awt.BorderLayout.SOUTH);
 			
 			//Create a split pane with the two scroll panes in it.
 			splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-			                           windowPanel, (JPanel)render);
+			                           windowPanel, outPanel);
 			splitPane.setOneTouchExpandable(true);
 			splitPane.setDividerLocation(width*2/5);
 
@@ -254,13 +272,13 @@ public class ProgrammingPanel  extends JPanel{
 			//Provide minimum sizes for the two components in the split pane
 			Dimension minimumSize = new Dimension(width/5, height/5);
 			windowPanel.setMinimumSize(minimumSize);
-			((JPanel)render).setMinimumSize(minimumSize);		
+			outPanel.setMinimumSize(minimumSize);		
 			this.add(splitPane, java.awt.BorderLayout.CENTER);
 			((ProgrammingFrame)parent).setIconImage( image("quilt.png"));
 			this.setAPI(api);
 			
 			this.setLanguage();
-			this.app = new Application("funpl", program_editor, command_editor, log, render, this.api);
+			this.app = new Application("funpl", programEditor, commandEditor, log, render, this.api);
 		}catch(Exception e){ e.printStackTrace();  }
 	}
 	
@@ -271,7 +289,7 @@ public class ProgrammingPanel  extends JPanel{
 	
 	protected void initButton( JButton button, String resource ){
 		Image img = image(resource);
-		button.setIcon(new ImageIcon(img.getScaledInstance((button==jCommandButton)?60:30, 30, Image.SCALE_SMOOTH)));
+		button.setIcon(new ImageIcon(img.getScaledInstance((button==commandBtn)?60:30, 30, Image.SCALE_SMOOTH)));
 	}
 	
 	protected String readFile(String file ){
@@ -295,27 +313,27 @@ public class ProgrammingPanel  extends JPanel{
 		return null;
 	}
 	   
-	public void jStyleButton_actionPerformed(ActionEvent actionEvent) {
+	public void styleBtn_actionPerformed(ActionEvent actionEvent) {
 	    JFontChooser chooser = new JFontChooser();
 	    if(chooser.showDialog(this)==JFontChooser.OK_OPTION ) {
 		Font font = chooser.getSelectedFont();
-		command_editor.editArea().setFont(font);
-		program_editor.editArea().setFont(font);
+		commandEditor.editArea().setFont(font);
+		programEditor.editArea().setFont(font);
 		((JPanel)render).setFont(font);
 	    }
  	}
 
-	public void jMachineButton_actionPerformed(ActionEvent actionEvent) {
+	public void machineBtn_actionPerformed(ActionEvent actionEvent) {
 		String file = chooseFile( api.cfg(), fileDirMachine );
 		if( file!=null ){
 		    this.setAPI(file);
 		}
 	}
 
-	public void jNewButton_actionPerformed(ActionEvent actionEvent) {
+	public void newBtn_actionPerformed(ActionEvent actionEvent) {
 		fileName = i18n(GUIFunConstants.NONAME);
-		JTextComponent jProgram = program_editor.editArea();
-		JTextComponent jCommand = command_editor.editArea();
+		JTextComponent jProgram = programEditor.editArea();
+		JTextComponent jCommand = commandEditor.editArea();
 		if( (jProgram.getText().length()>0 || jCommand.getText().length()>0) && JOptionPane.showConfirmDialog(this, i18n(GUIFunConstants.CLEAN)) == JOptionPane.YES_OPTION ){
 			jProgram.setText("");
 			jCommand.setText("");
@@ -323,17 +341,17 @@ public class ProgrammingPanel  extends JPanel{
 		title_component.setTitle(title + " [" + fileName + "]");
 	}
 	
-	public void jOpenButton_actionPerformed(ActionEvent actionEvent) {
+	public void openBtn_actionPerformed(ActionEvent actionEvent) {
 		String file = chooseFile( api.type(), fileDir );
 		if( file != null ){
 			fileDir = file;
 			fileName = tmpName;
-			program_editor.editArea().setText(readFile(fileDir));
+			programEditor.editArea().setText(readFile(fileDir));
 			title_component.setTitle(title + " [" + fileName + "]");
 		}
 	}
 
-	public void jSaveButton_actionPerformed(ActionEvent actionEvent) {
+	public void saveBtn_actionPerformed(ActionEvent actionEvent) {
 		if( fileName.equals(i18n(GUIFunConstants.NONAME)) ){
 			String QMP = api.type();
 			FileFilter filter = new FileFilter( i18n(GUIFunConstants.FILE)+" (*"+QMP+")" );
@@ -351,7 +369,7 @@ public class ProgrammingPanel  extends JPanel{
 						fileName += fileExt;
 					}
 					FileWriter writer = new FileWriter(fileDir);
-					writer.write(program_editor.editArea().getText());
+					writer.write(programEditor.editArea().getText());
 					writer.close();
 					title_component.setTitle(title + " [" + fileName + "]");
 				}catch( Exception e ){ i18n(e.getMessage()); }
@@ -359,21 +377,23 @@ public class ProgrammingPanel  extends JPanel{
 		}else{
 			try{
 				FileWriter writer = new FileWriter(fileDir);
-				writer.write(program_editor.editArea().getText());
+				writer.write(programEditor.editArea().getText());
 				writer.close();
 			}catch( Exception e ){ i18n(e.getMessage()); }
 		}	
 	}
 	
-	public void jPrimitiveButton_actionPerformed(ActionEvent actionEvent){ app.console().out(api.opers_explain('\n')); }
+	public void opersBtn_actionPerformed(ActionEvent actionEvent){ app.console().out(api.opers_explain('\n')); }
 
-	public void jRemnantButton_actionPerformed(ActionEvent actionEvent) { app.console().out(api.values()); }
+	public void remnantBtn_actionPerformed(ActionEvent actionEvent) { app.console().out(api.values()); }
 	
-	public void jCompileButton_actionPerformed(ActionEvent actionEvent){ app.compile(); }
+	public void compileBtn_actionPerformed(ActionEvent actionEvent){ app.compile(); }
 	
-	public void jCommandButton_actionPerformed(ActionEvent actionEvent){ app.execute();  }
+	public void commandBtn_actionPerformed(ActionEvent actionEvent){ app.execute();  }
+
+	public void applyBtn_actionPerformed(ActionEvent actionEvent){ app.apply(); }
 	
-	public void jLangButton_actionPerformed(ActionEvent actionEvent){ 
+	public void langBtn_actionPerformed(ActionEvent actionEvent){ 
 		String file = chooseFile( GUIFunConstants.FML, i18n );
 		if( file != null ){
 			try {
@@ -388,80 +408,87 @@ public class ProgrammingPanel  extends JPanel{
 }
 
 
-class ProgrammingPanel_jCompileButton_actionAdapter implements ActionListener {
+class ProgrammingPanel_compileBtn_actionAdapter implements ActionListener {
 	private ProgrammingPanel adaptee;
 	
-	ProgrammingPanel_jCompileButton_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
+	ProgrammingPanel_compileBtn_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
 
-	public void actionPerformed(ActionEvent actionEvent){ adaptee.jCompileButton_actionPerformed(actionEvent); }
+	public void actionPerformed(ActionEvent actionEvent){ adaptee.compileBtn_actionPerformed(actionEvent); }
 }
 
-class ProgrammingPanel_jRemnantButton_actionAdapter implements ActionListener {
+class ProgrammingPanel_remnantBtn_actionAdapter implements ActionListener {
 	private ProgrammingPanel adaptee;
-	ProgrammingPanel_jRemnantButton_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
+	ProgrammingPanel_remnantBtn_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
 
-	public void actionPerformed(ActionEvent actionEvent){ adaptee.jRemnantButton_actionPerformed(actionEvent); }
+	public void actionPerformed(ActionEvent actionEvent){ adaptee.remnantBtn_actionPerformed(actionEvent); }
 }
 
-class ProgrammingPanel_jPrimitiveButton_actionAdapter implements ActionListener{
+class ProgrammingPanel_opersBtn_actionAdapter implements ActionListener{
 	private ProgrammingPanel adaptee;
-	ProgrammingPanel_jPrimitiveButton_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
+	ProgrammingPanel_opersBtn_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
 
-	public void actionPerformed(ActionEvent actionEvent){ adaptee.jPrimitiveButton_actionPerformed(actionEvent); }
+	public void actionPerformed(ActionEvent actionEvent){ adaptee.opersBtn_actionPerformed(actionEvent); }
 }
 
-class ProgrammingPanel_jCommandButton_actionAdapter implements ActionListener {
+class ProgrammingPanel_commandBtn_actionAdapter implements ActionListener {
 	private ProgrammingPanel adaptee;
-	ProgrammingPanel_jCommandButton_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
+	ProgrammingPanel_commandBtn_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
 
-	public void actionPerformed(ActionEvent actionEvent){ adaptee.jCommandButton_actionPerformed(actionEvent); }
+	public void actionPerformed(ActionEvent actionEvent){ adaptee.commandBtn_actionPerformed(actionEvent); }
 }
 
-
-class ProgrammingPanel_jSaveButton_actionAdapter implements ActionListener{
+class ProgrammingPanel_applyBtn_actionAdapter implements ActionListener {
 	private ProgrammingPanel adaptee;
-	
-	ProgrammingPanel_jSaveButton_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
+	ProgrammingPanel_applyBtn_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
 
-	public void actionPerformed(ActionEvent actionEvent){ adaptee.jSaveButton_actionPerformed(actionEvent); }
+	public void actionPerformed(ActionEvent actionEvent){ adaptee.applyBtn_actionPerformed(actionEvent); }
 }
 
-class ProgrammingPanel_jNewButton_actionAdapter implements ActionListener{
-	private ProgrammingPanel adaptee;
-	
-	ProgrammingPanel_jNewButton_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
 
-	public void actionPerformed(ActionEvent actionEvent){ adaptee.jNewButton_actionPerformed(actionEvent); }	
-}
-
-class ProgrammingPanel_jOpenButton_actionAdapter implements ActionListener{
+class ProgrammingPanel_saveBtn_actionAdapter implements ActionListener{
 	private ProgrammingPanel adaptee;
 	
-	ProgrammingPanel_jOpenButton_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
+	ProgrammingPanel_saveBtn_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
 
-	public void actionPerformed(ActionEvent actionEvent){ adaptee.jOpenButton_actionPerformed(actionEvent); }	
+	public void actionPerformed(ActionEvent actionEvent){ adaptee.saveBtn_actionPerformed(actionEvent); }
 }
 
-class ProgrammingPanel_jMachineButton_actionAdapter implements ActionListener{
+class ProgrammingPanel_newBtn_actionAdapter implements ActionListener{
 	private ProgrammingPanel adaptee;
 	
-	ProgrammingPanel_jMachineButton_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
+	ProgrammingPanel_newBtn_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
 
-	public void actionPerformed(ActionEvent actionEvent){ adaptee.jMachineButton_actionPerformed(actionEvent); }	
+	public void actionPerformed(ActionEvent actionEvent){ adaptee.newBtn_actionPerformed(actionEvent); }	
 }
 
-class ProgrammingPanel_jStyleButton_actionAdapter implements ActionListener{
+class ProgrammingPanel_openBtn_actionAdapter implements ActionListener{
 	private ProgrammingPanel adaptee;
 	
-	ProgrammingPanel_jStyleButton_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
+	ProgrammingPanel_openBtn_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
 
-	public void actionPerformed(ActionEvent actionEvent){ adaptee.jStyleButton_actionPerformed(actionEvent); }	
+	public void actionPerformed(ActionEvent actionEvent){ adaptee.openBtn_actionPerformed(actionEvent); }	
 }
 
-class ProgrammingPanel_jLangButton_actionAdapter implements ActionListener{
+class ProgrammingPanel_machineBtn_actionAdapter implements ActionListener{
 	private ProgrammingPanel adaptee;
 	
-	ProgrammingPanel_jLangButton_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
+	ProgrammingPanel_machineBtn_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
 
-	public void actionPerformed(ActionEvent actionEvent){ adaptee.jLangButton_actionPerformed(actionEvent); }	
+	public void actionPerformed(ActionEvent actionEvent){ adaptee.machineBtn_actionPerformed(actionEvent); }	
+}
+
+class ProgrammingPanel_styleBtn_actionAdapter implements ActionListener{
+	private ProgrammingPanel adaptee;
+	
+	ProgrammingPanel_styleBtn_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
+
+	public void actionPerformed(ActionEvent actionEvent){ adaptee.styleBtn_actionPerformed(actionEvent); }	
+}
+
+class ProgrammingPanel_langBtn_actionAdapter implements ActionListener{
+	private ProgrammingPanel adaptee;
+	
+	ProgrammingPanel_langBtn_actionAdapter(ProgrammingPanel adaptee){ this.adaptee = adaptee; }
+
+	public void actionPerformed(ActionEvent actionEvent){ adaptee.langBtn_actionPerformed(actionEvent); }	
 }

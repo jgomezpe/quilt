@@ -14,9 +14,13 @@ public class Plus extends FunCommand{
 
     @Override
     public Object execute(Object... value) throws Exception {
-	int s=(Integer)value[0];
-	for( int i=1; i<value.length; i++) s += (Integer)value[i];
-	return s;
+	try {
+	    int s=(Integer)value[0];
+	    for( int i=1; i<value.length; i++) s += (Integer)value[i];
+	    return s;
+	}catch(Exception e) {
+	    throw exception("·Undefined·");
+	}
     }
 
     @Override

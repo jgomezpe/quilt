@@ -34,7 +34,9 @@ public class FunMachine{
 	    return this.src.get(src).absolute_pos(pos);
 	}
 	
-	public void addSrc( CharacterSequence src ) { this.src.set(src.description(),src); }
+	public void addSrc( CharacterSequence src ) { 
+	    this.src.set(src.description(),src); 
+	}
 	
 	public FunProgram get(){ return program; }
 	public void setProgram( FunProgram program ){
@@ -60,7 +62,7 @@ public class FunMachine{
 		
 //	}
 	
-	public Object execute( int pos, String command, Object... args ) throws Exception{
+	public Object execute( String src, int pos, String command, Object... args ) throws Exception{
 		if(value.valid(command)){
 			if( args.length>0) {
 			    program.setPos(pos);
@@ -70,6 +72,7 @@ public class FunMachine{
 		}
 		FunCommand c = primitive.get(command);
 		if( c!=null ){
+		    c.src = src;
 		    c.setPos(pos);
 			if( args.length != c.arity() ){
 				if( args.length > 0 ) throw c.exception(FunConstants.argnumbermismatch + command);

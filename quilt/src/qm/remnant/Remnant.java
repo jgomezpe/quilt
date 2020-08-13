@@ -2,7 +2,7 @@ package qm.remnant;
 
 import nsgl.generic.Named;
 import nsgl.gui.paint.Command;
-import nsgl.json.JXON;
+import nsgl.json.JSON;
 import qm.quilt.Quilt;
 import qm.util.QuiltConstants;
 
@@ -74,10 +74,10 @@ public abstract class Remnant implements Quilt, Named{
 		
 	public abstract Object clone();
 	
-	public JXON border(){ return Command.create(QuiltConstants.BORDER); }
+	public JSON border(){ return Command.create(QuiltConstants.BORDER); }
 
 	@Override
-	public JXON draw(){
+	public JSON draw(){
 		Object[] commands = new Object[border?2:1];
 		int n=0;
 		if( border ) {
@@ -85,7 +85,7 @@ public abstract class Remnant implements Quilt, Named{
 			n++;
 		}
 		commands[n] = Command.create(id); 		
-		JXON json = Command.create(Command.COMPOUND);
+		JSON json = Command.create(Command.COMPOUND);
 		json.set(Command.COMMANDS, commands);
 		return json;
 	}

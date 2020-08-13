@@ -2,7 +2,7 @@ package qm.quilt;
 
 import nsgl.generic.array.Vector;
 import nsgl.gui.paint.Command;
-import nsgl.json.JXON;
+import nsgl.json.JSON;
 import qm.remnant.Remnant;
 
 /**
@@ -93,9 +93,9 @@ public class Matrix implements Quilt{
 	}
 
 	@Override
-	public JXON draw() {
-		JXON json = Command.create(Command.COMPOUND);
-		Vector<JXON> commands = new Vector<JXON>();
+	public JSON draw() {
+		JSON json = Command.create(Command.COMPOUND);
+		Vector<JSON> commands = new Vector<JSON>();
 		for( int i=0; i<rows(); i++ )
 			for( int j=0; j<columns(); j++ ) 
 				commands.add(quilt[i][j].draw(j,i));

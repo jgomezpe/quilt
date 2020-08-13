@@ -56,8 +56,8 @@ public class ToyPlusTest {
 	    try {
 		String code = "% Hello World\ndec(X)=¬X\nsum(5+X,Y)=X+Y";
 		String command = "sum(23, 10)";
-		api.compile(code);
-		Object obj = api.run(command);
+		api.compile(new CharacterSequence(code));
+		Object obj = api.run(new CharacterSequence(command));
 		System.out.println("Result:"+obj);
 	    }catch(Exception e) { e.printStackTrace(); System.err.print(e.getMessage()); }
 	}

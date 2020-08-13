@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import funpl.FunAPI;
 import nsgl.app.Component;
+import nsgl.character.CharacterSequence;
 import nsgl.generic.hashmap.HashMap;
 import nsgl.gui.Console;
 import nsgl.gui.Render;
@@ -19,7 +20,7 @@ public class Application implements nsgl.app.Application{
     protected String id;
     protected FunAPI api;
     
-    public Application(String id, Editor program, Editor command, 
+    public Application(String id, Editor program, Editor command,
 	    Console console, Render render, FunAPI api){ 
 	this.id = id;
 	this.api = api;
@@ -27,7 +28,7 @@ public class Application implements nsgl.app.Application{
 	component.set(PROGRAM, program);
 	if( command instanceof nsgl.js.Component ) COMMAND = ((nsgl.js.Component)command).id();
 	component.set(COMMAND, command);
-	if( console instanceof nsgl.js.Component ) RENDER = ((nsgl.js.Component)render).id();
+	if( render instanceof nsgl.js.Component ) RENDER = ((nsgl.js.Component)render).id();
 	component.set(RENDER, render);
 	if( console instanceof nsgl.js.Component ) CONSOLE = ((nsgl.js.Component)console).id();
 	component.set(CONSOLE, console);	
@@ -39,7 +40,7 @@ public class Application implements nsgl.app.Application{
     
     public void compile( String code ) {
 	try {
-	    api.compile(code);
+	    api.compile(new CharacterSequence(code,PROGRAM));
 	    ((Console)get(CONSOLE)).out(i18n("·No errors·"));
 	} catch (IOException e) {
 	    ((Console)get(CONSOLE)).error(i18n(e.getMessage()));
@@ -50,12 +51,25 @@ public class Application implements nsgl.app.Application{
     
     public Object execute( String command ) {
 	try {
-	    Object obj = api.run(command);
+	    Object obj = api.run(new CharacterSequence(command,COMMAND));
 	    ((Console)get(CONSOLE)).out(i18n("·No errors·"));
 	    render().render(obj);
 	    return obj;
 	} catch (Exception e) {
-	    e.printStackTrace();
+	    ((Console)get(CONSOLE)).error(i18n(e.getMessage()));
+	    return null;
+	}
+    }
+    
+    public Object apply() { return apply(command().getText()); }
+    
+    public Object apply( String command ) {
+	try {
+	    Object obj = api.apply(new CharacterSequence(command,COMMAND));
+	    ((Console)get(CONSOLE)).out(i18n("·No errors·"));
+	    render().render(obj);
+	    return obj;
+	} catch (Exception e) {
 	    ((Console)get(CONSOLE)).error(i18n(e.getMessage()));
 	    return null;
 	}
