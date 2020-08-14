@@ -1,7 +1,7 @@
 package qm;
 
 import funpl.FunAPI;
-import nsgl.gui.paint.Command;
+import nsgl.gui.canvas.Util;
 import nsgl.json.JSON;
 import qm.operation.Rotate;
 import qm.operation.Sew;
@@ -15,12 +15,12 @@ public class API extends FunAPI{
     	super.config(jxon);
     	JSON values = jxon.getJSON(VALUE);
     	String remnant = values.getString(TYPE);
-    	Object[] id = values.getArray(Command.COMMANDS);
+    	Object[] id = values.getArray(Util.COMMANDS);
     	String[] v = new String[id.length];
     	for( int i=0; i<v.length; i++ ) v[i] = (String)id[i];
     	value = new Store(remnant, v);
     	assignment = new Assignment();
-    	Object[] opers = jxon.getArray(Command.COMMANDS);
+    	Object[] opers = jxon.getArray(Util.COMMANDS);
     	for( Object obj:opers ) {
     	    String o = (String)obj;
     	    if( o.equals("@") ) addOperator(new Rotate(), 3);

@@ -1,7 +1,7 @@
 package qm.quilt;
 
-import nsgl.gui.paint.Command;
-import nsgl.gui.paint.Drawable;
+import nsgl.gui.canvas.Util;
+import nsgl.gui.Drawable;
 import nsgl.json.JSON;
 import qm.remnant.Remnant;
 
@@ -63,20 +63,37 @@ public interface Quilt extends Drawable{
 		
 	// Drawing
 	default JSON draw( int column, int row ) {
-		JSON json = draw();
+		JSON json = json();
 		if( column!=0 || row != 0 ) {
-			JSON wrap = Command.create(Command.TRANSLATE);
-			wrap.set(Command.X, column);
-			wrap.set(Command.Y, row);
+			JSON wrap = Util.create(Util.TRANSLATE);
+			wrap.set(Util.X, column);
+			wrap.set(Util.Y, row);
 			Object[] commands = new Object[1];
 			commands[0] = json;
-			wrap.set(Command.COMMANDS, commands);
+			wrap.set(Util.COMMANDS, commands);
 			json = wrap;
 		}
 		return json;
 	}
 	
-	JSON draw();
+	JSON json();
+
+	default JSON draw() {
+		JSON json = json();
+		if( json.getString(Util.COMMAND).equals(Util.COMPOUND) ) {
+			json.set(Util.COMMAND, Util.FIT);
+		}else {
+			JSON njson = Util.create(Util.FIT);
+			Object[] commands = new Object[1];
+			commands[0] = json;
+			njson.set(Util.COMMANDS, commands);
+			json = njson;
+		}
+		json.set(Util.X, 1.0/columns());
+		json.set(Util.Y, 1.0/rows());
+		json.set(Util.R, true);
+		return json;
+	}
 	
 	void rotate();	
 	void undo_rotate();	

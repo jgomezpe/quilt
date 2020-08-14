@@ -1,7 +1,7 @@
 package toyplus;
 
 import funpl.FunAPI;
-import nsgl.gui.paint.Command;
+import nsgl.gui.canvas.Util;
 import nsgl.json.JSON;
 
 public class API extends FunAPI{
@@ -12,7 +12,7 @@ public class API extends FunAPI{
 	value = new NatValues();
 	this.setValue(value.regex(), value);
 	this.setAssignment(new Assignment());
-	Object[] opers = jxon.getArray(Command.COMMANDS);
+	Object[] opers = jxon.getArray(Util.COMMANDS);
 	for( Object obj:opers ) {
 	    String o = (String)obj;
 	    if( o.equals("¬") ) addOperator(new Decrement(0, ""), 3);

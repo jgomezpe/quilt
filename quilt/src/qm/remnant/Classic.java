@@ -1,6 +1,6 @@
 package qm.remnant;
 
-import nsgl.gui.paint.Command;
+import nsgl.gui.canvas.Util;
 import nsgl.json.JSON;
 
 public class Classic extends Remnant{
@@ -20,17 +20,17 @@ public class Classic extends Remnant{
 	}
 
 	@Override
-	public JSON draw() {
-		JSON json = super.draw();
+	public JSON json() {
+		JSON json = super.json();
 		if( rot > 0 ) {
 			double r = (Math.PI*rot)/2.0;
-			JSON wrap = Command.create(Command.ROTATE);
-			wrap.set(Command.R, r);
-			wrap.set(Command.X, 0.5);
-			wrap.set(Command.Y, 0.5);
+			JSON wrap = Util.create(Util.ROTATE);
+			wrap.set(Util.R, r);
+			wrap.set(Util.X, 0.5);
+			wrap.set(Util.Y, 0.5);
 			Object[] commands = new Object[1];
 			commands[0] = json;
-			wrap.set(Command.COMMANDS, commands);
+			wrap.set(Util.COMMANDS, commands);
 			json = wrap;			
 		}
 		return json;

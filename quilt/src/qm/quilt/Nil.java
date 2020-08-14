@@ -1,6 +1,6 @@
 package qm.quilt;
 
-import nsgl.gui.paint.Command;
+import nsgl.gui.canvas.Util;
 import nsgl.json.JSON;
 import qm.remnant.Remnant;
 
@@ -22,7 +22,7 @@ public class Nil implements Quilt{
 	public boolean equals(Object quilt) { return quilt!=null && quilt instanceof Nil; }
 
 	@Override
-	public JSON draw(){ return Command.beginPath(); }
+	public JSON json(){ return Util.beginPath(); }
 
 	@Override
 	public void rotate() {	}
