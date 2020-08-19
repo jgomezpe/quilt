@@ -12,7 +12,7 @@ public class API extends FunAPI{
 	value = new NatValues();
 	this.setValue(value.regex(), value);
 	this.setAssignment(new Assignment());
-	Object[] opers = jxon.getArray(Util.COMMANDS);
+	Object[] opers = jxon.array(Util.COMMANDS);
 	for( Object obj:opers ) {
 	    String o = (String)obj;
 	    if( o.equals("¬") ) addOperator(new Decrement(0, ""), 3);

@@ -14,6 +14,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -42,7 +43,6 @@ import nsgl.json.JSON;
 import nsgl.language.lexeme.Space;
 import nsgl.language.lexeme.Symbol;
 import nsgl.stream.Resource;
-import nsgl.stream.loader.FromOS;
 import nsgl.string.I18N;
 
 
@@ -108,7 +108,7 @@ public class ProgrammingPanel  extends JPanel{
 	JPanel commandBtnsPanel = new JPanel();
 
 	// Resources
-	Resource resource = new Resource();
+	Resource resource;
 	
 	//
 	FunAPI api;
@@ -117,9 +117,9 @@ public class ProgrammingPanel  extends JPanel{
 	
 	public LogPanel getLogPanel(){ return logPanel; }
 
-	public ProgrammingPanel(TitleComponent parent, FunAPI api, String api_code, Render render ) {
-		this.resource.add("local", new FromOS(""));
+	public ProgrammingPanel(TitleComponent parent, FunAPI api, String api_code, Render render, Resource resource ) {
 		this.render = render;
+		this.resource = resource;
 		this.api = api;
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
@@ -147,8 +147,8 @@ public class ProgrammingPanel  extends JPanel{
 		String api_code = readFile(file);
 		if(api_code!=null) {
 		    	JSON json = new JSON(api_code);
-			api.config(json.getJSON(GUIFunConstants.FUN));
-			render.config(json.getJSON(Render.TAG));
+			api.config(json.object(GUIFunConstants.FUN));
+			render.config(json.object(Render.TAG));
 			KeyMap<String, Integer> map = rSyntaxEditorTokens();
 			FunLexer lexer = api.lexer();
 			programEditor.setLexer(lexer, map);
@@ -182,6 +182,8 @@ public class ProgrammingPanel  extends JPanel{
 			this.setSize(new Dimension(width*4/5, height*4/5));
 			this.setLayout(windowLayout);
 
+			((JFrame)parent).setIconImage(image("remnant.png"));
+			
 			// Program area
 			programEditor = new Editor("program");
 			

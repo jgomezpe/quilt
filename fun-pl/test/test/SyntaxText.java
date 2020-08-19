@@ -46,7 +46,7 @@ public class SyntaxText {
 	}
 	
 	public static void parser() {
-	    String code = "% Hello World\n0==<\n1=@<|rot(X,Y)|@Z+<|Z";
+	    String code = "% Hello World\n0=<\n1=@<|rot(X,Y)|@Z+<|Z";
 	    FunLexer lexer = new FunLexer(true, "(?:-|/|<|_)+", "@|\\+|\\|");
 	    HashMap<String, int[]> opers = new HashMap<String, int[]>();
 	    opers.set("@", new int[] {1, 10});
@@ -58,7 +58,7 @@ public class SyntaxText {
 		System.out.println(code);
 		Vector<Token> tokens = lexer.analize(new CharacterSequence(code));
 		System.out.println(tokens.size());
-		for( Token t:tokens ) System.out.println(t);
+		for( Token t:tokens ) System.out.println("Token..."+t);
 		Typed t = parser.analize(tokens);
 		print(0,t);
 	    } catch (Exception e) {

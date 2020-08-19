@@ -22,7 +22,7 @@ public class Nil implements Quilt{
 	public boolean equals(Object quilt) { return quilt!=null && quilt instanceof Nil; }
 
 	@Override
-	public JSON json(){ return Util.beginPath(); }
+	public JSON draw(){ return Util.beginPath(); }
 
 	@Override
 	public void rotate() {	}

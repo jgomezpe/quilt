@@ -20,8 +20,8 @@ public class Classic extends Remnant{
 	}
 
 	@Override
-	public JSON json() {
-		JSON json = super.json();
+	public JSON draw() {
+		JSON json = super.draw();
 		if( rot > 0 ) {
 			double r = (Math.PI*rot)/2.0;
 			JSON wrap = Util.create(Util.ROTATE);

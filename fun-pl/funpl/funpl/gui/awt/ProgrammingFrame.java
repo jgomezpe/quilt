@@ -8,6 +8,10 @@ import javax.swing.*;
 import funpl.FunAPI;
 import nsgl.gui.Render;
 import nsgl.gui.TitleComponent;
+import nsgl.stream.Resource;
+import nsgl.stream.loader.FromClassLoader;
+import nsgl.stream.loader.FromOS;
+import nsgl.string.I18N;
 
 /**
 *
@@ -54,6 +58,15 @@ import nsgl.gui.TitleComponent;
 * @version 1.0
 */
 public class ProgrammingFrame extends JFrame implements TitleComponent {
+   	public static Resource init( ClassLoader loader, String lang ) {
+		lang = "language/"+lang+".i18n";
+		Resource resource = new Resource();
+		resource.add("local", new FromOS("resources/"));
+		resource.add("loader", new FromClassLoader(loader));
+		try { I18N.set(resource.txt(lang)); }
+		catch(Exception e) { e.printStackTrace(); } 
+		return resource;
+   	}
 
 	/**
 	 * 
@@ -65,12 +78,13 @@ public class ProgrammingFrame extends JFrame implements TitleComponent {
 	BorderLayout windowLayout = new BorderLayout();
 	BorderLayout windowPaneLayout = new BorderLayout();
 
-	public ProgrammingFrame(FunAPI api, String api_code, Render render){
+	public ProgrammingFrame(FunAPI api, String api_code, Render render, ClassLoader loader, String lang){
+	    	Resource resource = init(loader, lang);
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = (int)screenSize.getWidth();
 		int height = (int)screenSize.getHeight();
 		this.setSize(new Dimension(width*4/5, height*4/5));
-		windowPanel = new ProgrammingPanel(this, api, api_code, render);
+		windowPanel = new ProgrammingPanel(this, api, api_code, render, resource);
 		this.getContentPane().setLayout(windowLayout);
 		this.getContentPane().add(windowPanel, java.awt.BorderLayout.CENTER);
 		// Closing the window

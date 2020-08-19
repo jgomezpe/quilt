@@ -93,7 +93,7 @@ public class Matrix implements Quilt{
 	}
 
 	@Override
-	public JSON json() {
+	public JSON draw() {
 		JSON json = Util.create(Util.COMPOUND);
 		Vector<JSON> commands = new Vector<JSON>();
 		for( int i=0; i<rows(); i++ )

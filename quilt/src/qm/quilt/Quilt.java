@@ -1,7 +1,7 @@
 package qm.quilt;
 
 import nsgl.gui.canvas.Util;
-import nsgl.gui.Drawable;
+import nsgl.generic.JSONCastable;
 import nsgl.json.JSON;
 import qm.remnant.Remnant;
 
@@ -49,7 +49,7 @@ import qm.remnant.Remnant;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public interface Quilt extends Drawable{
+public interface Quilt extends JSONCastable{
 	
 	// Size
 	int rows();
@@ -63,7 +63,7 @@ public interface Quilt extends Drawable{
 		
 	// Drawing
 	default JSON draw( int column, int row ) {
-		JSON json = json();
+		JSON json = draw();
 		if( column!=0 || row != 0 ) {
 			JSON wrap = Util.create(Util.TRANSLATE);
 			wrap.set(Util.X, column);
@@ -76,11 +76,11 @@ public interface Quilt extends Drawable{
 		return json;
 	}
 	
-	JSON json();
+	JSON draw();
 
-	default JSON draw() {
-		JSON json = json();
-		if( json.getString(Util.COMMAND).equals(Util.COMPOUND) ) {
+	default JSON json() {
+		JSON json = draw();
+		if( json.string(Util.COMMAND).equals(Util.COMPOUND) ) {
 			json.set(Util.COMMAND, Util.FIT);
 		}else {
 			JSON njson = Util.create(Util.FIT);

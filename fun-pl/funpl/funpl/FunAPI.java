@@ -13,12 +13,13 @@ import funpl.semantic.FunValueInterpreter;
 import funpl.syntax.FunParser;
 import funpl.util.FunConstants;
 import nsgl.character.CharacterSequence;
+import nsgl.generic.Configurable;
 import nsgl.generic.hashmap.*;
 import nsgl.generic.keymap.KeyMap;
 import nsgl.json.JSON;
 import nsgl.parse.Regex;
 
-public class FunAPI {
+public class FunAPI implements Configurable{
 	protected FunMachine machine;
 	protected FunLanguage lang;
 	protected KeyMap<String,FunCommand> primitive = new HashMap<String, FunCommand>();
@@ -41,10 +42,10 @@ public class FunAPI {
 	
 	public void config(JSON json) {
 	    this.clear();
-	    filetype = json.getString(GUIFunConstants.FMP);
-	    conftype = json.getString(GUIFunConstants.FMC);
+	    filetype = json.string(GUIFunConstants.FMP);
+	    conftype = json.string(GUIFunConstants.FMC);
 	    if( json.get(FunConstants.NUMBERID) != null )
-		canStartWithNumber = json.getBool(FunConstants.NUMBERID);
+		canStartWithNumber = json.bool(FunConstants.NUMBERID);
 	}
 	
 	public String type() { return filetype; }

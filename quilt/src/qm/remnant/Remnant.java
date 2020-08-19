@@ -50,12 +50,10 @@ import qm.util.QuiltConstants;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public abstract class Remnant implements Quilt, Named{
+public abstract class Remnant extends Named implements Quilt{
 	public static boolean border=true;
-	
-	protected String id="";
 
-	public Remnant(String id) { this.id = id; }
+	public Remnant(String id) { super(id); }
 	
 	public int rows(){ return 1; }
 
@@ -77,7 +75,7 @@ public abstract class Remnant implements Quilt, Named{
 	public JSON border(){ return Util.create(QuiltConstants.BORDER); }
 
 	@Override
-	public JSON json(){
+	public JSON draw(){
 		Object[] commands = new Object[border?2:1];
 		int n=0;
 		if( border ) {
@@ -101,11 +99,5 @@ public abstract class Remnant implements Quilt, Named{
 			return id.equals(r.id);
 		}
 		return false;
-	}
-	
-	@Override
-	public String id(){ return id; }
-
-	@Override	
-	public void id(String id){ this.id = id; }
+	}	
 }

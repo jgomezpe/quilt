@@ -13,14 +13,14 @@ public class API extends FunAPI{
     @Override
     public void config(JSON jxon) {
     	super.config(jxon);
-    	JSON values = jxon.getJSON(VALUE);
-    	String remnant = values.getString(TYPE);
-    	Object[] id = values.getArray(Util.COMMANDS);
+    	JSON values = jxon.object(VALUE);
+    	String remnant = values.string(TYPE);
+    	Object[] id = values.array(Util.COMMANDS);
     	String[] v = new String[id.length];
     	for( int i=0; i<v.length; i++ ) v[i] = (String)id[i];
     	value = new Store(remnant, v);
     	assignment = new Assignment();
-    	Object[] opers = jxon.getArray(Util.COMMANDS);
+    	Object[] opers = jxon.array(Util.COMMANDS);
     	for( Object obj:opers ) {
     	    String o = (String)obj;
     	    if( o.equals("@") ) addOperator(new Rotate(), 3);

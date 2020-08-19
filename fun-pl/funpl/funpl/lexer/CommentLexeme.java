@@ -10,7 +10,8 @@ public class CommentLexeme extends Regex{
 	public CommentLexeme(){ super("%.*", FunConstants.COMMENT); }
 	
 	@Override
-	protected Object instance(CharacterSequence input, String matched) throws IOException {
+	public Object instance(CharacterSequence input, String matched) throws IOException {
+	    if(matched.charAt(0)!='%') throw input.exception("·Invalid "+type()+"· ", 0);
 	    return matched.substring(1);
 	}
 }
