@@ -158,9 +158,9 @@ public class FunParser extends Parser{
 			int a = -1;
 			if(check_type(FunConstants.PRIMITIVE)) a = arity(token);
 			v.add(token);
-			next();
-			if( check_symbol(FunConstants.OPEN) ){
-				args(v);
+			if( this.available() ) {
+			    next();
+			    if( check_symbol(FunConstants.OPEN) ) args(v);
 			}
 			if(a==-1 || a+1 == v.size() )
 			    return new TypedValue<Vector<Typed>>(FunConstants.COMMAND, v);
