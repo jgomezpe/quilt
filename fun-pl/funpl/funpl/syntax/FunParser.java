@@ -158,7 +158,7 @@ public class FunParser extends Parser{
 			int a = -1;
 			if(check_type(FunConstants.PRIMITIVE)) a = arity(token);
 			v.add(token);
-			if( this.available() ) {
+			if( this.available() ){
 			    next();
 			    if( check_symbol(FunConstants.OPEN) ) args(v);
 			}
