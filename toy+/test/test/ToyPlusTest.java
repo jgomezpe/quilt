@@ -100,5 +100,8 @@ public class ToyPlusTest {
 	    usingAPI(); // Uncomment to use the FunAPI associated to ToyPlus 
 //	    stepByStep(); // Uncomment to see step by step
 	}
-
+/*
+	p(X,0) = 0
+	p(X,Y+1) = p(X,Y) + X
+*/
 }

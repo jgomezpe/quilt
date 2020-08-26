@@ -122,6 +122,7 @@ public class FunCommandCall extends FunCommand {
 	public Object execute( Object... value ) throws Exception{
 		HashMap<String,Object> vars = (HashMap<String, Object>)getVars();
 		if(vars.size()!=1) throw exception(FunConstants.argnumbermismatch);
+		
 		for(String k:vars.keys()) vars.set(k,value[0]);		
 		return execute(vars); 
 	}

@@ -52,7 +52,7 @@ public class FunProgram extends FunCommand{
 		if( !defined(command) ) throw exception(FunConstants.nocommand + command);
 		Vector<FunCommandDef> candidates = candidates(command,values.length );
 		if(candidates.size()==0) throw exception(FunConstants.argnumbermismatch + command);
-		IOException e=null;
+		Exception e=null;
 //		LanguageMultiException e=null;
 		int i=0; 
 		while( i<candidates.size() ){
@@ -60,7 +60,7 @@ public class FunProgram extends FunCommand{
 			try{ 
 				cand.match(values);
 				i++;
-			}catch(IOException ex){
+			}catch(Exception ex){
 /*					if( e!=null ){
 						e.add(ex);
 					}else e = new LanguageMultiException(ex); */
