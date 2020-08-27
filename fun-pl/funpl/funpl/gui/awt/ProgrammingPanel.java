@@ -308,8 +308,8 @@ public class ProgrammingPanel  extends JPanel{
 		if( file.showOpenDialog(this) == JFileChooser.APPROVE_OPTION ){
 			tmpName= file.getSelectedFile().getName();
 			String thePath = file.getSelectedFile().getPath();
-			int loc = thePath.lastIndexOf("/./");
-			if( loc>=0 ) thePath = thePath.substring(loc+3);
+//			int loc = thePath.lastIndexOf("/./");
+//			if( loc>=0 ) thePath = thePath.substring(loc+3);
 			return thePath;
 		}	
 		return null;
