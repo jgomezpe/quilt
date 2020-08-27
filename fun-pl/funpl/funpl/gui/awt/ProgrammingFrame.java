@@ -63,7 +63,7 @@ public class ProgrammingFrame extends JFrame implements TitleComponent {
 		Resource resource = new Resource();
 		resource.add("local", new FromOS("resources/"));
 		resource.add("loader", new FromClassLoader(loader));
-		resource.add("local", new FromOS(""));
+		resource.add("guilocal", new FromOS(""));
 		try { I18N.set(resource.txt(lang)); }
 		catch(Exception e) { e.printStackTrace(); } 
 		return resource;
