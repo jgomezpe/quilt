@@ -1,9 +1,11 @@
 package qm.remnant;
 
+import nsgl.generic.hashmap.HashMap;
 import nsgl.gui.canvas.Util;
 import nsgl.json.JSON;
 
 public class Classic extends Remnant{
+	public static HashMap<String, Integer> reductions = new HashMap<String, Integer>();
 	protected int rot = 0;
 	public Classic(String id) {
 		super(id);
@@ -38,7 +40,9 @@ public class Classic extends Remnant{
 
 	@Override
 	public void rotate() {
-		rot = (rot + 1)%4;
+		Integer reduction = reductions.get(id);
+		int mod = reduction!=null?reduction:4;
+		rot = (rot + 1)%mod;
 	}
 
 	@Override

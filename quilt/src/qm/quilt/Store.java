@@ -33,9 +33,14 @@ public class Store implements FunValueInterpreter{
 		return new Classic(id);
 	}
 	
-	public Store(String type, String[] remnant) {
+	public Store(String type, String[] remnant, int[] reduction) {
 		CQueue.ids = remnant;
 		this.type = type;
+		if( reduction!=null ) { 
+			Classic.reductions.clear();
+			for( int i=0; i<remnant.length; i++ ) 
+				Classic.reductions.set(remnant[i], reduction[i]);
+		}	
 		for( int i=0; i<remnant.length-1; i++) {
 			for( int j=i+1; j<remnant.length; j++) {
 				if( remnant[i].length()<remnant[j].length()) {
@@ -104,14 +109,5 @@ public class Store implements FunValueInterpreter{
 	public boolean valid(String code){
 		Matcher matcher = pattern.matcher(code);
 		return matcher.find() && matcher.start()==0 && matcher.end()==code.length();
-	}
-	
-	public static void main(String[] args) {
-		String[] r = new String[] { "x", "xy", "z", "(" };
-		
-		Store s = new Store("Classic", r) ;
-		System.out.println(s.regex);
-		s.get("xxyzz(xxxy");
-		//for( Object o:obj) System.out.println(o);
 	}
 }
