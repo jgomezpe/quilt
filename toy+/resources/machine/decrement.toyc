@@ -1,7 +1,0 @@
-{
-  "fun":{
-     "commands":["¬"],
-     "type":".toy",
-     "config":".toyc"     
-  }
-}
