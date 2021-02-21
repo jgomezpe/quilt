@@ -1,8 +1,8 @@
 package qm.remnant;
 
-import nsgl.generic.Named;
-import nsgl.gui.canvas.Util;
-import nsgl.json.JSON;
+import speco.object.Named;
+import aplikigo.gui.canvas.Util;
+import jxon.JXON;
 import qm.quilt.Quilt;
 import qm.util.QuiltConstants;
 
@@ -72,10 +72,10 @@ public abstract class Remnant extends Named implements Quilt{
 		
 	public abstract Object clone();
 	
-	public JSON border(){ return Util.create(QuiltConstants.BORDER); }
+	public JXON border(){ return Util.create(QuiltConstants.BORDER); }
 
 	@Override
-	public JSON draw(){
+	public JXON draw(){
 		Object[] commands = new Object[border?2:1];
 		int n=0;
 		if( border ) {
@@ -83,7 +83,7 @@ public abstract class Remnant extends Named implements Quilt{
 			n++;
 		}
 		commands[n] = Util.create(id); 		
-		JSON json = Util.create(Util.COMPOUND);
+		JXON json = Util.create(Util.COMPOUND);
 		json.set(Util.X, 1.0);
 		json.set(Util.Y, 1.0);
 		json.set(Util.R, true);

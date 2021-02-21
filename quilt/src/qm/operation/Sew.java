@@ -3,7 +3,7 @@ package qm.operation;
 import funpl.semantic.FunCommand;
 import funpl.semantic.FunMachine;
 import funpl.util.FunConstants;
-import nsgl.string.I18N;
+import utila.I18N;
 import qm.quilt.Matrix;
 import qm.quilt.Nil;
 import qm.quilt.Quilt;
@@ -55,8 +55,8 @@ import qm.util.QuiltConstants;
 * @version 1.0
 */
 public class Sew extends FunCommand{
-	public Sew() { this(0,"",null); }
-	public Sew(int pos, String src, FunMachine machine) { super(pos, src, machine); } //		super(QuiltMachine.SEW, new String[]{"X", "Y"});
+	public Sew() { super(); }
+	public Sew(FunMachine machine) { super( machine); } //		super(QuiltMachine.SEW, new String[]{"X", "Y"});
 
 	public Quilt execute( Quilt left, Quilt right ) throws Exception{
 		if(left instanceof Nil) return right;

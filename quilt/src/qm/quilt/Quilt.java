@@ -1,8 +1,9 @@
 package qm.quilt;
 
-import nsgl.gui.canvas.Util;
-import nsgl.generic.JSONCastable;
-import nsgl.json.JSON;
+import aplikigo.gui.canvas.Util;
+import jxon.Castable;
+import jxon.Configurable;
+import jxon.JXON;
 import qm.remnant.Remnant;
 
 /**
@@ -49,7 +50,7 @@ import qm.remnant.Remnant;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public interface Quilt extends JSONCastable{
+public interface Quilt extends Castable, Configurable{
 	
 	// Size
 	int rows();
@@ -62,10 +63,10 @@ public interface Quilt extends JSONCastable{
 	Object clone();
 		
 	// Drawing
-	default JSON draw( int column, int row ) {
-		JSON json = draw();
+	default JXON draw( int column, int row ) {
+		JXON json = draw();
 		if( column!=0 || row != 0 ) {
-			JSON wrap = Util.create(Util.TRANSLATE);
+			JXON wrap = Util.create(Util.TRANSLATE);
 			wrap.set(Util.X, column);
 			wrap.set(Util.Y, row);
 			Object[] commands = new Object[1];
@@ -76,14 +77,14 @@ public interface Quilt extends JSONCastable{
 		return json;
 	}
 	
-	JSON draw();
+	JXON draw();
 
-	default JSON json() {
-		JSON json = draw();
+	default JXON jxon() {
+		JXON json = draw();
 		if( json.string(Util.COMMAND).equals(Util.COMPOUND) ) {
 			json.set(Util.COMMAND, Util.FIT);
 		}else {
-			JSON njson = Util.create(Util.FIT);
+			JXON njson = Util.create(Util.FIT);
 			Object[] commands = new Object[1];
 			commands[0] = json;
 			njson.set(Util.COMMANDS, commands);
@@ -94,6 +95,9 @@ public interface Quilt extends JSONCastable{
 		json.set(Util.R, true);
 		return json;
 	}
+	
+	@Override
+	default void config(JXON json) {}
 	
 	void rotate();	
 	void undo_rotate();	

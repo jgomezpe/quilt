@@ -1,8 +1,9 @@
 package qm.remnant;
 
-import nsgl.generic.hashmap.HashMap;
-import nsgl.gui.canvas.Util;
-import nsgl.json.JSON;
+import java.util.HashMap;
+
+import aplikigo.gui.canvas.Util;
+import jxon.JXON;
 
 public class Classic extends Remnant{
 	public static HashMap<String, Integer> reductions = new HashMap<String, Integer>();
@@ -22,11 +23,11 @@ public class Classic extends Remnant{
 	}
 
 	@Override
-	public JSON draw() {
-		JSON json = super.draw();
+	public JXON draw() {
+		JXON json = super.draw();
 		if( rot > 0 ) {
 			double r = (Math.PI*rot)/2.0;
-			JSON wrap = Util.create(Util.ROTATE);
+			JXON wrap = Util.create(Util.ROTATE);
 			wrap.set(Util.R, r);
 			wrap.set(Util.X, 0.5);
 			wrap.set(Util.Y, 0.5);
@@ -54,5 +55,4 @@ public class Classic extends Remnant{
 	public Object clone() {
 		return new Classic(this.id,this.rot);
 	}
-
 }

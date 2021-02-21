@@ -1,7 +1,7 @@
 package qm.quilt;
 
-import nsgl.gui.canvas.Util;
-import nsgl.json.JSON;
+import aplikigo.gui.canvas.Util;
+import jxon.JXON;
 import qm.remnant.Remnant;
 
 public class Nil implements Quilt{
@@ -22,7 +22,7 @@ public class Nil implements Quilt{
 	public boolean equals(Object quilt) { return quilt!=null && quilt instanceof Nil; }
 
 	@Override
-	public JSON draw(){ return Util.beginPath(); }
+	public JXON draw(){ return Util.beginPath(); }
 
 	@Override
 	public void rotate() {	}

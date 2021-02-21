@@ -3,7 +3,7 @@ package qm.operation;
 import funpl.semantic.FunCommand;
 import funpl.semantic.FunMachine;
 import funpl.util.FunConstants;
-import nsgl.string.I18N;
+import utila.I18N;
 import qm.quilt.Quilt;
 
 /**
@@ -51,8 +51,8 @@ import qm.quilt.Quilt;
 * @version 1.0
 */
 public class Rotate extends FunCommand {
-	public Rotate() { this(0,"",null); }
-	public Rotate(int pos, String src, FunMachine machine) { super(pos, src, machine); }
+	public Rotate(FunMachine machine) { super(machine); }
+	public Rotate() { super(); }
 
 	public Quilt execute(Quilt quilt){
 		quilt = (Quilt)quilt.clone();

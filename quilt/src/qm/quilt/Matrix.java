@@ -1,8 +1,7 @@
 package qm.quilt;
 
-import nsgl.generic.array.Vector;
-import nsgl.gui.canvas.Util;
-import nsgl.json.JSON;
+import aplikigo.gui.canvas.Util;
+import jxon.JXON;
 import qm.remnant.Remnant;
 
 /**
@@ -93,13 +92,14 @@ public class Matrix implements Quilt{
 	}
 
 	@Override
-	public JSON draw() {
-		JSON json = Util.create(Util.COMPOUND);
-		Vector<JSON> commands = new Vector<JSON>();
+	public JXON draw() {
+		JXON json = Util.create(Util.COMPOUND);
+		Object[] commands = new Object[rows()*columns()];
+		int k=0;
 		for( int i=0; i<rows(); i++ )
 			for( int j=0; j<columns(); j++ ) 
-				commands.add(quilt[i][j].draw(j,i));
-		json.set(Util.COMMANDS, commands.toArray());
+				commands[k++] = quilt[i][j].draw(j,i);
+		json.set(Util.COMMANDS, commands);
 		return json;
 	}	
 

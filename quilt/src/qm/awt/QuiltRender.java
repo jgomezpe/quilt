@@ -1,6 +1,8 @@
 package qm.awt;
 
-public class Render extends nsgl.gui.awt.CanvasRender {
+import aplikigo.gui.awt.CanvasRender;
+
+public class QuiltRender extends CanvasRender {
 	protected double scale = 1.0;
 	protected String id;
 	/**
@@ -8,9 +10,9 @@ public class Render extends nsgl.gui.awt.CanvasRender {
 	 */
 	private static final long serialVersionUID = 5282523442224484114L;
 	
-	public Render(){ super(); }
+	public QuiltRender(){ super(); }
 	
-	public Render( String id ){ this.id=id ; }
+	public QuiltRender( String id ){ this.id=id ; }
 	
 	@Override
 	public void render( Object obj ){

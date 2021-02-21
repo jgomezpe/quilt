@@ -1,8 +1,8 @@
 package qm;
 
 import funpl.FunAPI;
-import nsgl.gui.canvas.Util;
-import nsgl.json.JSON;
+import aplikigo.gui.canvas.Util;
+import jxon.JXON;
 import qm.operation.Rotate;
 import qm.operation.Sew;
 import qm.quilt.Store;
@@ -12,9 +12,9 @@ public class API extends FunAPI{
 	public static final String TYPE = "type";
 	public static final String REDUCTIONS = "reductions";
     @Override
-    public void config(JSON jxon) {
+    public void config(JXON jxon) {
     	super.config(jxon);
-    	JSON values = jxon.object(VALUE);
+    	JXON values = jxon.object(VALUE);
     	String remnant = values.string(TYPE);
     	Object[] id = values.array(Util.COMMANDS);
     	String[] v = new String[id.length];

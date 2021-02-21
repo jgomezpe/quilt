@@ -1,31 +1,19 @@
 package qm.quilt;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import funpl.semantic.FunValueInterpreter;
-import nsgl.generic.array.Vector;
-import nsgl.parse.Regex;
+import funpl.util.FunConstants;
+import lifya.lexeme.Lexeme;
+import lifya.Token;
 import qm.remnant.CQueue;
 import qm.remnant.Classic;
 import qm.remnant.Immutable;
 import qm.remnant.Remnant;
+import speco.array.Array;
 
 public class Store implements FunValueInterpreter{
 	protected String[] remnant;
-	protected Pattern pattern;
-	protected String regex;
 	protected String type;
-	
-	public static String process(String remnant){
-		StringBuilder sb = new StringBuilder();
-		for( int i=0; i<remnant.length(); i++) {
-			char c = remnant.charAt(i);
-			if(Regex.escapechar(c)) sb.append('\\');
-			sb.append(c);
-		}
-		return sb.toString();
-	}
+	protected Lexeme<String> lexeme=null;
 	
 	protected Remnant create(String id) {
 		if(type.equals("Immutable")) return new Immutable(id);
@@ -39,7 +27,7 @@ public class Store implements FunValueInterpreter{
 		if( reduction!=null ) { 
 			Classic.reductions.clear();
 			for( int i=0; i<remnant.length; i++ ) 
-				Classic.reductions.set(remnant[i], reduction[i]);
+				Classic.reductions.put(remnant[i], reduction[i]);
 		}	
 		for( int i=0; i<remnant.length-1; i++) {
 			for( int j=i+1; j<remnant.length; j++) {
@@ -52,17 +40,7 @@ public class Store implements FunValueInterpreter{
 		}
 		
 		this.remnant = remnant;
-		StringBuilder sb = new StringBuilder();
-		sb.append('(');
-		String pipe = "";
-		for( int i=0; i<remnant.length; i++ ) {
-			sb.append(pipe);
-			sb.append(process(remnant[i]));
-			pipe = "|";
-		}
-		sb.append(")+");
-		regex = sb.toString();
-		pattern = Pattern.compile(regex);
+		this.lexeme = new qm.quilt.Lexeme(FunConstants.VALUE, remnant);
 	}
 
 	@Override
@@ -79,12 +57,10 @@ public class Store implements FunValueInterpreter{
 		return sb.toString();
 	}
 	
-	public String regex() { return regex; }
-
 	@Override
 	public Object get(String code) {
 		if(valid(code )) {
-			Vector<Remnant> v = new Vector<Remnant>();
+			Array<Remnant> v = new Array<Remnant>();
 			while(code.length()>0) {
 				int length = 0;
 				int k=-1;
@@ -107,7 +83,12 @@ public class Store implements FunValueInterpreter{
 
 	@Override
 	public boolean valid(String code){
-		Matcher matcher = pattern.matcher(code);
-		return matcher.find() && matcher.start()==0 && matcher.end()==code.length();
+		Token t = lexeme.match(code);
+		return !t.isError() && ((String)t.value()).length()==code.length();
+	}
+
+	@Override
+	public Lexeme<?> lexeme() {
+		return lexeme;
 	}
 }
