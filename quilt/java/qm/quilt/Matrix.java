@@ -123,11 +123,11 @@ public class Matrix implements Quilt{
 		int c = columns();
 		int r = rows();
 		Remnant[][] newquilt = new Remnant[c][r];
-		for( int i=0; i<c; i++ ){
-			int k = c-1-i;
-			for( int j=0; j<r; j++ ){
-				quilt[i][j].rotate();
-				newquilt[j][k] = quilt[i][j];
+		for( int j=0; j<c; j++ ){
+			int k = c-1-j;
+			for( int i=0; i<r; i++ ){
+				quilt[i][j].undo_rotate();
+				newquilt[k][i] = quilt[i][j];
 			}
 		}
 		quilt = newquilt;
