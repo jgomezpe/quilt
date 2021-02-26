@@ -1,2 +1,0 @@
-apply(X,Y,Z)=X(Y,Z)
-sew(X,Y)=X|Y
