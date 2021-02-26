@@ -6,8 +6,7 @@
      "config":".qmc"
   },
   "render":{
-    "canvas":{
-      "commands":[
+      "custom":[
         { "command":":" },
         { 
             "command":"_", 
@@ -94,6 +93,5 @@
             ]
         }       
       ]      
-    }
   }
 }
