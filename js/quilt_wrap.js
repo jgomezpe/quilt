@@ -1975,6 +1975,7 @@ class Application extends Configurable{
   
     error(msg) {
         try {
+        console.log(msg)
             var json = JXON.parse(msg)
             var pos = json[Position.START]
             var end = json[Token.END] || pos+1
@@ -2279,7 +2280,7 @@ class Remnant extends Quilt{
     equals(q) {
         if(q.rows()==1 && q.columns()==1){
             var r = q.get(0, 0)
-            return id==r.id
+            return this.id==r.id
         }
         return false
     }   
@@ -2294,7 +2295,7 @@ class Classic extends Remnant{
     }
 
     equals(obj) {
-        return super.equals(obj) && obj instanceof Classic && obj.rot==rot
+        return super.equals(obj) && obj instanceof Classic && obj.rot==this.rot
     }
 
     draw() {
@@ -2512,7 +2513,7 @@ class Sew extends FunCommand{
         var r = quilt.rows()
         var left = []
         for( var i=0; i<r; i++ ){
-            left.psuh([])
+            left.push([])
             for( var j=0; j<k; j++) left[i].push(quilt.get(i,j))
         }
         return (r==1 && k==1)? left[0][0]: new Matrix(left)
