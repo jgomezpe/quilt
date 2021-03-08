@@ -279,6 +279,8 @@ class Position{
 	return {"input":this.input.id, "start":this.start,
 		"row":pos[0], "column":pos[1]}
     }
+    
+    stringify(){ return JSON.stringify(this.json()) }
 }
 
 class Token extends Position{    
@@ -328,7 +330,7 @@ class Read {
         if( typeof input === 'string' )
             input = new Source(input)
         var t = this.match(input,start,end)
-        if(t.isError()) throw JSON.stringify(t.json())
+        if(t.isError()) throw t.stringify()
         return t.value
     }
 
