@@ -96,7 +96,7 @@ public abstract class Remnant extends Named implements Quilt{
 		Quilt q = (Quilt)obj; 
 		if(q.rows()==1 && q.columns()==1){
 			Remnant r = q.get(0, 0);
-			return id.equals(r.id);
+			return id==r.id;
 		}
 		return false;
 	}	

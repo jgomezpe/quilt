@@ -133,6 +133,10 @@ public class Matrix implements Quilt{
 		quilt = newquilt;
 	}
 	
+	public boolean equals(Object value) {
+	    return equals((Quilt)value);
+	}
+	
 	public boolean equals(Quilt quilt) {
 		if( quilt.rows()!=rows() || columns()!=quilt.columns() ) return false; 
 		boolean flag = true;
