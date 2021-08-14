@@ -1,6 +1,6 @@
 package qm.awt;
 
-import aplikigo.gui.awt.CanvasRender;
+import aplikigo.awt.CanvasRender;
 
 public class QuiltRender extends CanvasRender {
 	protected double scale = 1.0;

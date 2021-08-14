@@ -3,9 +3,10 @@
 * quilt.js
 * <P>Java Script for Quilt programming language.</P>
 * <P>Requires base64.js, kompari.js, lifya.js, jxon.js, and funpl.js (funpl_wrap.js)</P>
+* <P>A numtseng module <A HREF="https://numtseng.com/modules/quilt.js">https://numtseng.com/modules/quilt.js</A> 
 *
 * Copyright (c) 2021 by Jonatan Gomez-Perdomo. <br>
-* All rights reserved. See <A HREF="https://github.com/jgomezpe/lifya">License</A>. <br>
+* All rights reserved. See <A HREF="https://github.com/jgomezpe/quilt">License</A>. <br>
 *
 * @author <A HREF="https://disi.unal.edu.co/~jgomezpe/"> Professor Jonatan Gomez-Perdomo </A>
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
