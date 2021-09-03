@@ -1,7 +1,8 @@
 package qm.quilt;
 
-import aplikigo.gui.canvas.Util;
-import jxon.JXON;
+import aplikigo.gui.canvas.CanvasConstants;
+import aplikigo.gui.canvas.DrawMaker;
+import speco.jxon.JXON;
 import qm.remnant.Remnant;
 
 /**
@@ -93,13 +94,13 @@ public class Matrix implements Quilt{
 
 	@Override
 	public JXON draw() {
-		JXON json = Util.create(Util.COMPOUND);
+		JXON json = DrawMaker.create(CanvasConstants.COMPOUND);
 		Object[] commands = new Object[rows()*columns()];
 		int k=0;
 		for( int i=0; i<rows(); i++ )
 			for( int j=0; j<columns(); j++ ) 
 				commands[k++] = quilt[i][j].draw(j,i);
-		json.set(Util.COMMANDS, commands);
+		json.set(CanvasConstants.COMMANDS, commands);
 		return json;
 	}	
 

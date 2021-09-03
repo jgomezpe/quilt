@@ -1,8 +1,8 @@
 package qm;
 
 import funpl.FunAPI;
-import aplikigo.gui.canvas.Util;
-import jxon.JXON;
+import aplikigo.gui.canvas.CanvasConstants;
+import speco.jxon.JXON;
 import qm.operation.Rotate;
 import qm.operation.Sew;
 import qm.quilt.Store;
@@ -16,7 +16,7 @@ public class API extends FunAPI{
     	super.config(jxon);
     	JXON values = jxon.object(VALUE);
     	String remnant = values.string(TYPE);
-    	Object[] id = values.array(Util.COMMANDS);
+    	Object[] id = values.array(CanvasConstants.COMMANDS);
     	String[] v = new String[id.length];
     	for( int i=0; i<v.length; i++ ) v[i] = (String)id[i];
     	Object[] red = values.array(REDUCTIONS);
@@ -27,7 +27,7 @@ public class API extends FunAPI{
     	}
     	value = new Store(remnant, v, r);
     	assignment = new Assignment();
-    	Object[] opers = jxon.array(Util.COMMANDS);
+    	Object[] opers = jxon.array(CanvasConstants.COMMANDS);
     	for( Object obj:opers ) {
     	    String o = (String)obj;
     	    if( o.equals("@") ) addOperator(new Rotate(), 3);

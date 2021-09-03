@@ -1,8 +1,8 @@
 package qm.awt;
 
-import aplikigo.awt.CanvasRender;
+import aplikigo.awt.canvas.AWTCanvasRender;
 
-public class QuiltRender extends CanvasRender {
+public class QuiltRender extends AWTCanvasRender {
 	protected double scale = 1.0;
 	protected String id;
 	/**

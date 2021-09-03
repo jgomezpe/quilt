@@ -1,7 +1,7 @@
 package qm.quilt;
 
-import aplikigo.gui.canvas.Util;
-import jxon.JXON;
+import aplikigo.gui.canvas.DrawMaker;
+import speco.jxon.JXON;
 import qm.remnant.Remnant;
 
 public class Nil implements Quilt{
@@ -22,7 +22,7 @@ public class Nil implements Quilt{
 	public boolean equals(Object quilt) { return quilt!=null && quilt instanceof Nil; }
 
 	@Override
-	public JXON draw(){ return Util.beginPath(); }
+	public JXON draw(){ return DrawMaker.beginPath(); }
 
 	@Override
 	public void rotate() {	}

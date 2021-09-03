@@ -1,10 +1,11 @@
 package qm.quilt;
 
-import aplikigo.gui.canvas.Util;
-import jxon.Castable;
-import jxon.Configurable;
-import jxon.JXON;
+import aplikigo.gui.canvas.CanvasConstants;
+import aplikigo.gui.canvas.DrawMaker;
+import speco.object.JXONfyable;
+import speco.jxon.JXON;
 import qm.remnant.Remnant;
+import speco.object.Configurable;
 
 /**
 *
@@ -50,7 +51,7 @@ import qm.remnant.Remnant;
 * (E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A> )
 * @version 1.0
 */
-public interface Quilt extends Castable, Configurable{
+public interface Quilt extends JXONfyable, Configurable{
 	
 	// Size
 	int rows();
@@ -66,12 +67,12 @@ public interface Quilt extends Castable, Configurable{
 	default JXON draw( int column, int row ) {
 		JXON json = draw();
 		if( column!=0 || row != 0 ) {
-			JXON wrap = Util.create(Util.TRANSLATE);
-			wrap.set(Util.X, column);
-			wrap.set(Util.Y, row);
+			JXON wrap = DrawMaker.create(CanvasConstants.TRANSLATE);
+			wrap.set(CanvasConstants.X, column);
+			wrap.set(CanvasConstants.Y, row);
 			Object[] commands = new Object[1];
 			commands[0] = json;
-			wrap.set(Util.COMMANDS, commands);
+			wrap.set(CanvasConstants.COMMANDS, commands);
 			json = wrap;
 		}
 		return json;
@@ -81,18 +82,18 @@ public interface Quilt extends Castable, Configurable{
 
 	default JXON jxon() {
 		JXON json = draw();
-		if( json.string(Util.COMMAND).equals(Util.COMPOUND) ) {
-			json.set(Util.COMMAND, Util.FIT);
+		if( json.string(CanvasConstants.COMMAND).equals(CanvasConstants.COMPOUND) ) {
+			json.set(CanvasConstants.COMMAND, CanvasConstants.FIT);
 		}else {
-			JXON njson = Util.create(Util.FIT);
+			JXON njson = DrawMaker.create(CanvasConstants.FIT);
 			Object[] commands = new Object[1];
 			commands[0] = json;
-			njson.set(Util.COMMANDS, commands);
+			njson.set(CanvasConstants.COMMANDS, commands);
 			json = njson;
 		}
-		json.set(Util.X, 1.0/columns());
-		json.set(Util.Y, 1.0/rows());
-		json.set(Util.R, true);
+		json.set(CanvasConstants.X, 1.0/columns());
+		json.set(CanvasConstants.Y, 1.0/rows());
+		json.set(CanvasConstants.R, true);
 		return json;
 	}
 	

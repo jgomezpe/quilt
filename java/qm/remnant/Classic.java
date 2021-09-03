@@ -2,8 +2,9 @@ package qm.remnant;
 
 import java.util.HashMap;
 
-import aplikigo.gui.canvas.Util;
-import jxon.JXON;
+import aplikigo.gui.canvas.CanvasConstants;
+import aplikigo.gui.canvas.DrawMaker;
+import speco.jxon.JXON;
 
 public class Classic extends Remnant{
 	public static HashMap<String, Integer> reductions = new HashMap<String, Integer>();
@@ -27,13 +28,13 @@ public class Classic extends Remnant{
 		JXON json = super.draw();
 		if( rot > 0 ) {
 			double r = (Math.PI*rot)/2.0;
-			JXON wrap = Util.create(Util.ROTATE);
-			wrap.set(Util.R, r);
-			wrap.set(Util.X, 0.5);
-			wrap.set(Util.Y, 0.5);
+			JXON wrap = DrawMaker.create(CanvasConstants.ROTATE);
+			wrap.set(CanvasConstants.R, r);
+			wrap.set(CanvasConstants.X, 0.5);
+			wrap.set(CanvasConstants.Y, 0.5);
 			Object[] commands = new Object[1];
 			commands[0] = json;
-			wrap.set(Util.COMMANDS, commands);
+			wrap.set(CanvasConstants.COMMANDS, commands);
 			json = wrap;			
 		}
 		return json;

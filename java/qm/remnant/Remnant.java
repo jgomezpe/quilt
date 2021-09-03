@@ -1,8 +1,9 @@
 package qm.remnant;
 
 import speco.object.Named;
-import aplikigo.gui.canvas.Util;
-import jxon.JXON;
+import aplikigo.gui.canvas.CanvasConstants;
+import aplikigo.gui.canvas.DrawMaker;
+import speco.jxon.JXON;
 import qm.quilt.Quilt;
 import qm.util.QuiltConstants;
 
@@ -72,7 +73,7 @@ public abstract class Remnant extends Named implements Quilt{
 		
 	public abstract Object clone();
 	
-	public JXON border(){ return Util.create(QuiltConstants.BORDER); }
+	public JXON border(){ return DrawMaker.create(QuiltConstants.BORDER); }
 
 	@Override
 	public JXON draw(){
@@ -82,12 +83,12 @@ public abstract class Remnant extends Named implements Quilt{
 			commands[0] = border();
 			n++;
 		}
-		commands[n] = Util.create(id); 		
-		JXON json = Util.create(Util.COMPOUND);
-		json.set(Util.X, 1.0);
-		json.set(Util.Y, 1.0);
-		json.set(Util.R, true);
-		json.set(Util.COMMANDS, commands);
+		commands[n] = DrawMaker.create(id); 		
+		JXON json = DrawMaker.create(CanvasConstants.COMPOUND);
+		json.set(CanvasConstants.X, 1.0);
+		json.set(CanvasConstants.Y, 1.0);
+		json.set(CanvasConstants.R, true);
+		json.set(CanvasConstants.COMMANDS, commands);
 		return json;
 	}
 
