@@ -1,0 +1,5 @@
+{ 
+	"info":"<p>Un programa de “Reglas de Cuisenaire”.</p><p>Las reglas de Cuisenaire son piezas de madera (inicialmente) con un color específico, usadas como representaciones concretas de los números.</p>",
+	"coder":"blanca = + % Regla de Cuisenaire blanca (número uno)\nroja = ++ % Regla de Cuisenaire roja (número dos)\nverdeclara = +++ % Regla de Cuisenaire verde clara (número tres)\nmorada = ++++ % Regla de Cuisenaire (número cuatro)\namarilla = +++++ % Regla de Cuisenaire amarilla (número cinco)\nverdeoscura = ++++++ % Regla de Cuisenaire verde oscura (número seis)\nnegra = +++++++ % Regla de Cuisenaire negra (número siete)\nmarron = ++++ % Regla de Cuisenaire negra (número ocho)\nazul = +++++++++ % Regla de Cuisenaire azul (número nueve)\nnaranja = ++++++++++ % Regla de Cuisenaire naranja (número diez)\nanterior(X | blanca) = X\nsiguiente(X) = X | blanca\nsoluciona(X | Y, X) = Y\nduplicar (X | +) = duplicar (X) | ++\nduplicar (+) = ++",
+	"command":"% Ejecuta comando duplicar(roja)\nduplicar(roja)"
+}

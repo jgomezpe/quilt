@@ -1,0 +1,5 @@
+{ 
+	"info":"<p>Investigadores del IIA fueron capaces de decodificar una colcha alienígena y descubrieron que los retazos definen ciclos que afectan tiras de retazos (algunas veces hacen crecer la tira!!) cuando se ubican en la última posición de la tira. Un ciclo reemplaza el último retazo de la tira con otro de acuerdo a ciertas reglas del ciclo. El programa simula dos de los ciclos descubiertos por los investigadores: Ciclo mayor y ciclo menor.</p>",
+	"coder":"% Ciclo menor\nmenor(-) = @(-)\nmenor(X|-) = X | @(-)\nmenor(@(-)) = @(-) | -\nmenor(X | @(-)) = menor(X) | -\n\n% Ciclo mayor\nmayor(@(-)) = <\nmayor(X | @(-)) = X|<\nmayor(@(@(@(<)))) = *\nmayor(X | @(@(@(<)))) = X | *\nmayor(@(@(@(*)))) = @(-)|-\nmayor(X | @(@(@(*)))) = mayor(X)|-\nmayor(X | Y) = X | @(Y)\nmayor(X) = @(X)\n",
+	"command":"% Dibuja el retazo -\n-"
+}
