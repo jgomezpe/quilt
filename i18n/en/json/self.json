@@ -1,0 +1,5 @@
+{ 
+	"info":"<p>Commands can take any number of arguments and may be defined in a case-based manner. Our semantic engine considers each possible case (first defined, first considered), and applies, if possible, the appropriated one.",
+	"coder":"r2(X) = @(@(X)) % Two rotations (180º rotation)\nr3(X) = @(r2(X)) % Three rotations (270º rotation)\nreduce(-- | X) = + | X % If starting with two -, replace both of them with a +\nreduce(-+ | X) = - | X % If starting with -+, replace both of them with a -\nreduce(+| X) = X % If starting with +, remove it\nreduce(--) = + % If just a two - quilt, return the + remnant\nreduce(-+) = - % If just a -+ quilt, return the - remnant\nall(X) = all(reduce(X)) % Applies the reduce command as much as possible\nall(X) = X % Default case, if reduce command fails, left the quilt as received (do nothing)\nrare(X | Y) = rare(X) | @(Y) %Tip: Y takes the last remnant of the quilt while X takes the rest\nrare(X) = @(X) %Tip: in this case, X is just a remnant. What is command rare doing?\n",
+	"command":"% Draws quilt ++-+-\n++-+-"
+}

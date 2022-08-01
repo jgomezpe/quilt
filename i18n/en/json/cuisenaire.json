@@ -1,0 +1,5 @@
+{ 
+	"info":"<p>A “Cuisenaire rods” program.</p><p>Cuisenaire rods are colored pieces of wood (initially) used as concrete representations of numbers.</p>",
+	"coder":"white = + % White Cuisenaire rod (number one)\nred = ++ % Red Cuisenaire rod (number two)\nlightgreen = +++ % Light green Cuisenaire rod (number three)\npurple = ++++ % Purple Cuisenaire rod (number four)\nyellow = +++++ % Yellow Cuisenaire rod (number five)\ndarkgreen = ++++++ % Dark green Cuisenaire rod (number six)\nblack = +++++++ % Black Cuisenaire rod (number seven)\nbrown = ++++++++ % Brown Cuisenaire rod (number eight)\nblue = +++++++++ % Blue Cuisenaire rod (number nine)\norange = ++++++++++ % Orange Cuisenaire rod (number ten)\nprevious(X | white) = X\nfollows(X) = X | white\nsolve(X | Y, X) = Y\ntwice (X | +) = twice (X) | ++\ntwice (+) = ++",
+	"command":"% Runs command twice(red)\ntwice(red)"
+}

@@ -1,0 +1,5 @@
+{ 
+	"info":"<p>ARI researchers were able to decode an alien quilt and discovered that remnants define loops that affect strips (sometimes the strip grows!!) when they are located at the last position of a strip. A loop replaces the last remnant of a strip with another according to the loop rules. The program reproduces the behavior of two of loops found by researchers: Minor and major loops.",
+	"coder":"% Minor loop\nminor(-) = @(-)\nminor(X|-) = X | @(-)\nminor(@(-)) = @(-) | -\nminor(X | @(-)) = minor(X) | -\n\n% Major loop\nmajor(@(-)) = <\nmajor(X | @(-)) = X|<\nmajor(@(@(@(<)))) = *\nmajor(X | @(@(@(<)))) = X | *\nmajor(@(@(@(*)))) = @(-)|-\nmajor(X | @(@(@(*)))) = major(X)|-\nmajor(X | Y) = X | @(Y)\nmajor(X) = @(X)\n",
+	"command":"% Draws remnant -\n-"
+}
