@@ -7,13 +7,9 @@ Also, Quilts teaches math, logic, and programming concepts without the classical
 
 &nbsp;kerno.jar, speco.jar, kompari.jar, lifya.jar, jxon.jar, funpl.jar, aplikigo.jar and rsyntaxtextarea-3.0.0-SNAPSHOT.jar
 
-&nbsp;Available at <A HREF="https://github.com/jgomezpe/libs/">https://github.com/jgomezpe/libs/</A>
-
 &nbsp;Javascript components require:
 
 &nbsp;kompari.js, lifya.js, jxon.js, funpl.js and Konekti.js
-
-&nbsp;Available at <A HREF="https://numtseng.com/modules/">https://numtseng.com/modules/</A> and <A HREF="https://numtseng.com/modules/konekti/">https://numtseng.com/modules/konekti</A>
 
 <h3>Version 1.0</h3>
 <h3>Copyright (c)</h3>
@@ -22,13 +18,7 @@ Also, Quilts teaches math, logic, and programming concepts without the classical
 
 &nbsp;Java IDE ready to use: <A HREF="https://github.com/jgomezpe/quilt/run/quilt.jar">https://github.com/jgomezpe/quilt/run/quilt.jar</A>
 
-&nbsp;Javascript (web) ready to use: <A HREF="https://numtseng.com/quilt/">https://numtseng.com/quilt/</A>
-
-&nbsp;Java/Javascript source code: <A HREF="https://github.com/jgomezpe/modules/quilt.js">https://github.com/jgomezpe/modules/quilt.js</A>, and <A HREF="https://github.com/jgomezpe/modules/quilt_wrap.js">https://github.com/jgomezpe/modules/quilt_wrap.js</A>
-
-&nbsp;Java API documentation: <A HREF="https://numtseng.com/api/quilt/java/">https://numtseng.com/api/quilt/java/</A>
-
-&nbsp;Javascript API documentation: <A HREF="https://numtseng.com/api/quilt/">https://numtseng.com/api/quilt/</A>
+&nbsp;Javascript (web) ready to use: <A HREF="https://jgomezpe.github.io/quilt/">https://jgomezpe.github.io/quilt/</A>
 
 &nbsp;All rights reserved.
 
