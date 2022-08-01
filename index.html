@@ -23,7 +23,7 @@
 
 			select(page){
 				if( page == 'IDE' ) window.open("https://jgomezpe.github.io/quilt/run/?lang="+this.lang)
-				else if( page == 'java' ) window.open("https://jgomezpe.github.io/quilt/run/quilt.jar")
+				else if( page == 'java' ) window.open("https://jgomezpe.github.io/quilt/run/quilt.jar", "_parent", "download")
 				else if( page == 'github' ) window.open("https://jgomezpe.github.io/quilt/")
 				else if( page == 'language' ){}
 				else if( page.startsWith('lang-') ) this.language(page.substring(5))
