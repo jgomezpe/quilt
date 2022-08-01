@@ -1,4 +1,4 @@
-# quilt
+# Quilt Programming Language
 Quilt is a simple but powerful programming language (of the FunPL family) developed by professor Jonatan Gómez, Universidad Nacional de Colombia - South America, for teaching to think algorithmic solutions instead of teaching to code. In quilts you have a set of remnants and two basic operations (rotate 90 degrees clockwise and vertically paste two quilts of the same height) that can be used to define (in the programming area) new commands. With those new compiled commands, it is hoped that the quilts that the programmer's imagination defines can be built (running those in the command area).
 
 Also, Quilts teaches math, logic, and programming concepts without the classical nomenclature, which facilitates their adquisition.
