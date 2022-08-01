@@ -1,0 +1,14 @@
+{
+  "Title":"Quilt Machine",
+  "developed":"Developed by professor Jonatan Gomez",
+  "@":"@ : Rotate/Unrotate a quilt or remnant",
+  "|":"| : Sew/Unsew two quilts or remnants", 
+  "toc":{ "id": "home", "caption":"Home", "client":"client", "width":"100%", "children":[
+    {"id":"language", "icon":"fa-language", "caption": "Language", "children":[
+      {"id":"lang-es", "caption":"Español"}, {"id":"lang-en", "caption":"English"}
+    ]},
+    {"id":"IDE", "icon":"fa-desktop", "caption": "IDE"},
+    {"id":"github", "caption": "Source code", "icon":"fa-github"}
+  ]},
+  "language":"Language"
+}  
