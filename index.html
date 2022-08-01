@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width">
+	<meta name="mobile-web-app-capable" content='yes'>
+	<title>Quilt Programing Language</title>
+	<script type='text/javascript' src='https://jgomezpe.github.io/konekti/src/konekti.js'></script> 
+	<script type='text/javascript' src='https://jgomezpe.github.io/quilt/js/quilt_wrap.js'></script> 
+</head>
+
+<body>
+
+	<script>
+		Konekti.uses( 'accordion', 'sidebar', 'header', 'canvas', 'dropdown', 'split', 'https://jgomezpe.github.io/funpl/js/funplIDE.js')
+
+		class KMain extends Client{
+			constructor(lang){
+				super('client')
+				this.page = ''
+				this.lang = lang
+			}
+
+			select(page){
+				if( page == 'IDE' ) window.open("https://jgomezpe.github.io/quilt/ide/?lang="+this.lang)
+				else if( page == 'github' ) window.open("https://jgomezpe.github.io/quilt/")
+				else if( page == 'language' ){}
+				else if( page.startsWith('lang-') ) this.language(page.substring(5))
+				else if( this.page != page ){			
+					this.page = page
+					Konekti.dom.setURLSearchParam('page',page)
+					Konekti.dom.setURLSearchParam('lang',this.lang)
+					var url = 'https://jgomezpe.github.io/quilt/i18n/'+this.lang+'/json/'+page+'.json'
+					Konekti.resource.JSON(url, function(json){
+						Konekti.client['QuiltCoder'].setText(json.coder) 
+						Konekti.client['QuiltCommand'].setText(json.command) 
+						Konekti.client['info'].setText(json.info)
+					})
+				}
+			}
+
+			language(lang){
+				if( lang != this.lang ) window.open("https://jgomezpe.github.io/quilt/index.html?lang="+lang+"&page="+this.page,"_self")
+			}
+		}
+
+		function KonektiMain(){
+			var lang = Konekti.dom.getUserLanguage()
+
+			var callback = function(quilt_json){ 
+				if(quilt_json===undefined || quilt_json===null){
+					lang = 'en'
+					Konekti.resource.JSON('https://jgomezpe.github.io/quilt/i18n/'+lang+'/json/quilt.json', callback)
+				}else{
+					var client = new KMain(lang)
+					var toc = Konekti.tocConfig(quilt_json.toc, 4, '', {'client':'client', 'method':'select'},true)
+
+					Konekti.resource.JSON('https://jgomezpe.github.io/quilt/cfg/basic.qmc', function(json){
+						document.title = quilt_json.Title
+						var info = Konekti.divConfig('info', '100%', '20%', "style='padding:8px;overflow:auto'", '')
+						var quilt = Konekti.funplConfig('Quilt', '100%', 'rest', "col", json.editor.mode, json.editor.code, new QuiltAPI(json.fun),
+							Konekti.canvasConfig('QuiltRender','100%','100%',{}, json.render.custom))
+						var main = Konekti.splitConfig('main', '100%', '100%', 'row', '20', info, quilt)
+
+						Konekti.sidebar('root', '100%', '100%', toc, main)	
+
+						quilt = Konekti.client['Quilt'] 
+						quilt.render = function(obj){ Konekti.client['QuiltRender'].setText(JXON.stringify(obj.jxon()))}
+						Konekti.client['Quilt'].msg = quilt_json 
+						Konekti.resize()
+						var page = Konekti.dom.getURLSearchParam('page', 'home')
+						client.select(page)
+					})
+				}
+			}
+
+			Konekti.resource.JSON('https://jgomezpe.github.io/quilt/i18n/'+lang+'/json/quilt.json', callback)
+		}		
+	</script>
+</body>
+</html>
