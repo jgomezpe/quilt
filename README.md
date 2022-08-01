@@ -1,25 +1,33 @@
 # quilt
-Java/Javascript implementation of the Quilt language. Quilt is a simple but powerful programming language (of the FunPL family) developed by professor Jonatan Gómez, Universidad Nacional de Colombia - South America, for teaching to think algorithmic solutions instead of teaching to code. In quilts you have a set of remnants and two basic operations (rotate 90 degrees clockwise and vertically paste two quilts of the same height) that can be used to define (in the programming area) new commands. With those new compiled commands, it is hoped that the quilts that the programmer's imagination defines can be built (running those in the command area).
+Quilt is a simple but powerful programming language (of the FunPL family) developed by professor Jonatan Gómez, Universidad Nacional de Colombia - South America, for teaching to think algorithmic solutions instead of teaching to code. In quilts you have a set of remnants and two basic operations (rotate 90 degrees clockwise and vertically paste two quilts of the same height) that can be used to define (in the programming area) new commands. With those new compiled commands, it is hoped that the quilts that the programmer's imagination defines can be built (running those in the command area).
 
 Also, Quilts teaches math, logic, and programming concepts without the classical nomenclature, which facilitates their adquisition.
 
-&nbsp;Java components require:
+Two separated implementations of the Quilt language are available: using Java and using Javascript.
+
+##  Java
+
+&nbsp;For compiling the java version, the following libraries are required:
 
 &nbsp;kerno.jar, speco.jar, kompari.jar, lifya.jar, jxon.jar, funpl.jar, aplikigo.jar and rsyntaxtextarea-3.0.0-SNAPSHOT.jar
 
-&nbsp;Javascript components require:
+&nbsp;Java IDE ready to use: <A HREF="https://github.com/jgomezpe/quilt/run/quilt.jar">https://github.com/jgomezpe/quilt/run/quilt.jar</A>
 
-&nbsp;kompari.js, lifya.js, jxon.js, funpl.js and Konekti.js
+## Javascript
+
+&nbsp;For interpreting the Javascript version, the following modules are required:
+
+&nbsp;kompari.js, lifya.js, jxon.js, funpl.js and konekti.js
+
+&nbps;A complete wrap (including all the required libraries and quilt classes) is also available: <A HREF="https://jgomezpe.github.io/quilt/src/js/quilt_wrap.js">https://jgomezpe.github.io/quilt/src/js/quilt_wrap.js</A>  
+
+&nbsp;A web version for using quilt language is available here: <A HREF="https://jgomezpe.github.io/quilt/">https://jgomezpe.github.io/quilt/</A>
 
 <h3>Version 1.0</h3>
 <h3>Copyright (c)</h3>
 &nbsp;Author: <A HREF="https://disi.unal.edu.co/~jgomezpe/"> Jonatan Gomez-Perdomo </A>
 &nbsp;E-mail: <A HREF="mailto:jgomezpe@unal.edu.co">jgomezpe@unal.edu.co</A>
 
-
-&nbsp;Java IDE ready to use: <A HREF="https://github.com/jgomezpe/quilt/run/quilt.jar">https://github.com/jgomezpe/quilt/run/quilt.jar</A>
-
-&nbsp;Javascript (web) ready to use: <A HREF="https://jgomezpe.github.io/quilt/">https://jgomezpe.github.io/quilt/</A>
 
 &nbsp;All rights reserved.
 
