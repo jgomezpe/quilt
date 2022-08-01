@@ -21,7 +21,7 @@ Two separated implementations of the Quilt language are available: using Java an
 
 &nbsp;A web version for using quilt language is available here: <A HREF="https://jgomezpe.github.io/quilt/">https://jgomezpe.github.io/quilt/</A>
 
-&nbsp;A web cpurse for learning quilt language is available here: <A HREF="https://numtseng.com/quilt/">https://numtseng.com/quilt/</A>
+&nbsp;A web course for learning quilt language is available here: <A HREF="https://numtseng.com/quilt/">https://numtseng.com/quilt/</A>
 
 <h3>Version 1.0</h3>
 <h3>Copyright (c)</h3>
