@@ -1,0 +1,43 @@
+{
+  "fun":{
+     "commands":["@","|"],
+     "value":{"type":"Immutable", "commands":[":","-"]},
+     "type":".qmp",
+     "config":".qmc"
+  },
+  "render":{
+    "canvas":{
+      "commands":[
+        { 
+            "command":"_", 
+            "commands":[
+                {
+                    "command":"strokeStyle",
+                    "color":{"red":0, "green":0, "blue":0, "alpha":255}
+                },
+                {
+                    "command":"polyline",
+                    "x":[0,0,1,1,0],
+                    "y":[0,1,1,0,0]
+                }
+            ]
+        },
+        { "command":":" },
+        {
+            "command":"-",
+            "commands":[
+                {
+                    "command":"fillStyle",
+                    "color":{"red":255, "green":0, "blue":0, "alpha":255}
+                },
+                {
+                    "command":"polygon",
+                    "x":[0.1,0.1,0.9,0.9],
+                    "y":[0.1,0.9,0.9,0.1]
+                }
+            ]
+        }       
+      ]      
+    }
+  }
+}
