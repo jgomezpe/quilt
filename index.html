@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width">
+	<meta name="mobile-web-app-capable" content='yes'>
+	<title>Quilt Programing Language</title>
+	<script type='text/javascript' src='https://jgomezpe.github.io/konekti/src/konekti.js'></script> 
+	<script type='text/javascript' src='https://jgomezpe.github.io/quilt/js/quilt_wrap.js'></script> 
+</head>
+
+<body>
+
+	<script>
+	Konekti.uses( 'header', 'canvas', 'https://jgomezpe.github.io/funpl/js/funplIDE.js')
+
+	function KonektiMain(){
+		var lang = Konekti.dom.getUserLanguage()
+
+		var callback = function(quilt_json){ 
+			if(quilt_json===undefined || quilt_json===null){
+				lang = 'en'
+				Konekti.resource.JSON('https://jgomezpe.github.io/quilt/i18n/'+lang+'/json/quilt.json', callback)
+			}else{
+				Konekti.resource.JSON('https://jgomezpe.github.io/quilt/cfg/basic.qmc', function(json){
+					document.title = quilt_json.Title
+					Konekti.header('title','fa-th',quilt_json.Title,3,'w3-deep-orange w3-center')
+					var quilt = Konekti.funpl('Quilt', '100%', 'rest', "col", json.editor.mode, json.editor.code, new QuiltAPI(json.fun),
+						Konekti.canvasConfig('QuiltRender','100%','100%',{}, json.render.custom))
+					quilt.render = function(obj){ Konekti.client['QuiltRender'].setText(JXON.stringify(obj.jxon()))}
+					Konekti.header('footer','fa-edit',quilt_json.developed,4,'w3-deep-orange w3-center')
+					Konekti.client['Quilt'].msg = quilt_json 
+					Konekti.resize()
+				})
+			}
+		}
+
+		Konekti.resource.JSON('https://jgomezpe.github.io/quilt/i18n/'+lang+'/json/quilt.json', callback)
+	}
+	</script>
+</body>
+</html>
