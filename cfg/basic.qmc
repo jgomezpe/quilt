@@ -1,0 +1,118 @@
+{
+  "fun":{
+     "commands":["@","|"],
+     "value":{"type":"Classic", "commands":[":","-","<","/","+","*"], "reductions":[1,2,4,4,1,4]},
+     "type":".qmp",
+     "config":".qmc"
+  },
+  "render":{
+      "custom":[
+        { "command":":", "commands":[] },
+        { 
+            "command":"_", 
+            "commands":[
+                {
+                    "command":"strokeStyle",
+                    "color":{"red":0, "green":0, "blue":0, "alpha":255}
+                },
+                {
+                    "command":"polyline",
+                    "x":[0,0,1,1,0],
+                    "y":[0,1,1,0,0]
+                }
+            ]
+        },
+        {
+            "command":"<",
+            "commands":[
+                {
+                    "command":"fillStyle",
+                    "color":{"red":255, "green":0, "blue":0, "alpha":255}
+                },
+                {
+                    "command":"polygon",
+                    "x":[0.4,0.4,1,1,0.6,0.6],
+                    "y":[0,0.6,0.6,0.4,0.4,0]
+                }
+            ]
+        },  
+        {
+            "command":"+",
+            "commands":[
+                {
+                    "command":"fillStyle",
+                    "color":{"red":255, "green":0, "blue":0, "alpha":255}
+                },
+                {
+                    "command":"polygon",
+                    "x":[0.4,0.4,0,0,0.4,0.4,0.6,0.6,1,1,0.6,0.6,0.4],
+                    "y":[0,0.4,0.4,0.6,0.6,1,1,0.6,0.6,0.4,0.4,0,0]
+                }
+            ]
+        },  
+        {
+            "command":"*",
+            "commands":[
+                {
+                    "command":"fillStyle",
+                    "color":{"red":255, "green":0, "blue":0, "alpha":255}
+                },
+                {
+                    "command":"polygon",
+                    "x":[0.4,0.4,0.6,0.6,1,1,0.6,0.6,0.4],
+                    "y":[0,1,1,0.6,0.6,0.4,0.4,0,0]
+                }
+            ]
+        },  
+        {
+            "command":"/",
+            "commands":[
+                {
+                    "command":"fillStyle",
+                    "color":{"red":255, "green":0, "blue":0, "alpha":255}
+                },
+                {
+                    "command":"polygon",
+                    "x":[0.6,0.4,0,0],
+                    "y":[0,0,0.4,0.6]
+                }
+            ]
+        },      
+        {
+            "command":"-",
+            "commands":[
+                {
+                    "command":"fillStyle",
+                    "color":{"red":255, "green":0, "blue":0, "alpha":255}
+                },
+                {
+                    "command":"polygon",
+                    "x":[0,0,1,1],
+                    "y":[0.4,0.6,0.6,0.4]
+                }
+            ]
+        }       
+      ]      
+  },
+  "editor":{    "mode":"quilt",
+				"code":	{ 
+					"mode":"quilt", 
+					"qName":"quilt", 
+					"fileTypes":["qmp", "quilt"],
+					"tokens":{
+						"start":[
+							{ "token": "variable.parameter.prolog", "regex": "\\b[A-Z$]\\w*\\b" },
+							{ "token": "paren.lparen", "regex" : "[\\(]"},	
+							{ "token": "paren.rparen", "regex" : "[\\)]"},
+							{ "token": "punctuation.separator.parameters.prolog", "regex": "," },
+							{ "token": "keyword.operator.definition", "regex": "="},
+							{ "token": "keyword.operator.prolog", "regex": "[@|]"},
+							{ "token": "comment.line.percentage.prolog", "regex": "(%)(.*$)"  },
+							{ "token": "constant.numeric", "regex": "\\b(?:-|/|<|\\:)+\\b" },
+							{ "token": "entity.name.function.fact.prolog", "regex": "\\b[a-z][a-zA-Z0-9_]*\\b" },
+							{ "token": "text", "regex": "[^\\s]" } 
+						]
+					}
+				}
+            }
+}
