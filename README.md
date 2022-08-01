@@ -7,11 +7,9 @@ Two separated implementations of the Quilt language are available: using Java an
 
 ##  Java
 
-&nbsp;For compiling the java version, the following libraries are required:
+&nbsp;For compiling the java version, the following libraries are required: kerno.jar, speco.jar, kompari.jar, lifya.jar, jxon.jar, funpl.jar, aplikigo.jar and rsyntaxtextarea-3.0.0-SNAPSHOT.jar
 
-&nbsp;kerno.jar, speco.jar, kompari.jar, lifya.jar, jxon.jar, funpl.jar, aplikigo.jar and rsyntaxtextarea-3.0.0-SNAPSHOT.jar
-
-&nbsp;Java IDE ready to use: <A HREF="https://github.com/jgomezpe/quilt/run/quilt.jar">https://github.com/jgomezpe/quilt/run/quilt.jar</A>
+&nbsp;A Java IDE of the Quilt language is available here: <A HREF="https://github.com/jgomezpe/quilt/run/quilt.jar">https://github.com/jgomezpe/quilt/run/quilt.jar</A>
 
 ## Javascript
 
@@ -19,7 +17,7 @@ Two separated implementations of the Quilt language are available: using Java an
 
 &nbsp;kompari.js, lifya.js, jxon.js, funpl.js and konekti.js
 
-&nbps;A complete wrap (including all the required libraries and quilt classes) is also available: <A HREF="https://jgomezpe.github.io/quilt/src/js/quilt_wrap.js">https://jgomezpe.github.io/quilt/src/js/quilt_wrap.js</A>  
+&nbsp;A complete wrap (including all the required libraries and quilt classes) is also available: <A HREF="https://jgomezpe.github.io/quilt/src/js/quilt_wrap.js">https://jgomezpe.github.io/quilt/src/js/quilt_wrap.js</A>  
 
 &nbsp;A web version for using quilt language is available here: <A HREF="https://jgomezpe.github.io/quilt/">https://jgomezpe.github.io/quilt/</A>
 
