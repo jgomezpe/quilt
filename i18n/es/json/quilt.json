@@ -48,6 +48,7 @@
       {"id":"lang-es", "caption":"Español"}, {"id":"lang-en", "caption":"English"}
     ]},
     {"id":"IDE", "icon":"fa-desktop", "caption": "IDE"},
+    {"id":"java", "icon":"fa-desktop", "caption": "IDE de Java"},    
     {"id":"github", "caption": "Código fuente", "icon":"fa-github"}
   ]},
   "language":"Idioma"
