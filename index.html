@@ -36,9 +36,14 @@
 					Konekti.dom.setURLSearchParam('lang',this.lang)
 					var url = RES_URL+'quilt/i18n/'+this.lang+'/json/'+page+'.json'
 					Konekti.resource.JSON(url, function(json){
-						Konekti.client['QuiltCoder'].setText(json.coder) 
-						Konekti.client['QuiltCommand'].setText(json.command) 
-						Konekti.client['info'].setText(json.info)
+						function check(){
+							if(Konekti.client['QuiltCoder'] !== undefined){
+								Konekti.client['QuiltCoder'].setText(json.coder) 
+								Konekti.client['QuiltCommand'].setText(json.command) 
+								Konekti.client['info'].setText(json.info)
+							}else setTimeout(check, 100)	
+						}
+						check()		
 					})
 				}
 			}
