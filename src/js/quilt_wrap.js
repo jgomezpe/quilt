@@ -382,14 +382,14 @@ class Space extends Lexeme{
     startsWith(c) { return this.white.test(c) }
 }
 
-class Symbol extends Lexeme{
-    static TAG = "symbol"
+class LifyaSymbol extends Lexeme{
+    static TAG = "LifyaSymbol"
     
-    constructor(symbols, type=Symbol.TAG){
+    constructor(LifyaSymbols, type=LifyaSymbol.TAG){
         super()
         this.type = type
-        for( var i=0; i<symbols.length; i++ )
-            this[symbols.charAt(i)] = symbols.charAt(i)
+        for( var i=0; i<LifyaSymbols.length; i++ )
+            this[LifyaSymbols.charAt(i)] = LifyaSymbols.charAt(i)
     }
     
     match(input, start, end) {
@@ -727,7 +727,7 @@ class Rule{
     
     startsWith(t){}
 
-    check_symbol(token, c, TAG=Symbol.TAG) {
+    check_LifyaSymbol(token, c, TAG=LifyaSymbol.TAG) {
         return token.type==TAG && token.value==c
     }
     
@@ -750,7 +750,7 @@ class ListRule extends Rule{
         this.SEPARATOR = separator
     }
     
-    startsWith(t) { return this.check_symbol(t, this.LEFT) }
+    startsWith(t) { return this.check_LifyaSymbol(t, this.LEFT) }
     
     analize(lexer, current=lexer.next()) {
         if(!this.startsWith(current)) return current.toError()
@@ -759,19 +759,19 @@ class ListRule extends Rule{
         var end = current.end
         var list = []
         current = lexer.next()
-        while(current!=null && !this.check_symbol(current, this.RIGHT)){
+        while(current!=null && !this.check_LifyaSymbol(current, this.RIGHT)){
             var t = this.parser.rule(this.item_rule).analize(lexer, current)
             if(t.isError()) return t
             list.push(t)
             end = current.end
             current = lexer.next()
             if(current==null) return this.eof(input,end)
-            if(this.check_symbol(current, this.SEPARATOR)) {
+            if(this.check_LifyaSymbol(current, this.SEPARATOR)) {
                 end = current.end
                 current = lexer.next()
                 if(current==null) return this.eof(input,end)
-                if(this.check_symbol(current, this.RIGHT)) return current.toError() 
-            }else if(!this.check_symbol(current, this.RIGHT)) return current.toError()
+                if(this.check_LifyaSymbol(current, this.RIGHT)) return current.toError() 
+            }else if(!this.check_LifyaSymbol(current, this.RIGHT)) return current.toError()
         }
         if(current==null) return this.eof(input,end)
         return this.token(input,start,current.end,list)
@@ -855,7 +855,7 @@ class JXONAttribute extends Rule{
         var pair = [current,null]
         current = lexer.next()
         if(current==null) return this.eof(input,end)
-        if(!this.check_symbol(current, ':')) return current.toError()
+        if(!this.check_LifyaSymbol(current, ':')) return current.toError()
         end = current.end
         pair[1] = this.parser.analize(lexer,JXONValue.TAG)
         if(pair[1].isError()) return pair[1]
@@ -906,12 +906,12 @@ class JXONValue extends Rule{
     
     startsWith(t) {
         if(t.type == Token.ERROR) return false
-        if(t.type == Symbol.TAG) return t.value=='[' || t.value== '{'
+        if(t.type == LifyaSymbol.TAG) return t.value=='[' || t.value== '{'
         return true 
     }
     
     analize(lexer, current=lexer.next()) {
-        if(current.type==Symbol.TAG) {
+        if(current.type==LifyaSymbol.TAG) {
             switch(current.value) {
                 case '[': return this.parser.rule(JXONList.TAG).analize(lexer, current)
                 case '{': return this.parser.rule(JXONObj.TAG).analize(lexer, current)
@@ -928,7 +928,7 @@ class JXONLexer extends LookAHeadLexer{
         new StringParser(),
         new BlobParser(true),
         new JXONReserved(),
-        new Symbol("[]{},:"),
+        new LifyaSymbol("[]{},:"),
         new Space()
     ]
     
@@ -1163,7 +1163,7 @@ class FunLexer extends LookAHeadLexer{
                     new Variable(),
                     new Function(canStartWithNumber),
                     value, primitive,
-                    new Symbol("()=,"),
+                    new LifyaSymbol("()=,"),
                     new Comment(),
                     new Space()
                 ]
@@ -1193,7 +1193,7 @@ class Command extends Rule{
         if(type!=FunConstants.VALUE) {
             var c = lexer.next()
             lexer.goback()
-            if(c!=null && this.check_symbol(c, '(')) {
+            if(c!=null && this.check_LifyaSymbol(c, '(')) {
                 var args = this.parser.analize(lexer,FunConstants.ARGS)
                 if(args.isError()) return args
                 command.push(args)
@@ -1229,7 +1229,7 @@ class Definition extends Rule{
         if(pair[0].isError()) return pair[0]
         current = lexer.next()
         if(current==null) return this.eof(input,end)
-        if(!this.check_symbol(current, '=')) return current.toError()
+        if(!this.check_LifyaSymbol(current, '=')) return current.toError()
         end = current.end
         pair.push(this.parser.analize(lexer,FunConstants.EXPRESSION))
         if(pair[1].isError()) return pair[1]
@@ -1307,14 +1307,14 @@ class Expression extends Rule{
         var start = current.start
         var end = current.end
         var command
-        if( this.check_symbol(current, '(')) {
+        if( this.check_LifyaSymbol(current, '(')) {
             current = lexer.next()
             command = this.analize(lexer,current)
             if(command.isError()) return command
             end = current.end
             current = lexer.next()
             if(current==null) return this.eof(input,end)
-            if(!this.check_symbol(current, ')')) return current.toError()
+            if(!this.check_LifyaSymbol(current, ')')) return current.toError()
         }else {
             command = this.parser.rule(FunConstants.COMMAND).analize(lexer,current)
             if(command.isError()) return command
@@ -1338,7 +1338,7 @@ class Expression extends Rule{
 
     startsWith(token) {
         return this.parser.rule(FunConstants.COMMAND).startsWith(token) || 
-            this.check_symbol(token, '(')
+            this.check_LifyaSymbol(token, '(')
     }
 }
 
@@ -1997,7 +1997,7 @@ class Application extends Configurable{
             case FunConstants.PRIMITIVE:
                 sb += "·Unexpected "+value+"· "+c
                 break;
-            case Symbol.TAG:
+            case LifyaSymbol.TAG:
             case Token.ERROR:
                 sb += "·Unexpected character· "+c
                 break;
