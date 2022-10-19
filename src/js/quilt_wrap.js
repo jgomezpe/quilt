@@ -1954,7 +1954,7 @@ class FunAPI extends Configurable{
         this.lang.parser.main = FunConstants.EXPRESSION
         var cmd=this.lang.get(src,0,command.length)
         if( cmd != null ) {
-            this.output = cmd.execute( this.output )
+            this.output = cmd.apply( this.output )
             return this.output
         }
         return null
